@@ -1,42 +1,43 @@
-#pragma once
+﻿#pragma once
 
-#include "glad/glad.h"
-#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <vector>
 
-class Transform
-{
-public:
-	Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale);
+#include "glad/glad.h"
 
-	void addRotation(glm::vec3 degrees);
+class Transform {
+ public:
+  Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale);
 
-	void setRotation(glm::vec3 degrees);
+  void addRotation(glm::vec3 degrees);
 
-	void addTranslation(glm::vec3 translation);
+  void setRotation(glm::vec3 degrees);
 
-	void setTranslation(glm::vec3 translation);
+  void addTranslation(glm::vec3 translation);
 
-	void addScale(glm::vec3 scale);
+  void setTranslation(glm::vec3 translation);
 
-	void setScale(glm::vec3 scale);
+  void addScale(glm::vec3 scale);
 
-	glm::vec3 getTranslation();
+  void setScale(glm::vec3 scale);
 
-	glm::quat getRotation();
+  void setModel(glm::mat4 model);
 
-	glm::vec3 getScale();
+  glm::vec3 getTranslation();
 
-	glm::mat4 getModel();
+  glm::quat getRotation();
 
-private:
-	glm::vec3 mTranslation;
-	glm::quat mRotation;
-	glm::vec3 mScale;
+  glm::vec3 getScale();
 
-	glm::mat4 mModel;
+  glm::mat4 getModel();
 
-	void updateModel();
+ private:
+  glm::vec3 mTranslation;
+  glm::quat mRotation;
+  glm::vec3 mScale;
+
+  glm::mat4 mModel;
+
+  void updateModel();
 };
-

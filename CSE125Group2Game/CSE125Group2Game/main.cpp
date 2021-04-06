@@ -1,15 +1,17 @@
-// main.cpp : This file contains the 'main' function. Program execution begins and ends there.
+﻿// main.cpp : This file contains the 'main' function. Program execution begins
+// and ends there.
 //
 
 #define GLFW_INCLUDE_NONE
 
-#include <iostream>
-
 #include <GLFW/glfw3.h>
 
-#include "RenderManager.h"
-#include "Mesh.h"
+#include <iostream>
+
 #include "Camera.h"
+#include "Mesh.h"
+#include "RenderManager.h"
+#include "SceneGraphNode.h"
 
 using namespace std;
 
@@ -18,7 +20,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 int main() {
-
   // initialize glfw
   glfwInit();
 
@@ -40,22 +41,39 @@ int main() {
   RenderManager* renderMananger = RenderManager::get();
   renderMananger->init(window);
 
-  Transform transform(glm::vec3(0,0,0), glm::vec3(0,0,0), glm::vec3(1,1,1));
+  Camera camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
+                glm::vec3(0.0f, 1.0f, 0.0));
 
-  Mesh cube = Mesh::Cube(&transform);
-  Camera camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0));
+  Transform cubeOneTransform(glm::vec3(5, 0, 0), glm::vec3(0, 0, 0),
+                             glm::vec3(1, 1, 1));
+  Mesh cubeOne = Mesh::Cube(&cubeOneTransform);
+
+  Transform cubeTwoTransform(glm::vec3(-5, 0, 0), glm::vec3(10, 50, 4),
+                             glm::vec3(1, 1, 1));
+  Mesh cubeTwo = Mesh::Cube(&cubeTwoTransform);
+
+  SceneGraphNode* sceneRoot = SceneGraphNode::getRoot();
+  SceneGraphNode* cubeOneNode =
+      new SceneGraphNode(sceneRoot, &cubeOneTransform, &cubeOne);
+  SceneGraphNode* cubeTwoNode =
+      new SceneGraphNode(cubeOneNode, &cubeTwoTransform, &cubeTwo);
 
   float deg = 0.0f;
+
   while (!glfwWindowShouldClose(window)) {
     // draw all the things
     renderMananger->beginRender();
-  
+
     camera.use();
 
-    cube.draw();
-    transform.addRotation(glm::vec3(0.0f, deg, 0.0f));
-    transform.setScale(glm::vec3(0.1, 0.1, 0.1));
-    //transform.setTranslation(glm::vec3(5,0,0));
+    // Loop through every child of the root and draw them
+    // Note: This only draws the first layer of the scene graph
+    for (SceneGraphNode* child : sceneRoot->getChildren()) {
+      child->getMesh()->draw();
+    }
+
+    cubeOneTransform.addRotation(glm::vec3(0.0f, deg, 0.0f));
+    cubeTwoTransform.addRotation(glm::vec3(0.0f, -deg, 0.0f));
 
     deg += 0.1f;
 

@@ -1,21 +1,34 @@
-#pragma once
+﻿#pragma once
 
-#include "Transform.h"
 #include "Mesh.h"
+#include "Transform.h"
 
-class SceneGraphNode
-{
-public:
-	SceneGraphNode(SceneGraphNode* parent, Transform* transform);
+class SceneGraphNode {
+ public:
+  SceneGraphNode(SceneGraphNode* parent, Transform* transform);
 
-	static SceneGraphNode* getRoot();
+  SceneGraphNode(SceneGraphNode* parent, Transform* transform, Mesh* mesh);
 
-private:
-	static SceneGraphNode* root;
+  static SceneGraphNode* getRoot();
 
-	Transform* mTransform;
-	Mesh* mMesh;
+  void addChild(SceneGraphNode* child);
 
-	std::vector<SceneGraphNode*> mChildren;
-	SceneGraphNode* mParent;
+  void removeChild(SceneGraphNode* child);
+
+  Transform* getTransform();
+
+  Mesh* getMesh();
+
+  std::vector<SceneGraphNode*> getChildren();
+
+  SceneGraphNode* getParent();
+
+ private:
+  static SceneGraphNode* root;
+
+  Transform* mTransform;
+  Mesh* mMesh;
+
+  std::vector<SceneGraphNode*> mChildren;
+  SceneGraphNode* mParent;
 };
