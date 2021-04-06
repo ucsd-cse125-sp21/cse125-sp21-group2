@@ -36,6 +36,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -55,6 +58,9 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -40,7 +40,9 @@ int main() {
   RenderManager* renderMananger = RenderManager::get();
   renderMananger->init(window);
 
-  Mesh cube = Mesh::Cube();
+  Transform transform(glm::vec3(0,0,0), glm::vec3(0,0,0), glm::vec3(1,1,1));
+
+  Mesh cube = Mesh::Cube(&transform);
   Camera camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0));
 
   float deg = 0.0f;
@@ -51,7 +53,9 @@ int main() {
     camera.use();
 
     cube.draw();
-    cube.addRotation(glm::vec3(0.0f, deg, 0.0f));
+    transform.addRotation(glm::vec3(0.0f, deg, 0.0f));
+    transform.setScale(glm::vec3(0.1, 0.1, 0.1));
+    //transform.setTranslation(glm::vec3(5,0,0));
 
     deg += 0.1f;
 

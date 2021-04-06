@@ -3,7 +3,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-Mesh Mesh::Cube()
+Mesh Mesh::Cube(Transform* transform)
 {
   std::vector<float> vertices {
     // front
@@ -53,11 +53,11 @@ Mesh Mesh::Cube()
     6, 7, 3
   };
 
-  return Mesh(vertices, indices);
+  return Mesh(vertices, indices, transform);
 }
 
-Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices) : 
-  mVao(0), mVbo(0), mIbo(0), mIndexCount(indices.size()), mTranslation(0.0f), mRotation(glm::vec3(0, 0, 0)), mScale(1.0f), mModel(1.0f) {
+Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices, Transform* transform) : 
+  mVao(0), mVbo(0), mIbo(0), mIndexCount(indices.size()), mTransform(transform) {
 
   // create vertex array object
   glGenVertexArrays(1, &mVao);
@@ -96,13 +96,7 @@ void Mesh::draw() {
   glBindVertexArray(mVao);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIbo);
 
-  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mModel));
+  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mTransform->getModel()));
 
   glDrawElements(GL_TRIANGLES, mIndexCount, GL_UNSIGNED_INT, nullptr);
-}
-
-void Mesh::addRotation(glm::vec3 degrees) {
-  mRotation = glm::quat(glm::radians(degrees)) * mRotation;
-
-  mModel = glm::translate(glm::mat4(1.0f), mTranslation) * glm::toMat4(mRotation) * glm::scale(glm::mat4(1.0f), mScale);
 }
