@@ -10,6 +10,7 @@
 #include "RenderManager.h"
 #include "Mesh.h"
 #include "Camera.h"
+#include "net_client.hpp"
 
 using namespace std;
 
@@ -18,6 +19,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 int main() {
+
+  net_client();
 
   // initialize glfw
   glfwInit();

@@ -19,6 +19,9 @@
     <Filter Include="Header Files\render">
       <UniqueIdentifier>{6fc90e5c-892d-43f3-81d1-907a9e952d1a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\network">
+      <UniqueIdentifier>{9994c408-a9f1-488d-a59c-e6bab04241ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -55,6 +58,9 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="net_client.hpp">
+      <Filter>Header Files\network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
