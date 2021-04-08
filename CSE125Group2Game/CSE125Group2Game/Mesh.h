@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <string>
 #include <vector>
 
 #include "glad/glad.h"
@@ -9,6 +10,7 @@
 class Mesh {
  public:
   static Mesh Cube();
+  static Mesh FromFile(const std::string& path);
 
   Mesh(const std::vector<glm::vec3>& vertices,
        const std::vector<glm::uvec3>& indices);

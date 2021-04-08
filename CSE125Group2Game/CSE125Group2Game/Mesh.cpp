@@ -1,7 +1,12 @@
 #include "Mesh.h"
 
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
+
+#include <assimp/Importer.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <iostream>
 
 Mesh Mesh::Cube() {
   std::vector<glm::vec3> vertices{
@@ -35,6 +40,42 @@ Mesh Mesh::Cube() {
                                   glm::uvec3(3, 2, 6), glm::uvec3(6, 7, 3)};
 
   return Mesh(vertices, indices);
+}
+
+/**
+ * Loads a mesh from a model file using Assimp.
+ *
+ * TODO: Does not currently support many object/mesh types. Need to add
+ * submeshes, materials, etc to work properly.
+ */
+Mesh Mesh::FromFile(const std::string& path) {
+  Assimp::Importer importer;
+  const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+
+  if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
+      !scene->mRootNode) {
+    std::cout << "Error Assimp loading..." << std::endl;
+    throw std::exception("failed to load file...");
+  }
+
+  // for dragon, we have one node with one mesh
+  aiMesh* mesh = scene->mMeshes[scene->mRootNode->mChildren[0]->mMeshes[0]];
+
+  std::vector<glm::vec3> verts;
+  verts.reserve(mesh->mNumVertices);
+  for (int i = 0; i < mesh->mNumVertices; i++) {
+    verts.emplace_back(mesh->mVertices[i].x, mesh->mVertices[i].y,
+                       mesh->mVertices[i].z);
+  }
+
+  // get indices out .... must do because they are in ptrs...
+  std::vector<glm::uvec3> inds;
+  for (int i = 0; i < mesh->mNumFaces; i++) {
+    inds.emplace_back(mesh->mFaces[i].mIndices[0], mesh->mFaces[i].mIndices[1],
+                      mesh->mFaces[i].mIndices[2]);
+  }
+
+  return Mesh(verts, inds);
 }
 
 Mesh::Mesh(const std::vector<glm::vec3>& vertices,
@@ -132,8 +173,10 @@ void Mesh::draw() {
 }
 
 void Mesh::addRotation(glm::vec3 degrees) {
+  // add the degrees to the current rotation
   mRotation = glm::quat(glm::radians(degrees)) * mRotation;
 
+  // update the model matrix
   mModel = glm::translate(glm::mat4(1.0f), mTranslation) *
            glm::toMat4(mRotation) * glm::scale(glm::mat4(1.0f), mScale);
 }

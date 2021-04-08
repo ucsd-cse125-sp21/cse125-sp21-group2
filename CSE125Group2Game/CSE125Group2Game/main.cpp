@@ -38,7 +38,7 @@ int main() {
   RenderManager& renderMananger = RenderManager::get();
   renderMananger.init(window);
 
-  Mesh cube = Mesh::Cube();
+  Mesh cube = Mesh::FromFile("dragon.obj");
   Camera camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
                 glm::vec3(0.0f, 1.0f, 0.0));
 
@@ -52,7 +52,7 @@ int main() {
     cube.draw();
     cube.addRotation(glm::vec3(0.0f, deg, 0.0f));
 
-    deg += 0.1f;
+    deg += 0.001f;
 
     glfwPollEvents();
     glfwSwapBuffers(window);
