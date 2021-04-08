@@ -1,12 +1,19 @@
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 #include <iostream>
-#include <olc_net.h>
+#include "olc_net.h"
 
 class CustomServer : public olc::net::server_interface<CustomMsgTypes>
 {
 public:
-	CustomServer(uint16_t nPort) : olc::net::server_interface<CustomMsgTypes>(nPort)
+	CustomServer(uint16_t nPort, uint16_t server_tick_ms) : olc::net::server_interface<CustomMsgTypes>(nPort)
 	{
+		tick_ms = server_tick_ms;
+	}
 
+	DWORD GetServerTick() 
+	{
+		return tick_ms;
 	}
 
 protected:
@@ -52,19 +59,29 @@ protected:
 		break;
 		}
 	}
+
+	DWORD tick_ms;
+
+
 };
 
 int main()
 {
-	CustomServer server(60000);
+	DWORD before, after, diff;
+	CustomServer server(60000, 10000);	// currently the server polls once per second
 	server.Start();
 
 	while (1)
 	{
+		before = GetTickCount();
 		server.Update(-1, true);
+		after = GetTickCount();
+
+		std::cout << diff;
+		if (server.GetServerTick() > diff) {	// need to ensure that server tick is big enough 
+			Sleep(server.GetServerTick() - diff);
+		}
 	}
-
-
 
 	return 0;
 }
