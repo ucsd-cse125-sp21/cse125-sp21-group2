@@ -78,7 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>asio\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath);$(ProjectDir)\Network\asio;$(ProjectDir)\Network</IncludePath>
     <OutDir>$(SolutionDir)build</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -141,7 +141,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="net_message_type.h" />
     <ClInclude Include="net_client.h" />
     <ClInclude Include="net_common.h" />
     <ClInclude Include="net_connection.h" />

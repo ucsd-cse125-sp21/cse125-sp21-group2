@@ -269,7 +269,6 @@ namespace olc
 				ReadHeader();
 			}
 
-
 		protected:
 			// Each connection has a unique socket to a remote 
 			asio::ip::tcp::socket m_socket;
