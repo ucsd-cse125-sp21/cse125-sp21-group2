@@ -1,24 +1,22 @@
-// main.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// main.cpp : This file contains the 'main' function. Program execution begins
+// and ends there.
 //
-
-#define GLFW_INCLUDE_NONE
-
-#include <iostream>
 
 #include <GLFW/glfw3.h>
 
-#include "RenderManager.h"
-#include "Mesh.h"
+#include <iostream>
+
 #include "Camera.h"
+#include "Mesh.h"
+#include "RenderManager.h"
 
 using namespace std;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-  RenderManager::get()->setWindowSize(width, height);
+  RenderManager::get().setViewportSize(width, height);
 }
 
 int main() {
-
   // initialize glfw
   glfwInit();
 
@@ -37,17 +35,18 @@ int main() {
 
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-  RenderManager* renderMananger = RenderManager::get();
-  renderMananger->init(window);
+  RenderManager& renderMananger = RenderManager::get();
+  renderMananger.init(window);
 
   Mesh cube = Mesh::Cube();
-  Camera camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0));
+  Camera camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
+                glm::vec3(0.0f, 1.0f, 0.0));
 
   float deg = 0.0f;
   while (!glfwWindowShouldClose(window)) {
     // draw all the things
-    renderMananger->beginRender();
-  
+    renderMananger.beginRender();
+
     camera.use();
 
     cube.draw();
@@ -59,7 +58,7 @@ int main() {
     glfwSwapBuffers(window);
   }
 
-  renderMananger->teardown();
+  renderMananger.teardown();
 
   glfwTerminate();
 }
