@@ -78,7 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\carlo\source\repos\cse125-sp21-group2\CSE125Group2Game\Network\asio\include;$(IncludePath)</IncludePath>
+    <IncludePath>asio\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)build</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
