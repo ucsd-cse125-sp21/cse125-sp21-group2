@@ -77,6 +77,8 @@ int main()
 		server.Update(-1, true);
 		after = GetTickCount();
 
+		diff = after - before;
+
 		std::cout << diff;
 		if (server.GetServerTick() > diff) {	// need to ensure that server tick is big enough 
 			Sleep(server.GetServerTick() - diff);
