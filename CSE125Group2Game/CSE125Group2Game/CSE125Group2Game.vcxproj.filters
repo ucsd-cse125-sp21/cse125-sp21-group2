@@ -39,6 +39,12 @@
     <ClCompile Include="ShaderProgram.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
+    <ClCompile Include="SubMesh.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -60,6 +66,12 @@
       <Filter>Header Files\render</Filter>
     </ClInclude>
     <ClInclude Include="ShaderProgram.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="SubMesh.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
   </ItemGroup>

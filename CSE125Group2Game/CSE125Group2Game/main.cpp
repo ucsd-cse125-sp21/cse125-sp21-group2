@@ -38,7 +38,8 @@ int main() {
   RenderManager& renderMananger = RenderManager::get();
   renderMananger.init(window);
 
-  Mesh cube = Mesh::FromFile("dragon.obj");
+  Mesh cube = Mesh("tree.obj");
+  // Mesh cube = Mesh::Cube();
   Camera camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
                 glm::vec3(0.0f, 1.0f, 0.0));
 

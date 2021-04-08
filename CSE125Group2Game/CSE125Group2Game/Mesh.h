@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "SubMesh.h"
 #include "glad/glad.h"
 
 class Mesh {
@@ -14,20 +15,21 @@ class Mesh {
 
   Mesh(const std::vector<glm::vec3>& vertices,
        const std::vector<glm::uvec3>& indices);
-  ~Mesh();
+  Mesh(const std::string& filePath);
+  /*~Mesh();
   Mesh(const Mesh& other) =
       delete;  // don't allow copying (see rule of three for why)
   Mesh(Mesh&& other) noexcept;                  // move ctor
   Mesh& operator=(const Mesh& other) = delete;  // don't allow copy-assignment
-  Mesh& operator=(Mesh&& other) noexcept;       // move-assignment
+  Mesh& operator=(Mesh&& other) noexcept;       // move-assignment*/
 
   void draw();
 
   void addRotation(glm::vec3 degrees);
 
  private:
-  GLuint mVao, mVbo, mIbo;
-  unsigned int mIndexCount;
+  // an array of submeshes that makes up this mesh
+  std::vector<SubMesh> mSubMeshes;
 
   glm::vec3 mTranslation;
   glm::quat mRotation;

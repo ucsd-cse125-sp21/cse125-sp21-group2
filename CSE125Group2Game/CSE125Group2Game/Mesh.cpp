@@ -4,6 +4,7 @@
 #include <assimp/scene.h>
 
 #include <assimp/Importer.hpp>
+#include <fstream>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <iostream>
@@ -47,10 +48,15 @@ Mesh Mesh::Cube() {
  *
  * TODO: Does not currently support many object/mesh types. Need to add
  * submeshes, materials, etc to work properly.
+ * TODO: are exceptions the right way to go here? Probably
+ *
+ * @throws std::exception Exception thrown when there is an error loading the
+ * file.
  */
 Mesh Mesh::FromFile(const std::string& path) {
   Assimp::Importer importer;
-  const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+  const aiScene* scene = importer.ReadFile(
+      path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
       !scene->mRootNode) {
@@ -63,14 +69,14 @@ Mesh Mesh::FromFile(const std::string& path) {
 
   std::vector<glm::vec3> verts;
   verts.reserve(mesh->mNumVertices);
-  for (int i = 0; i < mesh->mNumVertices; i++) {
+  for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
     verts.emplace_back(mesh->mVertices[i].x, mesh->mVertices[i].y,
                        mesh->mVertices[i].z);
   }
 
   // get indices out .... must do because they are in ptrs...
   std::vector<glm::uvec3> inds;
-  for (int i = 0; i < mesh->mNumFaces; i++) {
+  for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
     inds.emplace_back(mesh->mFaces[i].mIndices[0], mesh->mFaces[i].mIndices[1],
                       mesh->mFaces[i].mIndices[2]);
   }
@@ -80,96 +86,40 @@ Mesh Mesh::FromFile(const std::string& path) {
 
 Mesh::Mesh(const std::vector<glm::vec3>& vertices,
            const std::vector<glm::uvec3>& indices)
-    : mVao(0),
-      mVbo(0),
-      mIbo(0),
-      mIndexCount(indices.size() * 3),
-      mTranslation(0.0f),
+    : mTranslation(0.0f),
+      mRotation(glm::vec3(0, 0, 0)),
+      mScale(1.0f),
+      mModel(1.0f),
+      mSubMeshes(0) {
+  mSubMeshes.emplace_back(vertices, indices);
+}
+
+Mesh::Mesh(const std::string& filePath)
+    : mTranslation(0.0f),
       mRotation(glm::vec3(0, 0, 0)),
       mScale(1.0f),
       mModel(1.0f) {
-  // create vertex array object
-  glGenVertexArrays(1, &mVao);
+  Assimp::Importer importer;
+  const aiScene* scene = importer.ReadFile(
+      filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 
-  // configure the vertex array object
-  glBindVertexArray(mVao);
-
-  // create vbo for triangle vertices
-  glGenBuffers(1, &mVbo);
-
-  // bind it as array buffer
-  glBindBuffer(GL_ARRAY_BUFFER, mVbo);
-
-  // copy vertex data to GPU buffer
-  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3),
-               vertices.data(), GL_STATIC_DRAW);
-
-  // configure the vao with vertex attributes
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-  glEnableVertexAttribArray(0);
-
-  glGenBuffers(1, &mIbo);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIbo);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(glm::uvec3),
-               indices.data(), GL_STATIC_DRAW);
-
-  glBindVertexArray(0);
-}
-
-Mesh::Mesh(Mesh&& other) noexcept
-    : mVao(other.mVao),
-      mVbo(other.mVbo),
-      mIbo(other.mIbo),
-      mIndexCount(other.mIndexCount),
-      mModel(other.mModel),
-      mTranslation(other.mTranslation),
-      mRotation(other.mRotation),
-      mScale(other.mScale) {
-  // null out opengl resources, so they wont get deleted
-  other.mVao = 0;
-  other.mVbo = 0;
-  other.mIbo = 0;
-}
-
-Mesh::~Mesh() {
-  glDeleteVertexArrays(1, &mVao);
-  glDeleteBuffers(1, &mVbo);
-  glDeleteBuffers(1, &mIbo);
-}
-
-Mesh& Mesh::operator=(Mesh&& other) noexcept {
-  if (&other == this) {
-    return *this;
+  if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
+      !scene->mRootNode) {
+    std::cout << "Error Assimp loading..." << std::endl;
+    throw std::exception("failed to load file...");
   }
 
-  // delete our gl resources so we don't leak
-  glDeleteVertexArrays(1, &mVao);
-  glDeleteBuffers(1, &mVbo);
-  glDeleteBuffers(1, &mIbo);
-
-  mVao = other.mVao;
-  mVbo = other.mVbo;
-  mIbo = other.mIbo;
-  mIndexCount = other.mIndexCount;
-
-  mModel = other.mModel;
-  mTranslation = other.mTranslation;
-  mRotation = other.mRotation;
-  mScale = other.mScale;
-
-  // zero out 'other' gl resrouces, we now own the
-  other.mVao = 0;
-  other.mVbo = 0;
-  other.mIbo = 0;
+  mSubMeshes.reserve(scene->mNumMeshes);
+  for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
+    mSubMeshes.emplace_back(*scene->mMeshes[i]);
+  }
 }
 
 void Mesh::draw() {
-  glBindVertexArray(mVao);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIbo);
-
   glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mModel));
-
-  glDrawElements(GL_TRIANGLES, mIndexCount, GL_UNSIGNED_INT, nullptr);
+  for (SubMesh& subMesh : mSubMeshes) {
+    subMesh.draw();
+  }
 }
 
 void Mesh::addRotation(glm::vec3 degrees) {
