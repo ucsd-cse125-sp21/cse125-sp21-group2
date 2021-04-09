@@ -19,6 +19,9 @@
     <Filter Include="Header Files\render">
       <UniqueIdentifier>{6fc90e5c-892d-43f3-81d1-907a9e952d1a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\SceneLoader">
+      <UniqueIdentifier>{c83fc989-59bb-4ffa-89a8-3514179d60a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -51,6 +54,9 @@
     <ClCompile Include="SceneGraphNode.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
+    <ClCompile Include="SceneLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -60,6 +66,7 @@
     <None Include="vertex.glsl">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="scene.json" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderManager.h">
@@ -85,6 +92,12 @@
     </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneLoader.h">
+      <Filter>Header Files\SceneLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>Header Files\SceneLoader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

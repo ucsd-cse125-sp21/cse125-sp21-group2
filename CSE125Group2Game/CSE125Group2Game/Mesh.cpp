@@ -1,4 +1,4 @@
-#include "Mesh.h"
+﻿#include "Mesh.h"
 
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
@@ -9,7 +9,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <iostream>
 
-Mesh Mesh::Cube(Transform* transform) {
+Mesh* Mesh::Cube(Transform* transform) {
   std::vector<glm::vec3> vertices{
       // front
       glm::vec3(-0.5, -0.5, 0.5), glm::vec3(0.5, -0.5, 0.5),
@@ -40,7 +40,7 @@ Mesh Mesh::Cube(Transform* transform) {
                                   // top
                                   glm::uvec3(3, 2, 6), glm::uvec3(6, 7, 3)};
 
-  return Mesh(vertices, indices, transform);
+  return new Mesh(vertices, indices, transform);
 }
 
 /**
@@ -53,7 +53,7 @@ Mesh Mesh::Cube(Transform* transform) {
  * @throws std::exception Exception thrown when there is an error loading the
  * file.
  */
-Mesh Mesh::FromFile(const std::string& path, Transform* transform) {
+Mesh* Mesh::FromFile(const std::string& path, Transform* transform) {
   Assimp::Importer importer;
   const aiScene* scene = importer.ReadFile(
       path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
@@ -81,7 +81,7 @@ Mesh Mesh::FromFile(const std::string& path, Transform* transform) {
                       mesh->mFaces[i].mIndices[2]);
   }
 
-  return Mesh(verts, inds, transform);
+  return new Mesh(verts, inds, transform);
 }
 
 Mesh::Mesh(const std::vector<glm::vec3>& vertices,

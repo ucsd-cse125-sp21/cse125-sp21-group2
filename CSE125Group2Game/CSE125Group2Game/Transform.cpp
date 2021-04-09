@@ -6,7 +6,9 @@ Transform::Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
     : mTranslation(translation),
       mRotation(rotation),
       mScale(scale),
-      mModel(glm::mat4(1)) {}
+      mModel(glm::mat4(1)) {
+  updateModel();
+}
 
 void Transform::addRotation(glm::vec3 degrees) {
   mRotation = glm::quat(glm::radians(degrees)) * mRotation;

@@ -116,7 +116,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>glad/include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -150,6 +150,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="SceneGraphNode.cpp" />
+    <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="SubMesh.cpp" />
     <ClCompile Include="Transform.cpp" />
@@ -157,14 +158,17 @@
   <ItemGroup>
     <None Include="fragment.glsl" />
     <None Include="packages.config" />
+    <None Include="scene.json" />
     <None Include="vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="SceneGraphNode.h" />
+    <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="SubMesh.h" />
     <ClInclude Include="Transform.h" />

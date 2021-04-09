@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -7,12 +7,12 @@
 
 #include "SubMesh.h"
 #include "Transform.h"
-#include "glad/glad.h"
+//#include "glad/glad.h"
 
 class Mesh {
  public:
-  static Mesh FromFile(const std::string& path, Transform* transform);
-  static Mesh Cube(Transform* transform);
+  static Mesh* FromFile(const std::string& path, Transform* transform);
+  static Mesh* Cube(Transform* transform);
 
   Mesh(const std::vector<glm::vec3>& vertices,
        const std::vector<glm::uvec3>& indices, Transform* transform);

@@ -10,6 +10,7 @@
 #include "Mesh.h"
 #include "RenderManager.h"
 #include "SceneGraphNode.h"
+#include "SceneLoader.h"
 #include "Transform.h"
 
 using namespace std;
@@ -42,24 +43,27 @@ int main() {
 
   Camera camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
                 glm::vec3(0.0f, 1.0f, 0.0));
-
-  Transform cubeOneTransform(glm::vec3(5, 0, 0), glm::vec3(0, 0, 0),
-                             glm::vec3(1, 1, 1));
-  Mesh cubeOne = Mesh::Cube(&cubeOneTransform);
-
-  Transform cubeTwoTransform(glm::vec3(-5, 0, 0), glm::vec3(10, 50, 4),
-                             glm::vec3(1, 1, 1));
-  Mesh cubeTwo = Mesh("dragon.obj", &cubeTwoTransform);
-
   SceneGraphNode* sceneRoot = SceneGraphNode::getRoot();
-  SceneGraphNode* cubeOneNode =
-      new SceneGraphNode(sceneRoot, &cubeOneTransform, &cubeOne);
-  SceneGraphNode* cubeTwoNode =
-      new SceneGraphNode(sceneRoot, &cubeTwoTransform, &cubeTwo);
+
+  // Transform cubeOneTransform(glm::vec3(5, 0, 0), glm::vec3(0, 0, 0),
+  // glm::vec3(1, 1, 1));
+  // Mesh cubeOne = Mesh::Cube(&cubeOneTransform);
+
+  // Transform cubeTwoTransform(glm::vec3(-5, 0, 0), glm::vec3(10, 50, 4),
+  // glm::vec3(1, 1, 1));
+  // Mesh cubeTwo = Mesh::Cube(&cubeTwoTransform);
+
+  // SceneGraphNode* cubeOneNode =
+  //  new SceneGraphNode(sceneRoot, &cubeOneTransform, &cubeOne);
+  // SceneGraphNode* cubeTwoNode =
+  //  new SceneGraphNode(sceneRoot, &cubeTwoTransform, &cubeTwo);
+
   // Mesh cube = Mesh("tree.obj");
   // Mesh cube = Mesh::Cube();
   // Camera camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
   // glm::vec3(0.0f, 1.0f, 0.0));
+
+  SceneLoader sl("scene.json");
 
   float deg = 0.0f;
 
@@ -73,11 +77,12 @@ int main() {
     // Loop through every child of the root and draw them
     // Note: This only draws the first layer of the scene graph
     for (SceneGraphNode* child : sceneRoot->getChildren()) {
+      // cout << child->getTransform()->getTranslation().x << endl;
       child->getMesh()->draw();
     }
 
-    cubeOneTransform.addRotation(glm::vec3(0.0f, deg, 0.0f));
-    cubeTwoTransform.addRotation(glm::vec3(0.0f, -deg, 0.0f));
+    // cubeOneTransform.addRotation(glm::vec3(0.0f, deg, 0.0f));
+    // cubeTwoTransform.addRotation(glm::vec3(0.0f, -deg, 0.0f));
 
     deg += 0.001f;
 
