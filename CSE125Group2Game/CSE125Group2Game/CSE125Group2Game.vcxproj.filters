@@ -45,6 +45,12 @@
     <ClCompile Include="Material.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneGraphNode.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -72,6 +78,12 @@
       <Filter>Header Files\render</Filter>
     </ClInclude>
     <ClInclude Include="Material.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneGraphNode.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
   </ItemGroup>

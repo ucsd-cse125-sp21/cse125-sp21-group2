@@ -9,7 +9,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <iostream>
 
-Mesh Mesh::Cube() {
+Mesh Mesh::Cube(Transform* transform) {
   std::vector<glm::vec3> vertices{
       // front
       glm::vec3(-0.5, -0.5, 0.5), glm::vec3(0.5, -0.5, 0.5),
@@ -40,7 +40,7 @@ Mesh Mesh::Cube() {
                                   // top
                                   glm::uvec3(3, 2, 6), glm::uvec3(6, 7, 3)};
 
-  return Mesh(vertices, indices);
+  return Mesh(vertices, indices, transform);
 }
 
 /**
@@ -53,7 +53,7 @@ Mesh Mesh::Cube() {
  * @throws std::exception Exception thrown when there is an error loading the
  * file.
  */
-Mesh Mesh::FromFile(const std::string& path) {
+Mesh Mesh::FromFile(const std::string& path, Transform* transform) {
   Assimp::Importer importer;
   const aiScene* scene = importer.ReadFile(
       path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
@@ -81,24 +81,17 @@ Mesh Mesh::FromFile(const std::string& path) {
                       mesh->mFaces[i].mIndices[2]);
   }
 
-  return Mesh(verts, inds);
+  return Mesh(verts, inds, transform);
 }
 
 Mesh::Mesh(const std::vector<glm::vec3>& vertices,
-           const std::vector<glm::uvec3>& indices)
-    : mTranslation(0.0f),
-      mRotation(glm::vec3(0, 0, 0)),
-      mScale(1.0f),
-      mModel(1.0f),
-      mSubMeshes(0) {
+           const std::vector<glm::uvec3>& indices, Transform* transform)
+    : mTransform(transform), mSubMeshes(0) {
   mSubMeshes.emplace_back(vertices, indices);
 }
 
-Mesh::Mesh(const std::string& filePath)
-    : mTranslation(0.0f),
-      mRotation(glm::vec3(0, 0, 0)),
-      mScale(1.0f),
-      mModel(1.0f) {
+Mesh::Mesh(const std::string& filePath, Transform* transform)
+    : mTransform(transform) {
   Assimp::Importer importer;
   const aiScene* scene = importer.ReadFile(
       filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
@@ -116,17 +109,8 @@ Mesh::Mesh(const std::string& filePath)
 }
 
 void Mesh::draw() {
-  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mModel));
+  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mTransform->getModel()));
   for (SubMesh& subMesh : mSubMeshes) {
     subMesh.draw();
   }
-}
-
-void Mesh::addRotation(glm::vec3 degrees) {
-  // add the degrees to the current rotation
-  mRotation = glm::quat(glm::radians(degrees)) * mRotation;
-
-  // update the model matrix
-  mModel = glm::translate(glm::mat4(1.0f), mTranslation) *
-           glm::toMat4(mRotation) * glm::scale(glm::mat4(1.0f), mScale);
 }
