@@ -11,6 +11,10 @@ SceneLoader::SceneLoader(std::string fileName) {
   // Open file
   std::ifstream file(fileName);
 
+  if (!file) {
+    throw std::exception(("Failed to open scene file!" + fileName).c_str());
+  }
+
   // Create json and populate it from file
   nlohmann::json j;
   file >> j;

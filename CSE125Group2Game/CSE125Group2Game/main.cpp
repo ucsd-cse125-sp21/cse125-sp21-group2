@@ -7,12 +7,12 @@
 #include <iostream>
 
 #include "Camera.h"
-#include "net_client.hpp"
 #include "Mesh.h"
 #include "RenderManager.h"
 #include "SceneGraphNode.h"
 #include "SceneLoader.h"
 #include "Transform.h"
+#include "net_client.hpp"
 
 using namespace std;
 
@@ -20,9 +20,15 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   RenderManager::get().setViewportSize(width, height);
 }
 
+/*
+ * 1. Set up ticks, lets do 30 per second (frame rate still unbounded)
+ * 2. Refactor some of the glfw window code into a window class
+ * 3. Refactor singletons into a Game class or something (Alex)
+ * 4. Refactor renderer class to be less bad (Evan)
+ */
 int main() {
-
-  net_client();
+  CustomClient c;
+  c.Init("127.0.0.1", 6000);
 
   // initialize glfw
   glfwInit();
@@ -72,6 +78,10 @@ int main() {
   float deg = 0.0f;
 
   while (!glfwWindowShouldClose(window)) {
+    if (c.Update()) {
+      break;
+    }
+
     // draw all the things
 
     renderMananger.beginRender();
