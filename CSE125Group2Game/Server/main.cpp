@@ -116,6 +116,7 @@ int main() {
     after = GetTickCount();
 
     diff = after - before;
+
     std::cout << diff;
     if (server.GetServerTick() >
         diff) {  // need to ensure that server tick is big enough
