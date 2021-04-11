@@ -55,25 +55,7 @@ int main() {
                 glm::vec3(0.0f, 1.0f, 0.0));
   SceneGraphNode* sceneRoot = SceneGraphNode::getRoot();
 
-  // Transform cubeOneTransform(glm::vec3(5, 0, 0), glm::vec3(0, 0, 0),
-  // glm::vec3(1, 1, 1));
-  // Mesh cubeOne = Mesh::Cube(&cubeOneTransform);
-
-  // Transform cubeTwoTransform(glm::vec3(-5, 0, 0), glm::vec3(10, 50, 4),
-  // glm::vec3(1, 1, 1));
-  // Mesh cubeTwo = Mesh::Cube(&cubeTwoTransform);
-
-  // SceneGraphNode* cubeOneNode =
-  //  new SceneGraphNode(sceneRoot, &cubeOneTransform, &cubeOne);
-  // SceneGraphNode* cubeTwoNode =
-  //  new SceneGraphNode(sceneRoot, &cubeTwoTransform, &cubeTwo);
-
-  // Mesh cube = Mesh("tree.obj");
-  // Mesh cube = Mesh::Cube();
-  // Camera camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
-  // glm::vec3(0.0f, 1.0f, 0.0));
-
-  SceneLoader sl("scene.json");
+  SceneLoader sl(ASSET("scene.json"));
 
   float deg = 0.0f;
 
