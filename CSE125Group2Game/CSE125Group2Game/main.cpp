@@ -77,13 +77,24 @@ int main() {
 
   float deg = 0.0f;
 
+  // the amount of time between two updates (to get 30 updates per second)
+  const double UPDATE_DELTA = 1.0 / 30.0;
+  // the time of the last update
+  double lastUpdate = 0;
+
   while (!glfwWindowShouldClose(window)) {
-    if (c.Update()) {
-      break;
+    double now = glfwGetTime();
+    double deltaTime = now - lastUpdate;
+
+    // if enough time has passed for an update, do one
+    if (deltaTime >= UPDATE_DELTA) {
+      // Update Logic
+      if (c.Update()) {
+        break;
+      }
     }
 
-    // draw all the things
-
+    // Render Logic
     renderMananger.beginRender();
 
     camera.use();
