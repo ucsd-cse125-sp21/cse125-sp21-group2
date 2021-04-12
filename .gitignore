@@ -75,6 +75,7 @@ StyleCopReport.xml
 *_h.h
 *.ilk
 *.meta
+*.obj
 *.iobj
 *.pch
 *.pdb
@@ -363,6 +364,10 @@ FodyWeavers.xsd
 
 # Doxygen documentation
 Docs
+doc
+
+# build folders...
+build
 
 # Include asset files
 !**/*/Assets/*.obj
