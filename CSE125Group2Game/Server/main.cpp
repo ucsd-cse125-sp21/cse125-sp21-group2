@@ -61,9 +61,9 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
 
 int main() {
   DWORD before, after, diff;
-  uint16_t port = 60000;
-  uint16_t tick = 10000;
-  std::string filename = "server_config.txt";
+  uint16_t port = DEFAULT_SERVER_PORT;
+  uint16_t tick = DEFAULT_TICK;
+  std::string filename = CONFIG_FILE;
 
   std::string line;
   std::ifstream infile;
@@ -96,11 +96,7 @@ int main() {
       }
     }
   } else {
-    std::cout << "couldn't open file\n";
-    TCHAR Buffer[MAX_PATH];
-    DWORD dwRet;
-    dwRet = GetCurrentDirectory(MAX_PATH, Buffer);
-    std::wcout << Buffer << std::endl;
+    std::cout << "couldn't open file, using default port and tick\n";
   }
 
   std::cout << "port:" << port << "\n";

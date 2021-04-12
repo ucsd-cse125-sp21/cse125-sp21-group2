@@ -28,7 +28,42 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
  */
 int main() {
   CustomClient c;
-  c.Init("127.0.0.1", 6000);
+
+  string host = DEFAULT_SERVER_HOST;
+  uint16_t port = DEFAULT_SERVER_PORT;
+  std::string filename = CONFIG_FILE;
+
+  std::string line;
+  std::ifstream infile;
+
+  infile.open(filename.c_str());
+  std::vector<std::string> tokens;
+  std::string intermediate;
+
+  // read the config file and fill in port and host values, if defined
+  if (infile) {
+    while (getline(infile, line)) {
+      std::stringstream ss(line);
+
+      while (getline(ss, intermediate, ':')) {
+        tokens.push_back(intermediate);
+      }
+
+      if (tokens[0].compare("port") == 0) {
+        int temp_int(std::stoi(tokens[1]));
+
+        if (temp_int <= static_cast<int>(UINT16_MAX) && temp_int >= 0) {
+          port = static_cast<uint16_t>(temp_int);
+        }
+      } else if (tokens[0].compare("host") == 0) {
+        cout << "host: " << tokens[1] << "\n";
+        host = tokens[1];
+      }
+    }
+  } else {
+    std::cout << "couldn't open file, using default port and tick\n";
+  }
+  c.Init(host, port);
 
   // initialize glfw
   glfwInit();
