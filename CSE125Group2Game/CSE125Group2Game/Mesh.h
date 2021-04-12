@@ -1,31 +1,35 @@
-#pragma once
+﻿#pragma once
 
-#include "glad/glad.h"
-#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <string>
+#include <vector>
 
-class Mesh
-{
-public:
-  static Mesh Cube();
+#include "SubMesh.h"
+#include "Transform.h"
+//#include "glad/glad.h"
 
-  Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices);
-  ~Mesh();
+class Mesh {
+ public:
+  static Mesh* FromFile(const std::string& path, Transform* transform);
+  static Mesh* Cube(Transform* transform);
+
+  Mesh(const std::vector<glm::vec3>& vertices,
+       const std::vector<glm::uvec3>& indices, Transform* transform);
+  Mesh(const std::string& filePath, Transform* transform);
+  /*~Mesh();
+  Mesh(const Mesh& other) =
+      delete;  // don't allow copying (see rule of three for why)
+  Mesh(Mesh&& other) noexcept;                  // move ctor
+  Mesh& operator=(const Mesh& other) = delete;  // don't allow copy-assignment
+  Mesh& operator=(Mesh&& other) noexcept;       // move-assignment*/
 
   void draw();
 
-  void addRotation(glm::vec3 degrees);
+ private:
+  // an array of submeshes that makes up this mesh
+  std::vector<SubMesh> mSubMeshes;
 
-private:
-  GLuint mVao, mVbo, mIbo;
-  unsigned int mIndexCount;
-
-  glm::vec3 mTranslation;
-  glm::quat mRotation;
-  glm::vec3 mScale;
-
-  glm::mat4 mModel;
-
+  Transform*
+      mTransform;  // Probably not the best way for now, but good for testing
 };
-

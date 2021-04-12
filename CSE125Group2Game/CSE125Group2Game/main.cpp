@@ -1,23 +1,34 @@
-// main.cpp : This file contains the 'main' function. Program execution begins and ends there.
+﻿// main.cpp : This file contains the 'main' function. Program execution begins
+// and ends there.
 //
-
-#define GLFW_INCLUDE_NONE
-
-#include <iostream>
 
 #include <GLFW/glfw3.h>
 
-#include "RenderManager.h"
-#include "Mesh.h"
+#include <iostream>
+
 #include "Camera.h"
+#include "Mesh.h"
+#include "RenderManager.h"
+#include "SceneGraphNode.h"
+#include "SceneLoader.h"
+#include "Transform.h"
+#include "net_client.hpp"
 
 using namespace std;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-  RenderManager::get()->setWindowSize(width, height);
+  RenderManager::get().setViewportSize(width, height);
 }
 
+/*
+ * 1. Set up ticks, lets do 30 per second (frame rate still unbounded)
+ * 2. Refactor some of the glfw window code into a window class
+ * 3. Refactor singletons into a Game class or something (Alex)
+ * 4. Refactor renderer class to be less bad (Evan)
+ */
 int main() {
+  CustomClient c;
+  c.Init("127.0.0.1", 6000);
 
   // initialize glfw
   glfwInit();
@@ -37,29 +48,45 @@ int main() {
 
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-  RenderManager* renderMananger = RenderManager::get();
-  renderMananger->init(window);
+  RenderManager& renderMananger = RenderManager::get();
+  renderMananger.init(window);
 
-  Mesh cube = Mesh::Cube();
-  Camera camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0));
+  Camera camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
+                glm::vec3(0.0f, 1.0f, 0.0));
+  SceneGraphNode* sceneRoot = SceneGraphNode::getRoot();
+
+  SceneLoader sl(ASSET("scene.json"));
 
   float deg = 0.0f;
+
   while (!glfwWindowShouldClose(window)) {
+    if (c.Update()) {
+      break;
+    }
+
     // draw all the things
-    renderMananger->beginRender();
-  
+
+    renderMananger.beginRender();
+
     camera.use();
 
-    cube.draw();
-    cube.addRotation(glm::vec3(0.0f, deg, 0.0f));
+    // Loop through every child of the root and draw them
+    // Note: This only draws the first layer of the scene graph
+    for (SceneGraphNode* child : sceneRoot->getChildren()) {
+      // cout << child->getTransform()->getTranslation().x << endl;
+      child->getMesh()->draw();
+    }
 
-    deg += 0.1f;
+    // cubeOneTransform.addRotation(glm::vec3(0.0f, deg, 0.0f));
+    // cubeTwoTransform.addRotation(glm::vec3(0.0f, -deg, 0.0f));
+
+    deg += 0.001f;
 
     glfwPollEvents();
     glfwSwapBuffers(window);
   }
 
-  renderMananger->teardown();
+  renderMananger.teardown();
 
   glfwTerminate();
 }
