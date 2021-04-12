@@ -364,6 +364,10 @@ FodyWeavers.xsd
 
 # Doxygen documentation
 Docs
+doc
+
+# build folders...
+build
 
 # Include asset files
 !**/*/Assets/*.obj

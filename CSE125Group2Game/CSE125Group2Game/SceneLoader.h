@@ -9,6 +9,10 @@
 #include "SceneGraphNode.h"
 #include "json.hpp"
 
+// TODO: will the std::string() get optimized out? interesting question
+// actually...
+#define ASSET(name) ("Assets/" + std::string(name))
+
 class SceneLoader {
  public:
   SceneLoader(std::string fileName);

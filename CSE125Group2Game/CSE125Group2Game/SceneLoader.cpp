@@ -1,5 +1,9 @@
 ﻿#include "SceneLoader.h"
 
+/*
+ * TODO: refactor this as a ctor to the SceneGraph class.
+ */
+
 /**
  * Constructs and populates the scene graph from the scene file passed in.
  *
@@ -116,6 +120,7 @@ SceneLoader::SceneLoader(std::string fileName) {
 
     // Assign the mesh
     nlohmann::json& objectFile = object["obj_file"];
+    std::string test = objectFile;
     Mesh* mesh = NULL;
 
     // Object is a cube
@@ -124,7 +129,7 @@ SceneLoader::SceneLoader(std::string fileName) {
       mesh = Mesh::Cube(transform);
     } else if (!objectFile.is_null()) {
       // Object is a obj file
-      mesh = Mesh::FromFile(objectFile, transform);
+      mesh = new Mesh(ASSET(test), transform);
     }
 
     SceneGraphNode* node = new SceneGraphNode(parentNode, transform, mesh);

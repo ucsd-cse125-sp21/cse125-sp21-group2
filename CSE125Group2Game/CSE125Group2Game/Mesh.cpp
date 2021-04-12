@@ -43,6 +43,12 @@ Mesh* Mesh::Cube(Transform* transform) {
   return new Mesh(vertices, indices, transform);
 }
 
+Mesh::Mesh(const std::vector<glm::vec3>& vertices,
+           const std::vector<glm::uvec3>& indices, Transform* transform)
+    : mTransform(transform), mSubMeshes(0) {
+  mSubMeshes.emplace_back(vertices, indices);
+}
+
 /**
  * Loads a mesh from a model file using Assimp.
  *
@@ -53,43 +59,6 @@ Mesh* Mesh::Cube(Transform* transform) {
  * @throws std::exception Exception thrown when there is an error loading the
  * file.
  */
-Mesh* Mesh::FromFile(const std::string& path, Transform* transform) {
-  Assimp::Importer importer;
-  const aiScene* scene = importer.ReadFile(
-      path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
-
-  if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
-      !scene->mRootNode) {
-    std::cout << "Error Assimp loading..." << std::endl;
-    throw std::exception("failed to load file...");
-  }
-
-  // for dragon, we have one node with one mesh
-  aiMesh* mesh = scene->mMeshes[scene->mRootNode->mChildren[0]->mMeshes[0]];
-
-  std::vector<glm::vec3> verts;
-  verts.reserve(mesh->mNumVertices);
-  for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-    verts.emplace_back(mesh->mVertices[i].x, mesh->mVertices[i].y,
-                       mesh->mVertices[i].z);
-  }
-
-  // get indices out .... must do because they are in ptrs...
-  std::vector<glm::uvec3> inds;
-  for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-    inds.emplace_back(mesh->mFaces[i].mIndices[0], mesh->mFaces[i].mIndices[1],
-                      mesh->mFaces[i].mIndices[2]);
-  }
-
-  return new Mesh(verts, inds, transform);
-}
-
-Mesh::Mesh(const std::vector<glm::vec3>& vertices,
-           const std::vector<glm::uvec3>& indices, Transform* transform)
-    : mTransform(transform), mSubMeshes(0) {
-  mSubMeshes.emplace_back(vertices, indices);
-}
-
 Mesh::Mesh(const std::string& filePath, Transform* transform)
     : mTransform(transform) {
   Assimp::Importer importer;
