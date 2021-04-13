@@ -12,6 +12,7 @@
 #include "SceneGraphNode.h"
 #include "SceneLoader.h"
 #include "Transform.h"
+#include "KeyLogger.h"
 #include "net_client.hpp"
 
 using namespace std;
@@ -46,6 +47,8 @@ int main() {
     return -1;
   }
 
+  KeyLogger keyLogger(window);
+
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
   RenderManager& renderMananger = RenderManager::get();
@@ -60,9 +63,11 @@ int main() {
   float deg = 0.0f;
 
   while (!glfwWindowShouldClose(window)) {
+    keyLogger.poll();
     if (c.Update()) {
       break;
     }
+
 
     // draw all the things
 
