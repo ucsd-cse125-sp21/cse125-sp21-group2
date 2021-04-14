@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 
+#include "net_client.hpp"
+
 bool read_client_config(std::string& host, uint16_t& port,
                         std::string filename) {
   std::string line;

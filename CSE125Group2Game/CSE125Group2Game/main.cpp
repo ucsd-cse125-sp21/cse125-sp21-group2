@@ -1,4 +1,5 @@
-﻿// main.cpp : This file contains the 'main' function. Program execution begins
+﻿#pragma once
+// main.cpp : This file contains the 'main' function. Program execution begins
 // and ends there.
 //
 
@@ -13,7 +14,6 @@
 #include "SceneLoader.h"
 #include "Transform.h"
 #include "client_helper.h"
-#include "net_client.hpp"
 
 using namespace std;
 
@@ -34,7 +34,7 @@ int main() {
   uint16_t port = DEFAULT_SERVER_PORT;
   std::string filename = CONFIG_FILE;
 
-  if (!read_client_config) {
+  if (!read_client_config(host, port, filename)) {
     cout << "client couldn't read config file, using default host and port";
   }
 
