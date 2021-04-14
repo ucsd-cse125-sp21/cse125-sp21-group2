@@ -2,6 +2,13 @@
 #include <string>
 
 #include "Transform.h"
+
+enum class ObjectType : uint16_t {
+  Default,
+  Player,
+  Enemy,
+};
+
 class GameObject {
  public:
   GameObject(Transform* transform, std::string name, int health);
@@ -14,8 +21,11 @@ class GameObject {
   std::string getName();
   int getHealth();
 
+  ObjectType getObjectType();
+
  private:
   Transform* mTransform;
   std::string mName;
   int mHealth;
+  ObjectType mObjectType;
 };
