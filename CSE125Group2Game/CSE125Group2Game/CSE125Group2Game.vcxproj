@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glad\src\glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
@@ -176,6 +177,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="net_client.hpp" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Material.h" />

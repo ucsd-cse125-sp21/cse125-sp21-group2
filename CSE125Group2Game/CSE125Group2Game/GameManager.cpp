@@ -40,14 +40,23 @@ void GameManager::Update() {
 
   SceneLoader sl(ASSET("scene.json"));
 
+  // Create player and set it as first layer (child of root)
+  Transform playerTransform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+                            glm::vec3(1, 1, 1));
+  Mesh* playerMesh = Mesh::Cube(&playerTransform);
+  SceneGraphNode playerNode(sceneRoot, &playerTransform, playerMesh);
+
   float deg = 0.0f;
 
   while (!glfwWindowShouldClose(window)) {
+    // 1) Update local states (use key logger to update gameobject)
+
+    // 2) Call client update
     if (c.Update()) {
       break;
     }
 
-    // draw all the things
+    // 3) Call drawAll on scene graph
     renderMananger.beginRender();
     mCamera->use();
 
@@ -59,6 +68,7 @@ void GameManager::Update() {
     }
 
     deg += 0.001f;
+    playerTransform.addRotation(glm::vec3(0, deg, 0));
 
     glfwPollEvents();
     glfwSwapBuffers(window);
