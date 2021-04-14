@@ -90,14 +90,3 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     return false;
   }
 };
-
-int net_client() {
-  CustomClient c;
-  c.Connect("127.0.0.1", 60000);
-
-  bool bQuit = false;
-  while (!bQuit) {
-  }
-
-  return 0;
-}

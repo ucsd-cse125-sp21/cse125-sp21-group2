@@ -5,98 +5,18 @@
 #include <iostream>
 #include <string>
 
-#include "olc_net.h"
+#include "custom_server.h"
+#include "server_helper.h"
 
-class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
- public:
-  CustomServer(uint16_t nPort, uint16_t server_tick_ms)
-      : olc::net::server_interface<CustomMsgTypes>(nPort) {
-    tick_ms = server_tick_ms;
-  }
-
-  DWORD GetServerTick() { return tick_ms; }
-
- protected:
-  virtual bool OnClientConnect(
-      std::shared_ptr<olc::net::connection<CustomMsgTypes>> client) {
-    olc::net::message<CustomMsgTypes> msg;
-    msg.header.id = CustomMsgTypes::ServerAccept;
-    client->Send(msg);
-    return true;
-  }
-
-  // Called when a client appears to have disconnected
-  virtual void OnClientDisconnect(
-      std::shared_ptr<olc::net::connection<CustomMsgTypes>> client) {
-    std::cout << "Removing client [" << client->GetID() << "]\n";
-  }
-
-  // Called when a message arrives
-  virtual void OnMessage(
-      std::shared_ptr<olc::net::connection<CustomMsgTypes>> client,
-      olc::net::message<CustomMsgTypes>& msg) {
-    switch (msg.header.id) {
-      case CustomMsgTypes::ServerPing: {
-        std::cout << "[" << client->GetID() << "]: Server Ping\n";
-
-        // Simply bounce message back to client
-        client->Send(msg);
-      } break;
-
-      case CustomMsgTypes::MessageAll: {
-        std::cout << "[" << client->GetID() << "]: Message All\n";
-
-        // Construct a new message and send it to all clients
-        olc::net::message<CustomMsgTypes> msg;
-        msg.header.id = CustomMsgTypes::ServerMessage;
-        msg << client->GetID();
-        MessageAllClients(msg, client);
-
-      } break;
-    }
-  }
-
-  DWORD tick_ms;
-};
-
+using namespace std;
 int main() {
   DWORD before, after, diff;
   uint16_t port = DEFAULT_SERVER_PORT;
   uint16_t tick = DEFAULT_TICK;
   std::string filename = CONFIG_FILE;
 
-  std::string line;
-  std::ifstream infile;
-
-  infile.open(filename.c_str());
-  std::vector<std::string> tokens;
-  std::string intermediate;
-
-  // read the config file and fill in port and tick values, if defined
-  if (infile) {
-    while (getline(infile, line)) {
-      std::stringstream ss(line);
-
-      while (getline(ss, intermediate, ':')) {
-        tokens.push_back(intermediate);
-      }
-
-      if (tokens[0].compare("port") == 0) {
-        int temp_int(std::stoi(tokens[1]));
-
-        if (temp_int <= static_cast<int>(UINT16_MAX) && temp_int >= 0) {
-          port = static_cast<uint16_t>(temp_int);
-        }
-      } else if (tokens[0].compare("tick") == 0) {
-        int temp_int(std::stoi(tokens[1]));
-
-        if (temp_int <= static_cast<int>(UINT16_MAX) && temp_int >= 0) {
-          tick = static_cast<uint16_t>(temp_int);
-        }
-      }
-    }
-  } else {
-    std::cout << "couldn't open file, using default port and tick\n";
+  if (!server_read_config(port, tick, filename)) {
+    cout << "server couldn't read config file, using default port and tick\n";
   }
 
   std::cout << "port:" << port << "\n";
