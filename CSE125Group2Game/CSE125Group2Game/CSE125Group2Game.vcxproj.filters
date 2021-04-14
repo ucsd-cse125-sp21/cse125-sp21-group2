@@ -60,6 +60,9 @@
     <ClCompile Include="SceneLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -69,7 +72,7 @@
     <None Include="vertex.glsl">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="scene.json" />
+    <None Include="Assets\scene.json" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderManager.h">
@@ -104,6 +107,9 @@
     </ClInclude>
     <ClInclude Include="json.hpp">
       <Filter>Header Files\SceneLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
