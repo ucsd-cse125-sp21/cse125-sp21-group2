@@ -63,6 +63,8 @@ int main() {
   } else {
     std::cout << "couldn't open file, using default port and tick\n";
   }
+
+  std::cout << "host: " << host << "port: " << port << "\n";
   c.Init(host, port);
 
   // initialize glfw
