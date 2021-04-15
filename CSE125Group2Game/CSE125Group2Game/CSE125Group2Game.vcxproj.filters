@@ -36,16 +36,13 @@
     <ClCompile Include="RenderManager.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
+    <ClCompile Include="Model.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
     <ClCompile Include="ShaderProgram.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="SubMesh.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
     <ClCompile Include="Material.cpp">
@@ -59,6 +56,9 @@
     </ClCompile>
     <ClCompile Include="SceneLoader.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshLoader.cpp">
+      <Filter>Source Files\render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -75,16 +75,13 @@
     <ClInclude Include="RenderManager.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
+    <ClInclude Include="Model.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
     <ClInclude Include="ShaderProgram.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="SubMesh.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
     <ClInclude Include="Material.h">
@@ -104,6 +101,9 @@
     </ClInclude>
     <ClInclude Include="json.hpp">
       <Filter>Header Files\SceneLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshLoader.h">
+      <Filter>Header Files\render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -158,12 +158,12 @@
     <ClCompile Include="glad\src\glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
-    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="SceneGraphNode.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="SubMesh.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -174,15 +174,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="net_client.hpp" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Material.h" />
-    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="SceneGraphNode.h" />
     <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="SubMesh.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

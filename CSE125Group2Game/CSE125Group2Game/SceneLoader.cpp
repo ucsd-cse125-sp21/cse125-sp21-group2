@@ -11,7 +11,7 @@
  *
  * @param fileName The path to the scene file to be loaded.
  */
-SceneLoader::SceneLoader(std::string fileName) {
+SceneLoader::SceneLoader(std::string fileName, MeshLoader& loader) {
   // Open file
   std::ifstream file(fileName);
 
@@ -121,15 +121,15 @@ SceneLoader::SceneLoader(std::string fileName) {
     // Assign the mesh
     nlohmann::json& objectFile = object["obj_file"];
     std::string test = objectFile;
-    Mesh* mesh = NULL;
+    Model* mesh = NULL;
 
     // Object is a cube
     if (!objectFile.is_null() &&
         (objectFile == "cube" || objectFile == "Cube")) {
-      mesh = Mesh::Cube(transform);
+      mesh = Model::Cube(transform, loader);
     } else if (!objectFile.is_null()) {
       // Object is a obj file
-      mesh = new Mesh(ASSET(test), transform);
+      mesh = new Model(ASSET(test), transform, loader);
     }
 
     SceneGraphNode* node = new SceneGraphNode(parentNode, transform, mesh);

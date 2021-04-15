@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 #include <memory>
 
+#include "MeshLoader.h"
+#include "Model.h"
 #include "ShaderProgram.h"
 
 // singleton
@@ -20,6 +22,9 @@ class RenderManager {
   void teardown();
 
   void beginRender();
+
+  void draw(const Mesh& mesh, const Material& mat);
+  void draw(const Model& model);
 
   void setViewportSize(int width, int height);
 

@@ -10,7 +10,7 @@ SceneGraphNode::SceneGraphNode(SceneGraphNode* parent, Transform* transform)
 }
 
 SceneGraphNode::SceneGraphNode(SceneGraphNode* parent, Transform* transform,
-                               Mesh* mesh)
+                               Model* mesh)
     : mParent(parent), mTransform(transform), mMesh(mesh) {
   if (parent != NULL) {
     parent->addChild(this);
@@ -46,7 +46,7 @@ void SceneGraphNode::removeChild(SceneGraphNode* child) {
 
 Transform* SceneGraphNode::getTransform() { return mTransform; }
 
-Mesh* SceneGraphNode::getMesh() { return mMesh; }
+Model* SceneGraphNode::getMesh() { return mMesh; }
 
 std::vector<SceneGraphNode*> SceneGraphNode::getChildren() { return mChildren; }
 

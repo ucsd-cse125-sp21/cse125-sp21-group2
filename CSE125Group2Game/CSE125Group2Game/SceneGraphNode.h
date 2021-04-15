@@ -1,13 +1,13 @@
 ﻿#pragma once
 
-#include "Mesh.h"
+#include "Model.h"
 #include "Transform.h"
 
 class SceneGraphNode {
  public:
   SceneGraphNode(SceneGraphNode* parent, Transform* transform);
 
-  SceneGraphNode(SceneGraphNode* parent, Transform* transform, Mesh* mesh);
+  SceneGraphNode(SceneGraphNode* parent, Transform* transform, Model* mesh);
 
   static SceneGraphNode* getRoot();
 
@@ -17,7 +17,7 @@ class SceneGraphNode {
 
   Transform* getTransform();
 
-  Mesh* getMesh();
+  Model* getMesh();
 
   std::vector<SceneGraphNode*> getChildren();
 
@@ -27,7 +27,7 @@ class SceneGraphNode {
   static SceneGraphNode* root;
 
   Transform* mTransform;
-  Mesh* mMesh;
+  Model* mMesh;
 
   std::vector<SceneGraphNode*> mChildren;
   SceneGraphNode* mParent;

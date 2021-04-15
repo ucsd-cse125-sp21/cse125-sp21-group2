@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+#include "Model.h"
+
 #define FOVY 90.0f
 #define NEAR_CLIP 0.1f
 #define FAR_CLIP 100.0f
@@ -23,6 +25,7 @@ RenderManager& RenderManager::get() {
  * This method should only be called once.
  *
  * @param window The window to use as a render target.
+ * @returns True if successful, false otherwise...
  */
 bool RenderManager::init(GLFWwindow* window) {
   // tell opengl to use the current window context
@@ -39,6 +42,9 @@ bool RenderManager::init(GLFWwindow* window) {
 
   glEnable(GL_DEPTH_TEST);
 
+  // tell opengl to multisample...
+  glEnable(GL_MULTISAMPLE);
+
   // tell opengl our screen coordinate ranges
   int width, height;
   glfwGetFramebufferSize(window, &width, &height);
@@ -47,8 +53,9 @@ bool RenderManager::init(GLFWwindow* window) {
   mpShaderProgram =
       std::make_unique<ShaderProgram>("vertex.glsl", "fragment.glsl");
 
-  mProjection = glm::perspective(glm::radians(FOVY), (float)width / height,
-                                 NEAR_CLIP, FAR_CLIP);
+  mProjection =
+      glm::perspective(glm::radians(FOVY), static_cast<float>(width) / height,
+                       NEAR_CLIP, FAR_CLIP);
 
   return true;
 }
@@ -67,6 +74,27 @@ void RenderManager::beginRender() {
   glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(mProjection));
 }
 
+void RenderManager::draw(const Mesh& mesh, const Material& mat) {
+  // set material colors...
+  glUniform3fv(3, 1, glm::value_ptr(mat.ambient));
+  glUniform3fv(4, 1, glm::value_ptr(mat.diffuse));
+  glUniform3fv(5, 1, glm::value_ptr(mat.specular));
+  glUniform1fv(6, 1, &mat.shininess);
+
+  // render the mesh
+  glBindVertexArray(mesh.vao());
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo());
+  glDrawElements(GL_TRIANGLES, mesh.indexCount(), GL_UNSIGNED_INT, nullptr);
+}
+
+void RenderManager::draw(const Model& model) {
+  glUniformMatrix4fv(0, 1, GL_FALSE,
+                     glm::value_ptr(model.transformConst().getModel()));
+  for (int i = 0; i < model.meshes().size(); i++) {
+    draw(model.meshes()[i], model.materials()[i]);
+  }
+}
+
 /**
  * Used to set the viewport size. Should be called any time the window size
  * changes.
@@ -79,6 +107,8 @@ void RenderManager::setViewportSize(int width, int height) {
 
   // project matrix encodes aspect ratio...need to update it as the aspect ratio
   // has implicitly changed
-  mProjection = glm::perspective(glm::radians(FOVY), (float)width / height,
-                                 NEAR_CLIP, FAR_CLIP);
+  std::cerr << "HERE: " << static_cast<float>(width) / height << "\n";
+  mProjection =
+      glm::perspective(glm::radians(FOVY), static_cast<float>(width) / height,
+                       NEAR_CLIP, FAR_CLIP);
 }
