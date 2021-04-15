@@ -156,7 +156,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="glad\src\glad.c" />
-    <ClCompile Include="KeyLogger.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -176,7 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="KeyLogger.h" />
+    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="net_client.hpp" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Material.h" />

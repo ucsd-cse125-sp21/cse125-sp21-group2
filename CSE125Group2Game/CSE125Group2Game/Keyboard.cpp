@@ -1,11 +1,13 @@
 #include "Actions.hpp"
 
-#include "KeyLogger.h"
+#include "Keyboard.h"
 
-KeyLogger::KeyLogger(GLFWwindow *window) {
+Keyboard::Keyboard(GLFWwindow *window)
+{
     glfwSetKeyCallback(window, KeyMatching);
 }
 
-void KeyLogger::poll() {
+void Keyboard::poll()
+{
     glfwPollEvents();
 }
