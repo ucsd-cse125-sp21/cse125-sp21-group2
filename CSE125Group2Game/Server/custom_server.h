@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+﻿#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
 #include <fstream>
@@ -47,10 +47,19 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
         std::cout << "[" << client->GetID() << "]: Message All\n";
 
         // Construct a new message and send it to all clients
-        olc::net::message<CustomMsgTypes> msg;
-        msg.header.id = CustomMsgTypes::ServerMessage;
-        msg << client->GetID();
-        MessageAllClients(msg, client);
+        olc::net::message<CustomMsgTypes> msg2;
+        msg2.header.id = CustomMsgTypes::ServerMessage;
+
+        std::cout << "name: " << msg.body[0] << msg.body[1] << msg.body[2]
+                  << msg.body[3] << std::endl;
+
+        int temp;
+        memcpy(&temp, msg.body.data() + 5, sizeof(int));
+
+        std::cout << "temp: " << temp << std::endl;
+
+        msg2 << client->GetID();
+        MessageAllClients(msg2, client);
 
       } break;
     }

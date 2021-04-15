@@ -23,6 +23,8 @@ class GameObject {
 
   ObjectType getObjectType();
 
+  uint8_t* serializeInfo();
+
  private:
   Transform* mTransform;
   std::string mName;

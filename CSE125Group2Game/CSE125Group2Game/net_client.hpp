@@ -1,6 +1,8 @@
-#include <olc_net.h>
+﻿#include <olc_net.h>
 
 #include <iostream>
+
+#include "GameObject.h"
 
 /* TODOs:
  *   1. Probably game shouldn't start will connected, or there should be some
@@ -23,13 +25,21 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     std::chrono::system_clock::time_point timeNow =
         std::chrono::system_clock::now();
 
-    msg << timeNow;
     Send(msg);
   }
 
   void MessageAll() {
     olc::net::message<CustomMsgTypes> msg;
     msg.header.id = CustomMsgTypes::MessageAll;
+
+    GameObject testObj(new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+                                     glm::vec3(1, 1, 1)),
+                       "test", 12);
+
+    for (int i = 0; i < 9; i++) {
+      msg << *(testObj.serializeInfo() + i);
+    }
+
     Send(msg);
   }
 

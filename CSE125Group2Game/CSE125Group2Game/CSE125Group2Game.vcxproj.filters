@@ -1,126 +1,42 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Source Files\render">
-      <UniqueIdentifier>{13e4e649-6cb8-45f9-ac7b-3f182aec51d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\render">
-      <UniqueIdentifier>{6fc90e5c-892d-43f3-81d1-907a9e952d1a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\network">
-      <UniqueIdentifier>{9994c408-a9f1-488d-a59c-e6bab04241ed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\SceneLoader">
-      <UniqueIdentifier>{c83fc989-59bb-4ffa-89a8-3514179d60a3}</UniqueIdentifier>
-    </Filter>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="glad\src\glad.c" />
+    <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="RenderManager.cpp" />
+    <ClCompile Include="SceneGraphNode.cpp" />
+    <ClCompile Include="SceneLoader.cpp" />
+    <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Actions.hpp" />
+    <ClCompile Include="SubMesh.cpp" />
+    <ClCompile Include="..\Shared\Transform.cpp" />
+    <ClCompile Include="..\Shared\GameObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glad\src\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderManager.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderProgram.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="SubMesh.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="Transform.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneGraphNode.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-    <ClCompile Include="Keyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Actions.hpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="net_client.hpp" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="RenderManager.h" />
+    <ClInclude Include="SceneGraphNode.h" />
+    <ClInclude Include="SceneLoader.h" />
+    <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="SubMesh.h" />
+    <ClInclude Include="..\Shared\Transform.h" />
+    <ClInclude Include="..\Shared\GameObject.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="fragment.glsl">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="vertex.glsl">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="Assets\scene.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="RenderManager.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderProgram.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="SubMesh.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneGraphNode.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="net_client.hpp">
-      <Filter>Header Files\network</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneLoader.h">
-      <Filter>Header Files\SceneLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="json.hpp">
-      <Filter>Header Files\SceneLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-    <ClInclude Include="Keyboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <None Include="fragment.glsl" />
+    <None Include="packages.config" />
+    <None Include="vertex.glsl" />
   </ItemGroup>
 </Project>
