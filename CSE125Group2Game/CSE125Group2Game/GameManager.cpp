@@ -1,6 +1,6 @@
 ﻿#include "GameManager.h"
 
-#include "net_client.hpp"
+#include "client_helper.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   RenderManager::get().setViewportSize(width, height);
@@ -20,8 +20,19 @@ GameManager::GameManager() {
 }
 
 void GameManager::Update() {
+  std::string host = DEFAULT_SERVER_HOST;
+  uint16_t port = DEFAULT_SERVER_PORT;
+  std::string filename = CONFIG_FILE;
+
+  if (!read_client_config(host, port, filename)) {
+    std::cout
+        << "client couldn't read config file, using default host and port";
+  }
+
+  std::cout << "host: " << host << "port: " << port << "\n";
+
   CustomClient c;
-  c.Init("127.0.0.1", 6000);
+  c.Init(host, port);
 
   // create window object
   GLFWwindow* window = glfwCreateWindow(800, 600, "Game", NULL, NULL);
