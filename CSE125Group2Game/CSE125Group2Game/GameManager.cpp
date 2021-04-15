@@ -57,10 +57,13 @@ void GameManager::Update() {
   Mesh* playerMesh = Mesh::Cube(&playerTransform);
   SceneGraphNode playerNode(sceneRoot, &playerTransform, playerMesh);
 
+  Keyboard keyboard(window);
+
   float deg = 0.0f;
 
   while (!glfwWindowShouldClose(window)) {
     // 1) Update local states (use key logger to update gameobject)
+    keyboard.poll();
 
     // 2) Call client update
     if (c.Update()) {

@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Camera.h"
+#include "Keyboard.h"
 #include "Mesh.h"
 #include "RenderManager.h"
 #include "SceneGraphNode.h"
