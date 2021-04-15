@@ -1,4 +1,5 @@
-﻿// main.cpp : This file contains the 'main' function. Program execution begins
+﻿#pragma once
+// main.cpp : This file contains the 'main' function. Program execution begins
 // and ends there.
 //
 
@@ -13,7 +14,7 @@
 #include "SceneLoader.h"
 #include "Transform.h"
 #include "Keyboard.h"
-#include "net_client.hpp"
+#include "client_helper.h"
 
 using namespace std;
 
@@ -29,7 +30,17 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
  */
 int main() {
   CustomClient c;
-  c.Init("127.0.0.1", 6000);
+
+  string host = DEFAULT_SERVER_HOST;
+  uint16_t port = DEFAULT_SERVER_PORT;
+  std::string filename = CONFIG_FILE;
+
+  if (!read_client_config(host, port, filename)) {
+    cout << "client couldn't read config file, using default host and port";
+  }
+
+  std::cout << "host: " << host << "port: " << port << "\n";
+  c.Init(host, port);
 
   // initialize glfw
   glfwInit();
