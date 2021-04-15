@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="glad\src\glad.c" />
+    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="SceneGraphNode.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Actions.hpp" />
     <ClCompile Include="SubMesh.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
@@ -174,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="net_client.hpp" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Material.h" />

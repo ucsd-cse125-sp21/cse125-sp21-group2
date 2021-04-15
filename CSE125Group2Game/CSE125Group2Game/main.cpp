@@ -13,6 +13,7 @@
 #include "SceneGraphNode.h"
 #include "SceneLoader.h"
 #include "Transform.h"
+#include "Keyboard.h"
 #include "client_helper.h"
 
 using namespace std;
@@ -57,6 +58,8 @@ int main() {
     return -1;
   }
 
+  Keyboard keyboard(window);
+
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
   RenderManager& renderMananger = RenderManager::get();
@@ -71,9 +74,11 @@ int main() {
   float deg = 0.0f;
 
   while (!glfwWindowShouldClose(window)) {
+   keyboard.poll();
     if (c.Update()) {
       break;
     }
+
 
     // draw all the things
 
