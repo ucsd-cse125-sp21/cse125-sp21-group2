@@ -20,7 +20,7 @@ GameManager::GameManager(GLFWwindow* window) {
   mWindow = window;
   RenderManager& renderMananger = RenderManager::get();
   renderMananger.init(mWindow);
-  SceneLoader sl(ASSET("scene.json"));
+  SceneLoader sl("../Shared/scene.json");
 }
 
 GameManager* GameManager::getManager() {

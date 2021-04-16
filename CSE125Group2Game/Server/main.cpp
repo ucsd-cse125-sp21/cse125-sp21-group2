@@ -1,10 +1,11 @@
-#define WIN32_LEAN_AND_MEAN
+﻿#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
 #include <fstream>
 #include <iostream>
 #include <string>
 
+#include "ServerLoader.h"
 #include "custom_server.h"
 #include "server_helper.h"
 
@@ -25,7 +26,14 @@ int main() {
   CustomServer server(port,
                       tick);  // currently the server polls once per second
   server.Start();
+  // Move into background thread: server.Update(-1, true);
 
+  ServerLoader scene("../Shared/scene.json");
+  // SceneGraphNode::getRoot()->makeWorld(glm::vec3(0, 0, 0), glm::vec3(0, 0,
+  // 0),
+  //                                   glm::vec3(1, 1, 1));
+
+  // Runs at tickrate and performs game logic
   while (1) {
     before = GetTickCount();
     server.Update(-1, true);
@@ -33,7 +41,7 @@ int main() {
 
     diff = after - before;
 
-    std::cout << diff;
+    // std::cout << diff;
     if (server.GetServerTick() >
         diff) {  // need to ensure that server tick is big enough
       Sleep(server.GetServerTick() - diff);

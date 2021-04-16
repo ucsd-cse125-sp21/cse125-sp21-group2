@@ -6,34 +6,35 @@
     <ClCompile Include="glad\src\glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="RenderManager.cpp" />
-    <ClCompile Include="SceneGraphNode.cpp" />
-    <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="SubMesh.cpp" />
     <ClCompile Include="..\Shared\Transform.cpp" />
     <ClCompile Include="..\Shared\GameObject.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="SceneLoader.cpp" />
+    <ClCompile Include="SubMesh.cpp" />
+    <ClCompile Include="SceneGraphNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="net_client.hpp" />
-    <ClInclude Include="json.hpp" />
     <ClInclude Include="Material.h" />
-    <ClInclude Include="Mesh.h" />
     <ClInclude Include="RenderManager.h" />
-    <ClInclude Include="SceneGraphNode.h" />
-    <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="SubMesh.h" />
     <ClInclude Include="..\Shared\Transform.h" />
     <ClInclude Include="..\Shared\GameObject.h" />
+    <ClInclude Include="client_helper.h" />
+    <ClInclude Include="..\Shared\json.hpp" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="SceneLoader.h" />
+    <ClInclude Include="SubMesh.h" />
+    <ClInclude Include="SceneGraphNode.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\scene.json" />
     <None Include="fragment.glsl" />
     <None Include="packages.config" />
     <None Include="vertex.glsl" />
+    <None Include="..\Shared\scene.json" />
   </ItemGroup>
 </Project>

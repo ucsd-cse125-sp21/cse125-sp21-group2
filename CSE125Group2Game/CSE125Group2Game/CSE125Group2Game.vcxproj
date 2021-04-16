@@ -169,20 +169,21 @@
     <ClCompile Include="SubMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\scene.json" />
+    <None Include="..\Shared\scene.json" />
     <None Include="fragment.glsl" />
     <None Include="packages.config" />
     <None Include="vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Shared\GameObject.h" />
+    <ClInclude Include="..\Shared\json.hpp" />
     <ClInclude Include="..\Shared\Transform.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="client_helper.h" />
     <ClInclude Include="GameManager.h" />
-    <ClInclude Include="net_client.hpp" />
-    <ClInclude Include="json.hpp" />
-    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="net_client.hpp" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="SceneGraphNode.h" />
     <ClInclude Include="SceneLoader.h" />

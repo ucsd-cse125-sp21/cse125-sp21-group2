@@ -6,21 +6,20 @@
 #include <string>
 #include <unordered_map>
 
-#include "SceneGraphNode.h"
+#include "ServerGraphNode.h"
 #include "json.hpp"
 
 // TODO: will the std::string() get optimized out? interesting question
 // actually...
-#define ASSET(name) ("Assets/" + std::string(name))
 
-class SceneLoader {
+class ServerLoader {
  public:
-  SceneLoader(std::string fileName);
+  ServerLoader(std::string fileName);
 
  private:
   void loadClient();
 
   void loadServer();
 
-  std::unordered_map<std::string, SceneGraphNode*> mObjects;
+  std::unordered_map<std::string, ServerGraphNode*> mObjects;
 };

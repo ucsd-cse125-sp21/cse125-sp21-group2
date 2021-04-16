@@ -67,7 +67,6 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
           std::cout << "D has been pressed!" << std::endl;
         }
 
-        msg2 << client->GetID();
         MessageAllClients(msg2, client);
 
       } break;
