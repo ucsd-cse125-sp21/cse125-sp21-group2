@@ -29,9 +29,20 @@ int main() {
   // Move into background thread: server.Update(-1, true);
 
   ServerLoader scene("../Shared/scene.json");
-  // SceneGraphNode::getRoot()->makeWorld(glm::vec3(0, 0, 0), glm::vec3(0, 0,
-  // 0),
-  //                                   glm::vec3(1, 1, 1));
+
+  std::vector<GameObject*> world = ServerGraphNode::getRoot()->makeWorld(
+      glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+
+  for (int i = 0; i < world.size(); i++) {
+    std::cout << "World Coordinates: "
+              << world[i]->getTransform()->getTranslation().x << ", "
+              << world[i]->getTransform()->getTranslation().y << ", "
+              << world[i]->getTransform()->getTranslation().z << std::endl;
+
+    std::cout << "World Scale: " << world[i]->getTransform()->getScale().x
+              << ", " << world[i]->getTransform()->getScale().y << ", "
+              << world[i]->getTransform()->getScale().z << std::endl;
+  }
 
   // Runs at tickrate and performs game logic
   while (1) {

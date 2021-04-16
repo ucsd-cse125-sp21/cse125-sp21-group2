@@ -1,5 +1,7 @@
 ﻿#include "ServerGraphNode.h"
 
+#include <iostream>
+
 ServerGraphNode* ServerGraphNode::root;
 
 ServerGraphNode::ServerGraphNode(ServerGraphNode* parent, Transform* transform)
@@ -51,7 +53,7 @@ std::vector<GameObject*> ServerGraphNode::makeWorld(glm::vec3 cPosition,
 
   // For every child, recurse
   for (int i = 0; i < mChildren.size(); i++) {
-    std::vector<GameObject*> temp = makeWorld(
+    std::vector<GameObject*> temp = mChildren[i]->makeWorld(
         cPosition + mTransform->getTranslation(),
         cRotation * mTransform->getRotation(), cScale * mTransform->getScale());
 
@@ -65,6 +67,7 @@ std::vector<GameObject*> ServerGraphNode::makeWorld(glm::vec3 cPosition,
                     cScale * mTransform->getScale(), mTransform->getBBox());
 
   result.push_back(new GameObject(transform, mName, 10));
+
   return result;
 }
 

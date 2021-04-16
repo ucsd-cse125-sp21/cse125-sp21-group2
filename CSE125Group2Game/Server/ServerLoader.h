@@ -17,9 +17,5 @@ class ServerLoader {
   ServerLoader(std::string fileName);
 
  private:
-  void loadClient();
-
-  void loadServer();
-
   std::unordered_map<std::string, ServerGraphNode*> mObjects;
 };

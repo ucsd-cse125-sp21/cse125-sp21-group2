@@ -18,9 +18,5 @@ class SceneLoader {
   SceneLoader(std::string fileName);
 
  private:
-  void loadClient();
-
-  void loadServer();
-
   std::unordered_map<std::string, SceneGraphNode*> mObjects;
 };
