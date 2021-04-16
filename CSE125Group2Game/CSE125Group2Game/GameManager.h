@@ -31,11 +31,7 @@ class GameManager {
 
   static GameManager* getManager();
 
-  bool mKeyPressed[NUM_KEYS];
-
  private:
-  void resetKeys();
-
   Camera* mCamera;
   SceneGraphNode* mSceneRoot;
   GLFWwindow* mWindow;

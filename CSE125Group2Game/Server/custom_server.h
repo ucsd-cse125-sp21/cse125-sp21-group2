@@ -44,19 +44,28 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
       } break;
 
       case CustomMsgTypes::MessageAll: {
-        std::cout << "[" << client->GetID() << "]: Message All\n";
+        // std::cout << "[" << client->GetID() << "]: Message All\n";
 
         // Construct a new message and send it to all clients
         olc::net::message<CustomMsgTypes> msg2;
         msg2.header.id = CustomMsgTypes::ServerMessage;
 
-        std::cout << "name: " << msg.body[0] << msg.body[1] << msg.body[2]
+        /*std::cout << "name: " << msg.body[0] << msg.body[1] << msg.body[2]
                   << msg.body[3] << std::endl;
 
         int temp;
         memcpy(&temp, msg.body.data() + 5, sizeof(int));
+        std::cout << "temp: " << temp << std::endl;*/
 
-        std::cout << "temp: " << temp << std::endl;
+        if (msg.body[0] != 0) {
+          std::cout << "W has been pressed!" << std::endl;
+        } else if (msg.body[1] != 0) {
+          std::cout << "A has been pressed!" << std::endl;
+        } else if (msg.body[2] != 0) {
+          std::cout << "S has been pressed!" << std::endl;
+        } else if (msg.body[3] != 0) {
+          std::cout << "D has been pressed!" << std::endl;
+        }
 
         msg2 << client->GetID();
         MessageAllClients(msg2, client);

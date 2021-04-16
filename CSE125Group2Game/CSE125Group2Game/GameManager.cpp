@@ -89,8 +89,14 @@ void GameManager::Update() {
 
     playerTransform.addTranslation(velocity);
 
+    bool keysPressed[NUM_KEYS];
+    keysPressed[KEY_W] = glfwGetKey(mWindow, GLFW_KEY_W);
+    keysPressed[KEY_A] = glfwGetKey(mWindow, GLFW_KEY_A);
+    keysPressed[KEY_S] = glfwGetKey(mWindow, GLFW_KEY_S);
+    keysPressed[KEY_D] = glfwGetKey(mWindow, GLFW_KEY_D);
+
     // 2) Call client update
-    if (c.Update()) {
+    if (c.Update(keysPressed)) {
       break;
     }
 
@@ -114,12 +120,6 @@ void GameManager::Update() {
   glfwTerminate();
 }
 
-void GameManager::resetKeys() {
-  for (int i = 0; i < NUM_KEYS; i++) {
-    mKeyPressed[i] = false;
-  }
-}
-
 void key_callback(GLFWwindow* window, int key, int scancode, int action,
                   int mods) {
   // Keyboard::lock.lock();  // Hold lock to log key is pressed
@@ -128,32 +128,27 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
     case GLFW_KEY_W:
       if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         // TODO: Callback for key
-        GameManager::getManager()->mKeyPressed[GameManager::KEY_W] = true;
       }
       break;
     case GLFW_KEY_A:
       if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         // TODO: Callback for key
-        GameManager::getManager()->mKeyPressed[GameManager::KEY_A] = true;
       }
       break;
     case GLFW_KEY_S:
       if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         // TODO: Callback for key
-        GameManager::getManager()->mKeyPressed[GameManager::KEY_S] = true;
       }
       break;
     case GLFW_KEY_D:
       if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         // TODO: Callback for key
-        GameManager::getManager()->mKeyPressed[GameManager::KEY_D] = true;
       }
       break;
     case GLFW_KEY_SPACE:
       if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         // GLFW_PRESS: For when key is press once
         // GLFW_REPEAT: For when key is held
-        GameManager::getManager()->mKeyPressed[GameManager::KEY_W] = true;
       }
       break;
   }
