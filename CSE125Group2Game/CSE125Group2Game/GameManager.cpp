@@ -123,7 +123,6 @@ void GameManager::Update() {
 void key_callback(GLFWwindow* window, int key, int scancode, int action,
                   int mods) {
   // Keyboard::lock.lock();  // Hold lock to log key is pressed
-
   switch (key) {
     case GLFW_KEY_W:
       if (action == GLFW_PRESS || action == GLFW_REPEAT) {

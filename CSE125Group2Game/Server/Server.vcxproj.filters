@@ -30,12 +30,12 @@
     <ClCompile Include="..\Shared\GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameLogicServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="custom_server.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="server_helper.h">
+    <ClInclude Include="CustomServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ServerGraphNode.h">
@@ -48,6 +48,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Shared\GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameLogicServer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="server_helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

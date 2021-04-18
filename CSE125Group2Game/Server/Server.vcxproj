@@ -155,11 +155,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ServerGraphNode.cpp" />
     <ClCompile Include="ServerLoader.cpp" />
+    <ClCompile Include="GameLogicServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Shared\GameObject.h" />
     <ClInclude Include="..\Shared\Transform.h" />
-    <ClInclude Include="custom_server.h" />
+    <ClInclude Include="CustomServer.h" />
+    <ClInclude Include="GameLogicServer.h" />
     <ClInclude Include="ServerGraphNode.h" />
     <ClInclude Include="ServerLoader.h" />
     <ClInclude Include="server_helper.h" />
