@@ -6,15 +6,30 @@
 #include <string>
 
 #include "olc_net.h"
+#include "server_helper.h"
 
 class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
  public:
-  CustomServer(uint16_t nPort, uint16_t server_tick_ms)
-      : olc::net::server_interface<CustomMsgTypes>(nPort) {
-    tick_ms = server_tick_ms;
-  }
+  CustomServer(uint16_t nPort)
+      : olc::net::server_interface<CustomMsgTypes>(nPort) {}
 
-  DWORD GetServerTick() { return tick_ms; }
+  static CustomServer* GetCustomServer() {
+    uint16_t port = DEFAULT_SERVER_PORT;
+    std::string config_field("port");
+
+    std::string str_port = server_read_config_file(config_field, CONFIG_FILE);
+
+    if (str_port.compare(std::string()) == 0) {
+      std::cout << "server couldn't read config file, using default port\n";
+    } else {
+      int temp_int(std::stoi(str_port));
+      if (temp_int <= static_cast<int>(UINT16_MAX) && temp_int >= 0) {
+        port = static_cast<uint16_t>(temp_int);
+      }
+    }
+
+    return new CustomServer(port);
+  }
 
  protected:
   virtual bool OnClientConnect(
@@ -72,6 +87,4 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
       } break;
     }
   }
-
-  DWORD tick_ms;
 };
