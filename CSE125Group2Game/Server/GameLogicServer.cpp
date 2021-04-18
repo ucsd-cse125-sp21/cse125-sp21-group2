@@ -63,7 +63,8 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 }
 
 void GameLogicServer::Update() {
-  // TODO: FILL IN
+  // TODO: Celebrate
+
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
   if (mKeyPresses[0] != 0) {
