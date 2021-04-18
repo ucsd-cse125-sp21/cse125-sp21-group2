@@ -5,8 +5,8 @@
 #include <iostream>
 #include <thread>
 
-#include "GameLogicServer.h"
 #include "CustomServer.h"
+#include "GameLogicServer.h"
 
 using namespace std;
 int main() {
@@ -24,7 +24,7 @@ int main() {
   // Runs at tickrate and performs game logic
   while (1) {
     before = GetTickCount();
-    // server.Update(-1, true);
+    logicServer->Update();
     after = GetTickCount();
 
     diff = after - before;

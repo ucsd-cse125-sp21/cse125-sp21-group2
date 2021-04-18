@@ -1,5 +1,4 @@
-#include "GameLogicServer.h"
-//#include "olc_net.h"
+﻿#include "GameLogicServer.h"
 
 GameLogicServer* GameLogicServer::mLogicServer;
 
@@ -65,6 +64,22 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 
 void GameLogicServer::Update() {
   // TODO: FILL IN
+  std::unique_lock<decltype(mMtx)> lk(mMtx);
+
+  if (mKeyPresses[0] != 0) {
+    std::cout << "W has been pressed!" << std::endl;
+  }
+  if (mKeyPresses[1] != 0) {
+    std::cout << "A has been pressed!" << std::endl;
+  }
+  if (mKeyPresses[2] != 0) {
+    std::cout << "S has been pressed!" << std::endl;
+  }
+  if (mKeyPresses[3] != 0) {
+    std::cout << "D has been pressed!" << std::endl;
+  }
+
+  ResetKeyPresses();
 }
 
 void GameLogicServer::PrintWorld() {
@@ -82,3 +97,21 @@ void GameLogicServer::PrintWorld() {
 uint16_t GameLogicServer::GetServerTick() { return mTick_ms; }
 std::vector<GameObject*> GameLogicServer::GetWorld() { return mWorld; }
 ServerLoader GameLogicServer::GetScene() { return mScene; }
+
+void GameLogicServer::UpdateKeyPress(int keyID) {
+  // Not a priorty update -> see main gameplay loop (TODO)
+  std::unique_lock<decltype(mMtx)> lk(mMtx);
+
+  mKeyPresses[keyID] = true;
+
+  // implicit release of lock when lk is deconstructed
+}
+
+// Note: Lock is acquired in Update already
+void GameLogicServer::ResetKeyPresses() {
+  assert(mMtx.isLocked());
+  // Not a priorty update -> see main gameplay loop (TODO)
+  for (int i = 0; i < NUM_KEYS; i++) {
+    mKeyPresses[i] = false;
+  }
+}

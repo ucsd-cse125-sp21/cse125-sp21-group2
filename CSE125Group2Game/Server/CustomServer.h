@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 
+#include "GameLogicServer.h"
 #include "olc_net.h"
 #include "server_helper.h"
 
@@ -72,7 +73,15 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
         memcpy(&temp, msg.body.data() + 5, sizeof(int));
         std::cout << "temp: " << temp << std::endl;*/
 
-        if (msg.body[0] != 0) {
+        GameLogicServer* logicServer = GameLogicServer::getLogicServer();
+
+        for (int i = 0; i < msg.body.size(); i++) {
+          if (msg.body[i]) {
+            logicServer->UpdateKeyPress(i);
+          }
+        }
+
+        /*if (msg.body[0] != 0) {
           std::cout << "W has been pressed!" << std::endl;
         } else if (msg.body[1] != 0) {
           std::cout << "A has been pressed!" << std::endl;
@@ -80,7 +89,7 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
           std::cout << "S has been pressed!" << std::endl;
         } else if (msg.body[3] != 0) {
           std::cout << "D has been pressed!" << std::endl;
-        }
+        }*/
 
         MessageAllClients(msg2, client);
 
