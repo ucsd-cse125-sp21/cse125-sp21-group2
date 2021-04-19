@@ -77,11 +77,9 @@ void GameManager::Update() {
 
     glfwPollEvents();
 
-    int vsp = (glfwGetKey(mWindow, GLFW_KEY_W) != 0) -
-              (glfwGetKey(mWindow, GLFW_KEY_S) != 0);
+    int vsp = mKeyPresses[KEY_W] - mKeyPresses[KEY_S];
 
-    int hsp = (glfwGetKey(mWindow, GLFW_KEY_D) != 0) -
-              (glfwGetKey(mWindow, GLFW_KEY_A) != 0);
+    int hsp = mKeyPresses[KEY_D] - mKeyPresses[KEY_A];
 
     glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
     if (hsp != 0 || vsp != 0)
@@ -89,14 +87,8 @@ void GameManager::Update() {
 
     playerTransform.addTranslation(velocity);
 
-    bool keysPressed[NUM_KEYS];
-    keysPressed[KEY_W] = glfwGetKey(mWindow, GLFW_KEY_W);
-    keysPressed[KEY_A] = glfwGetKey(mWindow, GLFW_KEY_A);
-    keysPressed[KEY_S] = glfwGetKey(mWindow, GLFW_KEY_S);
-    keysPressed[KEY_D] = glfwGetKey(mWindow, GLFW_KEY_D);
-
     // 2) Call client update
-    if (c.Update(keysPressed)) {
+    if (c.Update(mKeyPresses)) {
       break;
     }
 
@@ -112,8 +104,6 @@ void GameManager::Update() {
     }
 
     glfwSwapBuffers(mWindow);
-
-    // resetKeys();
   }
 
   RenderManager::get().teardown();
@@ -122,35 +112,33 @@ void GameManager::Update() {
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action,
                   int mods) {
-  // Keyboard::lock.lock();  // Hold lock to log key is pressed
-  switch (key) {
-    case GLFW_KEY_W:
-      if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-        // TODO: Callback for key
-      }
-      break;
-    case GLFW_KEY_A:
-      if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-        // TODO: Callback for key
-      }
-      break;
-    case GLFW_KEY_S:
-      if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-        // TODO: Callback for key
-      }
-      break;
-    case GLFW_KEY_D:
-      if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-        // TODO: Callback for key
-      }
-      break;
-    case GLFW_KEY_SPACE:
-      if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-        // GLFW_PRESS: For when key is press once
-        // GLFW_REPEAT: For when key is held
-      }
-      break;
+  // Need synchronization?
+  // Suggested by Edward
+
+  printf("%d %d\n", key, action);
+
+  if (action == GLFW_REPEAT) {
+    return;
   }
 
-  // Keyboard::lock.unlock();
+  switch (key) {
+    case GLFW_KEY_W:
+      GameManager::getManager()->mKeyPresses[GameManager::KEY_W] =
+          action == GLFW_PRESS;
+      break;
+    case GLFW_KEY_A:
+      GameManager::getManager()->mKeyPresses[GameManager::KEY_A] =
+          action == GLFW_PRESS;
+      break;
+    case GLFW_KEY_S:
+      GameManager::getManager()->mKeyPresses[GameManager::KEY_S] =
+          action == GLFW_PRESS;
+      break;
+    case GLFW_KEY_D:
+      GameManager::getManager()->mKeyPresses[GameManager::KEY_D] =
+          action == GLFW_PRESS;
+      break;
+    case GLFW_KEY_SPACE:
+      break;
+  }
 }

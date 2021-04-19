@@ -30,6 +30,7 @@ class GameManager {
   void Update();
 
   static GameManager* getManager();
+  bool mKeyPresses[NUM_KEYS];
 
  private:
   Camera* mCamera;
