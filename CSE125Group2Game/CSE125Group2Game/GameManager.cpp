@@ -75,7 +75,7 @@ void GameManager::Update() {
     if (delta >= UPDATE_DELTA) {
       // TODO: put update code here
       deg += 0.001f;
-      playerTransform.addRotation(glm::vec3(0, deg, 0));
+      playerTransform.setRotation(glm::vec3(0, 45.0f, 0));
 
       lastUpdate = now;
     }
