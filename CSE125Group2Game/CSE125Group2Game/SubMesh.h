@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <assimp/mesh.h>
 #include <glad/glad.h>
 

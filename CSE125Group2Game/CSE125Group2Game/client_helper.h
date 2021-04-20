@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+﻿#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
 #include <fstream>
@@ -13,7 +13,6 @@ bool read_client_config(std::string& host, uint16_t& port,
   std::ifstream infile;
 
   infile.open(filename.c_str());
-  std::vector<std::string> tokens;
   std::string intermediate;
 
   // read the config file and fill in port and host values, if defined
@@ -22,6 +21,7 @@ bool read_client_config(std::string& host, uint16_t& port,
   }
   while (getline(infile, line)) {
     std::stringstream ss(line);
+    std::vector<std::string> tokens;
 
     while (getline(ss, intermediate, ':')) {
       tokens.push_back(intermediate);
@@ -34,7 +34,9 @@ bool read_client_config(std::string& host, uint16_t& port,
         port = static_cast<uint16_t>(temp_int);
       }
     } else if (tokens[0].compare("host") == 0) {
-      host = tokens[1];
+      host = tokens[1].substr(1, tokens[1].size() - 2);
     }
   }
+
+  return true;
 }

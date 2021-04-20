@@ -78,7 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>asio\include;$(IncludePath)</IncludePath>
+    <IncludePath>asio\include;$(SolutionDir)Shared;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)build</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
