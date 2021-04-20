@@ -4,7 +4,7 @@
 
 #include "Camera.h"
 #include "Keyboard.h"
-#include "Mesh.h"
+#include "Model.h"
 #include "RenderManager.h"
 #include "SceneGraphNode.h"
 #include "SceneLoader.h"

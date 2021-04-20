@@ -15,6 +15,8 @@ GameManager::GameManager() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+  glfwWindowHint(GLFW_SAMPLES, 8);
+
   mCamera = new Camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
                        glm::vec3(0.0f, 1.0f, 0.0));
 }
@@ -46,22 +48,38 @@ void GameManager::Update() {
 
   RenderManager& renderMananger = RenderManager::get();
   renderMananger.init(window);
+  MeshLoader loader;
 
   SceneGraphNode* sceneRoot = SceneGraphNode::getRoot();
 
-  SceneLoader sl(ASSET("scene.json"));
+  SceneLoader sl(ASSET("scene.json"), loader);
 
   // Create player and set it as first layer (child of root)
   Transform playerTransform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
                             glm::vec3(1, 1, 1));
-  Mesh* playerMesh = Mesh::Cube(&playerTransform);
+  Model* playerMesh = Model::Cube(&playerTransform, loader);
   SceneGraphNode playerNode(sceneRoot, &playerTransform, playerMesh);
 
   Keyboard keyboard(window);
 
   float deg = 0.0f;
 
+  double UPDATE_DELTA = 1.0 / 30.0;
+  double lastUpdate = 0;
+
   while (!glfwWindowShouldClose(window)) {
+    // update timing...
+    double now = glfwGetTime();
+    double delta = now - lastUpdate;
+
+    if (delta >= UPDATE_DELTA) {
+      // TODO: put update code here
+      deg += 0.001f;
+      playerTransform.addRotation(glm::vec3(0, deg, 0));
+
+      lastUpdate = now;
+    }
+
     // 1) Update local states (use key logger to update gameobject)
     keyboard.poll();
 
@@ -78,11 +96,8 @@ void GameManager::Update() {
     // Note: This only draws the first layer of the scene graph
     for (SceneGraphNode* child : sceneRoot->getChildren()) {
       // cout << child->getTransform()->getTranslation().x << endl;
-      child->getMesh()->draw();
+      renderMananger.draw(*child->getMesh());
     }
-
-    deg += 0.001f;
-    playerTransform.addRotation(glm::vec3(0, deg, 0));
 
     glfwPollEvents();
     glfwSwapBuffers(window);
