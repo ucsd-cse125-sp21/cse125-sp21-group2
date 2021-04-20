@@ -80,9 +80,11 @@ void GameManager::Update() {
 
     glfwPollEvents();
 
-    int vsp = mKeyPresses[KEY_W] - mKeyPresses[KEY_S];
+    int vsp = (glfwGetKey(mWindow, GLFW_KEY_W) != 0) -
+              (glfwGetKey(mWindow, GLFW_KEY_S) != 0);
 
-    int hsp = mKeyPresses[KEY_D] - mKeyPresses[KEY_A];
+    int hsp = (glfwGetKey(mWindow, GLFW_KEY_D) != 0) -
+              (glfwGetKey(mWindow, GLFW_KEY_A) != 0);
 
     glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
     if (hsp != 0 || vsp != 0)
@@ -90,8 +92,14 @@ void GameManager::Update() {
 
     playerTransform.addTranslation(velocity);
 
+    bool keysPressed[NUM_KEYS];
+    keysPressed[KEY_W] = glfwGetKey(mWindow, GLFW_KEY_W);
+    keysPressed[KEY_A] = glfwGetKey(mWindow, GLFW_KEY_A);
+    keysPressed[KEY_S] = glfwGetKey(mWindow, GLFW_KEY_S);
+    keysPressed[KEY_D] = glfwGetKey(mWindow, GLFW_KEY_D);
+
     // 2) Call client update
-    if (c.Update(mKeyPresses)) {
+    if (c.Update(keysPressed)) {
       break;
     }
 
