@@ -24,8 +24,8 @@ class SceneGraphNode {
 
   SceneGraphNode* getParent();
 
-  void setName(std::string name);
-  std::string getName();
+  void setName(char* name);
+  char* getName();
 
   std::vector<GameObject*> makeWorld(glm::vec3 cPosition, glm::quat cRotation,
                                      glm::vec3 cScale);
@@ -39,5 +39,5 @@ class SceneGraphNode {
   std::vector<SceneGraphNode*> mChildren;
   SceneGraphNode* mParent;
 
-  std::string mName;
+  char mName[NAME_LEN];
 };

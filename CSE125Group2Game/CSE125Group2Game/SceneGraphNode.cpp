@@ -76,5 +76,5 @@ std::vector<GameObject*> SceneGraphNode::makeWorld(glm::vec3 cPosition,
   return result;
 }
 
-void SceneGraphNode::setName(std::string name) { mName = name; }
-std::string SceneGraphNode::getName() { return mName; }
+void SceneGraphNode::setName(char* name) { memcpy(mName, name, NAME_LEN); }
+char* SceneGraphNode::getName() { return mName; }

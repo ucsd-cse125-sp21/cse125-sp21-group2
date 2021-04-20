@@ -3,22 +3,31 @@
 
 #include "Transform.h"
 
-enum class ObjectType : uint16_t {
-  Default,
-  Player,
-  Enemy,
-};
+enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
+
+#define NUM_KEYS 4
+#define MESSAGE_SIZE 48
+#define NAME_LEN 8
+#define FLOAT_SIZE 4
+#define INT_SIZE 4
 
 class GameObject {
  public:
-  GameObject(Transform* transform, std::string name, int health);
+  static const int KEY_W = 0;
+  static const int KEY_A = 1;
+  static const int KEY_S = 2;
+  static const int KEY_D = 3;
+
+  GameObject(Transform* transform, char* name, int health);
+
+  GameObject(Transform* transform, char* name, int health, ObjectType type);
 
   void setTransform(Transform* transform);
-  void setName(std::string name);
+  void setName(char* name);
   void setHealth(int health);
 
   Transform* getTransform();
-  std::string getName();
+  char* getName();
   int getHealth();
 
   ObjectType getObjectType();
@@ -27,7 +36,7 @@ class GameObject {
 
  private:
   Transform* mTransform;
-  std::string mName;
+  char mName[NAME_LEN];
   int mHealth;
   ObjectType mObjectType;
 };

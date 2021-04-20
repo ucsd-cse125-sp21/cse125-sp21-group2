@@ -63,9 +63,28 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 }
 
 void GameLogicServer::Update() {
-  // TODO: Celebrate
-
+  // TODO: 1) Standardized naming for objects
   std::unique_lock<decltype(mMtx)> lk(mMtx);
+
+  Transform* playerTransform = NULL;
+
+  for (int i = 0; i < mWorld.size(); i++) {
+    // Find player1 gameobject
+    if (mWorld[i]->getName() == "play0000") {
+      playerTransform = mWorld[i]->getTransform();
+      break;
+    }
+  }
+
+  int vsp = mKeyPresses[GameObject::KEY_W] - mKeyPresses[GameObject::KEY_S];
+
+  int hsp = mKeyPresses[GameObject::KEY_D] - mKeyPresses[GameObject::KEY_A];
+
+  glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
+  if (hsp != 0 || vsp != 0)
+    velocity = glm::vec3(0.5) * glm::normalize(velocity);
+
+  // playerTransform->addTranslation(velocity);
 
   if (mKeyPresses[0] != 0) {
     std::cout << "W has been pressed!" << std::endl;
@@ -115,4 +134,71 @@ void GameLogicServer::ResetKeyPresses() {
   for (int i = 0; i < NUM_KEYS; i++) {
     mKeyPresses[i] = false;
   }
+}
+
+void GameLogicServer::AddGameObject(GameObject* obj) { mWorld.push_back(obj); }
+
+void GameLogicServer::SendInfo() {
+  for (int i = 0; i < mWorld.size(); i++) {
+    // Only send info for moving objects
+    if (mWorld[i]->getObjectType() == ObjectType::Player ||
+        mWorld[i]->getObjectType() == ObjectType::Enemy ||
+        mWorld[i]->getObjectType() == ObjectType::Projectile) {
+      char* data = MarshalInfo(mWorld[i]);  // Marshal data
+
+      // Create message to send
+      // olc::net::message<CustomMsgTypes> msg;
+      // msg.header.id = CustomMsgTypes::ServerMessage;
+
+      for (int i = 0; i < MESSAGE_SIZE; i++) {
+        // msg << data[i];
+      }
+
+      // MessageAllClients(msg);
+    }
+  }
+}
+
+char* GameLogicServer::MarshalInfo(GameObject* obj) {
+  // 1) 8 byte char[] name
+  // 32 bit (4 byte) floats
+  // 2) Transform: 3 floats for location, 3 for rotation, 3 for scale
+  // 3) 4 byte int health 48 bytes
+
+  char* info = (char*)malloc(MESSAGE_SIZE);
+
+  char* tmpInfo = info;
+
+  memcpy(tmpInfo, obj->getName(), NAME_LEN);  // Copy name into data
+  tmpInfo += NAME_LEN;
+
+  glm::vec3 pos = obj->getTransform()->getTranslation();
+  memcpy(tmpInfo, &(pos.x), FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(tmpInfo, &(pos.y), FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(tmpInfo, &(pos.z), FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+
+  // TODO: In unmarshling, euler angles -> quat
+  glm::vec3 rot = glm::eulerAngles(obj->getTransform()->getRotation());
+  memcpy(tmpInfo, &(rot.x), FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(tmpInfo, &(rot.y), FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(tmpInfo, &(rot.z), FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+
+  glm::vec3 scale = obj->getTransform()->getScale();
+  memcpy(tmpInfo, &(scale.x), FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(tmpInfo, &(scale.y), FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(tmpInfo, &(scale.z), FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+
+  int health = obj->getHealth();
+  memcpy(tmpInfo, &(health), INT_SIZE);
+
+  return info;
 }

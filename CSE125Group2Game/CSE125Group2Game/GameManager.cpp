@@ -72,6 +72,8 @@ void GameManager::Update() {
   SceneGraphNode playerNode(mSceneRoot, &playerTransform,
                             Mesh::Cube(&playerTransform));
 
+  // TODO: Turn player into gameobject
+
   DWORD before, after, diff;
 
   while (!glfwWindowShouldClose(mWindow)) {
@@ -80,7 +82,7 @@ void GameManager::Update() {
 
     glfwPollEvents();
 
-    int vsp = (glfwGetKey(mWindow, GLFW_KEY_W) != 0) -
+    /*int vsp = (glfwGetKey(mWindow, GLFW_KEY_W) != 0) -
               (glfwGetKey(mWindow, GLFW_KEY_S) != 0);
 
     int hsp = (glfwGetKey(mWindow, GLFW_KEY_D) != 0) -
@@ -90,13 +92,13 @@ void GameManager::Update() {
     if (hsp != 0 || vsp != 0)
       velocity = glm::vec3(0.5) * glm::normalize(velocity);
 
-    playerTransform.addTranslation(velocity);
+    playerTransform.addTranslation(velocity);*/
 
     bool keysPressed[NUM_KEYS];
-    keysPressed[KEY_W] = glfwGetKey(mWindow, GLFW_KEY_W);
-    keysPressed[KEY_A] = glfwGetKey(mWindow, GLFW_KEY_A);
-    keysPressed[KEY_S] = glfwGetKey(mWindow, GLFW_KEY_S);
-    keysPressed[KEY_D] = glfwGetKey(mWindow, GLFW_KEY_D);
+    keysPressed[GameObject::KEY_W] = glfwGetKey(mWindow, GLFW_KEY_W);
+    keysPressed[GameObject::KEY_A] = glfwGetKey(mWindow, GLFW_KEY_A);
+    keysPressed[GameObject::KEY_S] = glfwGetKey(mWindow, GLFW_KEY_S);
+    keysPressed[GameObject::KEY_D] = glfwGetKey(mWindow, GLFW_KEY_D);
 
     // 2) Call client update
     if (c.Update(keysPressed)) {
@@ -131,7 +133,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
   // Need synchronization?
   // Suggested by Edward
 
-  printf("%d %d\n", key, action);
+  // printf("%d %d\n", key, action);
 
   if (action == GLFW_REPEAT) {
     return;
@@ -139,19 +141,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
 
   switch (key) {
     case GLFW_KEY_W:
-      GameManager::getManager()->mKeyPresses[GameManager::KEY_W] =
+      GameManager::getManager()->mKeyPresses[GameObject::KEY_W] =
           action == GLFW_PRESS;
       break;
     case GLFW_KEY_A:
-      GameManager::getManager()->mKeyPresses[GameManager::KEY_A] =
+      GameManager::getManager()->mKeyPresses[GameObject::KEY_A] =
           action == GLFW_PRESS;
       break;
     case GLFW_KEY_S:
-      GameManager::getManager()->mKeyPresses[GameManager::KEY_S] =
+      GameManager::getManager()->mKeyPresses[GameObject::KEY_S] =
           action == GLFW_PRESS;
       break;
     case GLFW_KEY_D:
-      GameManager::getManager()->mKeyPresses[GameManager::KEY_D] =
+      GameManager::getManager()->mKeyPresses[GameObject::KEY_D] =
           action == GLFW_PRESS;
       break;
     case GLFW_KEY_SPACE:

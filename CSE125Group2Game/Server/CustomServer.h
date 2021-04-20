@@ -15,6 +15,7 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
       : olc::net::server_interface<CustomMsgTypes>(nPort) {}
 
   static CustomServer* GetCustomServer() {
+    // TODO: MAKE SINGLETON AND UPDATE PLAYER COUNT
     uint16_t port = DEFAULT_SERVER_PORT;
     std::string config_field("port");
 
@@ -38,6 +39,17 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
     olc::net::message<CustomMsgTypes> msg;
     msg.header.id = CustomMsgTypes::ServerAccept;
     client->Send(msg);
+
+    GameLogicServer* logicServer = GameLogicServer::getLogicServer();
+
+    Transform* transform = new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+                                         glm::vec3(1, 1, 1));
+
+    // TODO: make custom names for players :D
+    GameObject* newPlayer = new GameObject(transform, (char*)("play000" + 0),
+                                           10, ObjectType::Player);
+    logicServer->AddGameObject(newPlayer);
+
     return true;
   }
 
@@ -80,16 +92,6 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
             logicServer->UpdateKeyPress(i);
           }
         }
-
-        /*if (msg.body[0] != 0) {
-          std::cout << "W has been pressed!" << std::endl;
-        } else if (msg.body[1] != 0) {
-          std::cout << "A has been pressed!" << std::endl;
-        } else if (msg.body[2] != 0) {
-          std::cout << "S has been pressed!" << std::endl;
-        } else if (msg.body[3] != 0) {
-          std::cout << "D has been pressed!" << std::endl;
-        }*/
 
         MessageAllClients(msg2, client);
 

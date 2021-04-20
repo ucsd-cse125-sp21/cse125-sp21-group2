@@ -71,5 +71,5 @@ std::vector<GameObject*> ServerGraphNode::makeWorld(glm::vec3 cPosition,
   return result;
 }
 
-void ServerGraphNode::setName(std::string name) { mName = name; }
-std::string ServerGraphNode::getName() { return mName; }
+void ServerGraphNode::setName(char* name) { memcpy(mName, name, NAME_LEN); }
+char* ServerGraphNode::getName() { return mName; }

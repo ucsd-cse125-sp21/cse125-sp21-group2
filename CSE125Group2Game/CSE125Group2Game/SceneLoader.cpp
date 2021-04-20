@@ -156,7 +156,7 @@ SceneLoader::SceneLoader(std::string fileName) {
     }
 
     SceneGraphNode* node = new SceneGraphNode(parentNode, transform, mesh);
-    node->setName(name);
+    node->setName(((std::string)name).data());
     mObjects.insert(std::make_pair(name, node));
   }
 }

@@ -34,7 +34,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
     GameObject testObj(new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
                                      glm::vec3(1, 1, 1)),
-                       "test", 12);
+                       (char*)"test", 12);
 
     /*for (int i = 0; i < 9; i++) {
       msg << *(testObj.serializeInfo() + i);

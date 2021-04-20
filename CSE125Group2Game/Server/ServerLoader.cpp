@@ -141,7 +141,7 @@ ServerLoader::ServerLoader(std::string fileName) {
                       glm::vec4(bbLeft, bbRight, bbTop, bbBottom));
 
     ServerGraphNode* node = new ServerGraphNode(parentNode, transform);
-    node->setName(name);
+    node->setName(((std::string)name).data());  // TODO: verify
     mObjects.insert(std::make_pair(name, node));
   }
 }

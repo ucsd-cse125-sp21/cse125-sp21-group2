@@ -9,8 +9,6 @@
 #include "SceneLoader.h"
 #include "Transform.h"
 
-#define NUM_KEYS 4
-
 /* TODO:
  *		1) Check reset keys
  *		1.5) Can I create window in getManager????
@@ -20,11 +18,6 @@
 
 class GameManager {
  public:
-  static const int KEY_W = 0;
-  static const int KEY_A = 1;
-  static const int KEY_S = 2;
-  static const int KEY_D = 3;
-
   GameManager(GLFWwindow* window);
 
   void Update();
