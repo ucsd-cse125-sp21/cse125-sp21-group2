@@ -1,42 +1,37 @@
+﻿#pragma once
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-#include <fstream>
 #include <iostream>
-#include <string>
+#include <thread>
 
-#include "custom_server.h"
-#include "server_helper.h"
+#include "CustomServer.h"
+#include "GameLogicServer.h"
 
 using namespace std;
 int main() {
   DWORD before, after, diff;
-  uint16_t port = DEFAULT_SERVER_PORT;
-  uint16_t tick = DEFAULT_TICK;
-  std::string filename = CONFIG_FILE;
 
-  if (!server_read_config(port, tick, filename)) {
-    cout << "server couldn't read config file, using default port and tick\n";
-  }
+  CustomServer *netServer = CustomServer::GetCustomServer();
+  netServer->Start();
 
-  std::cout << "port:" << port << "\n";
-  std::cout << "tick:" << tick << "\n";
+  GameLogicServer *logicServer = GameLogicServer::getLogicServer();
 
-  CustomServer server(port,
-                      tick);  // currently the server polls once per second
-  server.Start();
+  logicServer->PrintWorld();
 
+  thread netServerThread(&(CustomServer::Update), netServer, -1, true);
+
+  // Runs at tickrate and performs game logic
   while (1) {
     before = GetTickCount();
-    server.Update(-1, true);
+    logicServer->Update();
     after = GetTickCount();
 
     diff = after - before;
 
-    std::cout << diff;
-    if (server.GetServerTick() >
+    if (logicServer->GetServerTick() >
         diff) {  // need to ensure that server tick is big enough
-      Sleep(server.GetServerTick() - diff);
+      Sleep(logicServer->GetServerTick() - diff);
     }
   }
 

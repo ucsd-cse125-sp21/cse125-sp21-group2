@@ -1,22 +1,22 @@
-﻿#include "SceneLoader.h"
+﻿#include "ServerLoader.h"
 
 /*
- * TODO: refactor this as a ctor to the SceneGraph class.
+ * TODO: refactor this as a ctor to the ServerGraph class.
  */
 
 /**
- * Constructs and populates the scene graph from the scene file passed in.
+ * Constructs and populates the Server graph from the Server file passed in.
  *
  * This constructor should only be called once.
  *
- * @param fileName The path to the scene file to be loaded.
+ * @param fileName The path to the Server file to be loaded.
  */
-SceneLoader::SceneLoader(std::string fileName, MeshLoader& loader) {
+ServerLoader::ServerLoader(std::string fileName) {
   // Open file
   std::ifstream file(fileName);
 
   if (!file) {
-    throw std::exception(("Failed to open scene file!" + fileName).c_str());
+    throw std::exception(("Failed to open Server file!" + fileName).c_str());
   }
 
   // Create json and populate it from file
@@ -49,11 +49,11 @@ SceneLoader::SceneLoader(std::string fileName, MeshLoader& loader) {
       continue;
     }
 
-    // Only set up scene graph if this is the client code
+    // Only set up Server graph if this is the client code
     // Get the name of the parent node
     nlohmann::json& parentName = object["parent_name"];
 
-    SceneGraphNode* parentNode = SceneGraphNode::getRoot();
+    ServerGraphNode* parentNode = ServerGraphNode::getRoot();
 
     // Set the parent if defined
     if (!parentName.is_null() && parentName != "root") {
@@ -140,23 +140,8 @@ SceneLoader::SceneLoader(std::string fileName, MeshLoader& loader) {
                       glm::vec3(xScale, yScale, zScale),
                       glm::vec4(bbLeft, bbRight, bbTop, bbBottom));
 
-    // Only assign mesh if this is client code
-    // Assign the mesh
-    nlohmann::json& objectFile = object["obj_file"];
-    std::string test = objectFile;
-    Model* mesh = NULL;
-
-    // Object is a cube
-    if (!objectFile.is_null() &&
-        (objectFile == "cube" || objectFile == "Cube")) {
-      mesh = Model::Cube(transform, loader);
-    } else if (!objectFile.is_null()) {
-      // Object is a obj file
-      mesh = new Model(ASSET(test), transform, loader);
-    }
-
-    SceneGraphNode* node = new SceneGraphNode(parentNode, transform, mesh);
-    node->setName(((std::string)name).data());
+    ServerGraphNode* node = new ServerGraphNode(parentNode, transform);
+    node->setName(((std::string)name).data());  // TODO: verify
     mObjects.insert(std::make_pair(name, node));
   }
 }

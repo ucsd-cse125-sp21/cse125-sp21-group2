@@ -8,7 +8,6 @@
 #include "net_connection.h"
 #include "net_message_type.h"
 
-
 #define DEFAULT_SERVER_PORT 60000
 #define DEFAULT_TICK 10000
 

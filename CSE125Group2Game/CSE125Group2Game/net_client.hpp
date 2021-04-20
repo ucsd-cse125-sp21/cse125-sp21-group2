@@ -1,6 +1,8 @@
-#include <olc_net.h>
+﻿#include <olc_net.h>
 
 #include <iostream>
+
+#include "GameObject.h"
 
 /* TODOs:
  *   1. Probably game shouldn't start will connected, or there should be some
@@ -23,13 +25,25 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     std::chrono::system_clock::time_point timeNow =
         std::chrono::system_clock::now();
 
-    msg << timeNow;
     Send(msg);
   }
 
-  void MessageAll() {
+  void MessageAll(bool* keysPressed) {
     olc::net::message<CustomMsgTypes> msg;
     msg.header.id = CustomMsgTypes::MessageAll;
+
+    GameObject testObj(new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+                                     glm::vec3(1, 1, 1)),
+                       (char*)"test", 12);
+
+    /*for (int i = 0; i < 9; i++) {
+      msg << *(testObj.serializeInfo() + i);
+    }*/
+
+    for (int i = 0; i < 4; i++) {
+      msg << keysPressed[i];
+    }
+
     Send(msg);
   }
 
@@ -37,7 +51,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     this->Connect(address, port);
   }
 
-  bool Update() {
+  bool Update(bool* keysPressed) {
     bool key[3] = {false, false, false};
     bool old_key[3] = {false, false, false};
     if (GetForegroundWindow() == GetConsoleWindow()) {
@@ -46,8 +60,11 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
       key[2] = GetAsyncKeyState('3') & 0x8000;
     }
 
+    // Added
+    this->MessageAll(keysPressed);
+
     if (key[0] && !old_key[0]) this->PingServer();
-    if (key[1] && !old_key[1]) this->MessageAll();
+    if (key[1] && !old_key[1]) this->MessageAll(keysPressed);
     if (key[2] && !old_key[2]) return true;
 
     for (int i = 0; i < 3; i++) old_key[i] = key[i];

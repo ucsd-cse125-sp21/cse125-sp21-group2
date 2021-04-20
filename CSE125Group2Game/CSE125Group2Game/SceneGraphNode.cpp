@@ -51,3 +51,30 @@ Model* SceneGraphNode::getMesh() { return mMesh; }
 std::vector<SceneGraphNode*> SceneGraphNode::getChildren() { return mChildren; }
 
 SceneGraphNode* SceneGraphNode::getParent() { return mParent; }
+
+std::vector<GameObject*> SceneGraphNode::makeWorld(glm::vec3 cPosition,
+                                                   glm::quat cRotation,
+                                                   glm::vec3 cScale) {
+  std::vector<GameObject*> result;
+
+  // For every child, recurse
+  for (int i = 0; i < mChildren.size(); i++) {
+    std::vector<GameObject*> temp = makeWorld(
+        cPosition + mTransform->getTranslation(),
+        cRotation * mTransform->getRotation(), cScale * mTransform->getScale());
+
+    // Add childrens result to vector
+    result.insert(result.end(), temp.begin(), temp.end());
+  }
+
+  Transform* transform =
+      new Transform(cPosition + mTransform->getTranslation(),
+                    cRotation * mTransform->getRotation(),
+                    cScale * mTransform->getScale(), mTransform->getBBox());
+
+  result.push_back(new GameObject(transform, mName, 10));
+  return result;
+}
+
+void SceneGraphNode::setName(char* name) { memcpy(mName, name, NAME_LEN); }
+char* SceneGraphNode::getName() { return mName; }

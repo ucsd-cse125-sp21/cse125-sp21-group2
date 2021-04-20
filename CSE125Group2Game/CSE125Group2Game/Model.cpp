@@ -115,7 +115,7 @@ Model* Model::Cube(Transform* transform, MeshLoader& loader) {
 Model::Model(const std::vector<Vertex>& vertices,
              const std::vector<glm::uvec3>& indices, Transform* transform,
              MeshLoader& loader)
-    : mTransform(transform), mMeshes(1) {
+    : mTransform(transform), mMeshes(0) {
   mMeshes.push_back(loader.loadMesh(vertices, indices));
   mMaterials.push_back(Material());
 }
@@ -139,7 +139,7 @@ Model::Model(const std::string& filePath, Transform* transform,
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
       !scene->mRootNode) {
-    std::cout << "Error Assimp loading..." << std::endl;
+    std::cout << "Error Assimp loading: " << filePath << std::endl;
     throw std::exception("failed to load file...");
   }
 

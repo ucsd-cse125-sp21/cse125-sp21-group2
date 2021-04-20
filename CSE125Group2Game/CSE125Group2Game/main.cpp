@@ -6,8 +6,6 @@
 
 #include "GameManager.h"
 
-using namespace std;
-
 /*
  * 1. Set up ticks, lets do 30 per second (frame rate still unbounded)
  * 2. Refactor some of the glfw window code into a window class
@@ -15,7 +13,7 @@ using namespace std;
  * 4. Refactor renderer class to be less bad (Evan)
  */
 int main() {
-  GameManager* gameManager = new GameManager();
+  GameManager* gameManager = GameManager::getManager();
 
   gameManager->Update();
 }

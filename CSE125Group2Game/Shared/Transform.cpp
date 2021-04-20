@@ -10,6 +10,32 @@ Transform::Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
   updateModel();
 }
 
+Transform::Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale,
+                     glm::vec4 boundingBox)
+    : mTranslation(translation),
+      mRotation(rotation),
+      mScale(scale),
+      mModel(glm::mat4(1)),
+      mBBLeft(boundingBox.x),
+      mBBRight(boundingBox.y),
+      mBBTop(boundingBox.z),
+      mBBBottom(boundingBox.w) {
+  updateModel();
+}
+
+Transform::Transform(glm::vec3 translation, glm::quat rotation, glm::vec3 scale,
+                     glm::vec4 boundingBox)
+    : mTranslation(translation),
+      mRotation(rotation),
+      mScale(scale),
+      mModel(glm::mat4(1)),
+      mBBLeft(boundingBox.x),
+      mBBRight(boundingBox.y),
+      mBBTop(boundingBox.z),
+      mBBBottom(boundingBox.w) {
+  updateModel();
+}
+
 void Transform::addRotation(glm::vec3 degrees) {
   mRotation = glm::quat(glm::radians(degrees)) * mRotation;
   updateModel();
@@ -49,6 +75,10 @@ glm::quat Transform::getRotation() { return mRotation; }
 glm::vec3 Transform::getScale() { return mScale; }
 
 glm::mat4 Transform::getModel() { return mModel; }
+
+glm::vec4 Transform::getBBox() {
+  return glm::vec4(mBBLeft, mBBRight, mBBTop, mBBBottom);
+}
 
 void Transform::updateModel() {
   mModel = glm::translate(glm::mat4(1.0f), mTranslation) *

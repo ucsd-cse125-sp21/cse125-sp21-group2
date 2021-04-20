@@ -73,15 +73,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)Network\asio\include;$(SolutionDir)Network;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Network\asio\include;$(SolutionDir)Network;C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\Shared;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)Network\asio\include;$(SolutionDir)Network;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Network\asio\include;$(SolutionDir)Network;C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\Shared;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)Network\asio\include;$(SolutionDir)Network;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Network\asio\include;$(SolutionDir)Network;$(SolutionDir)Shared;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)build\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -93,7 +93,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;GLFW_INCLUDE_NONE;_DEBUG;_CONSOLE;GLFW_INCLUDE_NONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\CSE125Group2Game\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\CSE125Group2Game\glad\include;C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\Shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -109,7 +109,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;GLFW_INCLUDE_NONE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\CSE125Group2Game\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\CSE125Group2Game\glad\include;C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\Shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -154,11 +154,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Shared\GameObject.cpp" />
+    <ClCompile Include="..\Shared\Transform.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glad\src\glad.c" />
-    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -167,30 +167,26 @@
     <ClCompile Include="SceneGraphNode.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="Actions.hpp" />
-    <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\scene.json" />
+    <None Include="..\Shared\scene.json" />
     <None Include="fragment.glsl" />
     <None Include="packages.config" />
     <None Include="vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Shared\GameObject.h" />
+    <ClInclude Include="..\Shared\json.hpp" />
+    <ClInclude Include="..\Shared\Transform.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="GameManager.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="MeshLoader.h" />
-    <ClInclude Include="net_client.hpp" />
-    <ClInclude Include="json.hpp" />
-    <ClInclude Include="Material.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="SceneGraphNode.h" />
     <ClInclude Include="SceneLoader.h" />
-    <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="Transform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

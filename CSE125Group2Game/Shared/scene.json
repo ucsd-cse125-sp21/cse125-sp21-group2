@@ -1,0 +1,46 @@
+﻿{
+  "scene": [
+    {
+      "name": "cube1",
+      "parent_name": "root",
+      "xPos": 5,
+      "yPos": 5,
+      "zPos": 5,
+      "xRot": 0,
+      "yRot": 0,
+      "zRot": 0,
+      "xScale": 1.5,
+      "yScale": 1.5,
+      "zScale": 1.5,
+      "bb_left": -0.5,
+      "bb_right": 0.5,
+      "bb_bottom": -0.5,
+      "bb_top": 0.5,
+      "obj_file": "cube"
+    },
+    {
+      "name": "cube2",
+      "parent_name": "cube1",
+      "xPos": -1,
+      "yPos": -1,
+      "zPos": -1,
+      "xRot": 0,
+      "yRot": 0,
+      "zRot": 0,
+      "xScale": 2,
+      "yScale": 2,
+      "zScale": 2,
+      "bb_left": -0.5,
+      "bb_right": 0.5,
+      "bb_bottom": -0.5,
+      "bb_top": 0.5,
+      "obj_file": "cube"
+    },
+    {
+      "name": "spaceship",
+      "yPos": -4,
+      "parent_name": "root",
+      "obj_file": "models/enemy/mainEnemyShip/enemyShip.obj"
+    }
+  ]
+}
