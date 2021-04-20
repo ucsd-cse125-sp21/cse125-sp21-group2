@@ -57,6 +57,16 @@
     <ClCompile Include="SceneLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Actions.hpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="MeshLoader.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
@@ -69,7 +79,7 @@
     <None Include="vertex.glsl">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="scene.json" />
+    <None Include="Assets\scene.json" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderManager.h">
@@ -104,6 +114,13 @@
     </ClInclude>
     <ClInclude Include="MeshLoader.h">
       <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+    <ClInclude Include="Keyboard.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

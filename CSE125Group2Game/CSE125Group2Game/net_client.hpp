@@ -34,7 +34,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
   }
 
   void Init(const std::string& address, int port) {
-    this->Connect("127.0.0.1", 60000);
+    this->Connect(address, port);
   }
 
   bool Update() {
@@ -90,14 +90,3 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     return false;
   }
 };
-
-int net_client() {
-  CustomClient c;
-  c.Connect("127.0.0.1", 60000);
-
-  bool bQuit = false;
-  while (!bQuit) {
-  }
-
-  return 0;
-}
