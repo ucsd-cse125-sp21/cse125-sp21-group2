@@ -72,7 +72,10 @@ void GameManager::Update() {
   SceneGraphNode playerNode(mSceneRoot, &playerTransform,
                             Mesh::Cube(&playerTransform));
 
+  DWORD before, after, diff;
+
   while (!glfwWindowShouldClose(mWindow)) {
+    before = GetTickCount();
     // 1) Update local states (use key logger to update gameobject)
 
     glfwPollEvents();
@@ -104,6 +107,12 @@ void GameManager::Update() {
     }
 
     glfwSwapBuffers(mWindow);
+
+    after = GetTickCount();
+
+    diff = after - before;
+
+    Sleep(33 - diff);
   }
 
   RenderManager::get().teardown();
