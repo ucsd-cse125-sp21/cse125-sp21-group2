@@ -71,6 +71,9 @@ void GameManager::Update() {
   // Create player and set it as first layer (child of root)
   Transform playerTransform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
                             glm::vec3(1, 1, 1));
+
+  mPlayerTransform = &playerTransform;
+
   SceneGraphNode playerNode(mSceneRoot, &playerTransform,
                             Model::Cube(&playerTransform, *mLoader));
 
@@ -130,6 +133,13 @@ void GameManager::Update() {
   glfwTerminate();
 }
 
+bool GameManager::UpdateObject(GameObject* obj, SceneGraphNode* node) {
+  // if (obj->getName() == node->getName()) {
+  //}
+
+  mPlayerTransform->setTranslation(obj->getTransform()->getTranslation());
+  return true;
+}
 GameObject* GameManager::Unmarshal(char* data) {
   // 1) 8 byte char[] name
   // 32 bit (4 byte) floats

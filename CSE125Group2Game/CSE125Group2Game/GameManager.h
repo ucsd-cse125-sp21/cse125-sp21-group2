@@ -26,6 +26,8 @@ class GameManager {
 
   GameObject* Unmarshal(char* data);
 
+  bool UpdateObject(GameObject* obj, SceneGraphNode* node);
+
   bool mKeyPresses[NUM_KEYS];
 
  private:
@@ -33,6 +35,7 @@ class GameManager {
   SceneGraphNode* mSceneRoot;
   GLFWwindow* mWindow;
   MeshLoader* mLoader;
+  Transform* mPlayerTransform;
 
   static GameManager* mManager;
 };

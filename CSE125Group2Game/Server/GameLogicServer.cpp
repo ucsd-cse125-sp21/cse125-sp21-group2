@@ -89,7 +89,7 @@ void GameLogicServer::Update() {
   bool del = false;
 
   if (mKeyPresses[0] != 0) {
-    Transform transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+    Transform transform(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0),
                         glm::vec3(1, 1, 1), glm::vec4(0.5, 0.5, 0.5, 0.5));
     GameObject objectW(&transform, (char*)"play0000", 0, ObjectType::Player);
 
@@ -100,7 +100,7 @@ void GameLogicServer::Update() {
   }
 
   if (mKeyPresses[1] != 0) {
-    Transform transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+    Transform transform(glm::vec3(-1, 0, 0), glm::vec3(0, 0, 0),
                         glm::vec3(1, 1, 1), glm::vec4(0.5, 0.5, 0.5, 0.5));
     GameObject objectW(&transform, (char*)"play0000", 1, ObjectType::Player);
     std::cout << "A has been pressed!" << std::endl;
@@ -108,7 +108,7 @@ void GameLogicServer::Update() {
     del = true;
   }
   if (mKeyPresses[2] != 0) {
-    Transform transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+    Transform transform(glm::vec3(0, -1, 0), glm::vec3(0, 0, 0),
                         glm::vec3(1, 1, 1), glm::vec4(0.5, 0.5, 0.5, 0.5));
     GameObject objectW(&transform, (char*)"play0000", 2, ObjectType::Player);
     std::cout << "S has been pressed!" << std::endl;
@@ -116,7 +116,7 @@ void GameLogicServer::Update() {
     del = true;
   }
   if (mKeyPresses[3] != 0) {
-    Transform transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+    Transform transform(glm::vec3(1, 0, 0), glm::vec3(0, 0, 0),
                         glm::vec3(1, 1, 1), glm::vec4(0.5, 0.5, 0.5, 0.5));
     GameObject objectW(&transform, (char*)"play0000", 3, ObjectType::Player);
     std::cout << "D has been pressed!" << std::endl;

@@ -107,6 +107,8 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             }
 
             GameObject* obj = GameManager::getManager()->Unmarshal(data);
+            GameManager::getManager()->UpdateObject(obj,
+                                                    SceneGraphNode::getRoot());
 
             char name[NAME_LEN + 1];
             memcpy(name, obj->getName(), NAME_LEN);
