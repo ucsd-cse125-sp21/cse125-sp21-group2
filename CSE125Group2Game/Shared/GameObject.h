@@ -6,11 +6,12 @@
 enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
 
 #define NUM_KEYS 4
-#define MESSAGE_SIZE 48
 #define NAME_LEN 8
 #define FLOAT_SIZE 4
-#define INT_SIZE 4
+#define INT_SIZE sizeof(int)
+#define MESSAGE_SIZE NAME_LEN + (9 * FLOAT_SIZE) + INT_SIZE
 
+// TODO: write a destructor to free transforms
 class GameObject {
  public:
   static const int KEY_W = 0;
@@ -27,6 +28,8 @@ class GameObject {
   void setHealth(int health);
 
   Transform* getTransform();
+
+  // Returns null terminated name
   char* getName();
   int getHealth();
 

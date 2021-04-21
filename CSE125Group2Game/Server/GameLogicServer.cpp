@@ -63,6 +63,7 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 }
 
 void GameLogicServer::Update() {
+  // TOOD: free ur damn memory
   // TODO: 1) Standardized naming for objects
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
@@ -85,19 +86,47 @@ void GameLogicServer::Update() {
     velocity = glm::vec3(0.5) * glm::normalize(velocity);
 
   // playerTransform->addTranslation(velocity);
+  bool del = false;
 
   if (mKeyPresses[0] != 0) {
+    Transform transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+                        glm::vec3(1, 1, 1), glm::vec4(0.5, 0.5, 0.5, 0.5));
+    GameObject objectW(&transform, (char*)"play0000", 0, ObjectType::Player);
+
+    mWorld.push_back(&objectW);
+    del = true;
+
     std::cout << "W has been pressed!" << std::endl;
   }
+
   if (mKeyPresses[1] != 0) {
+    Transform transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+                        glm::vec3(1, 1, 1), glm::vec4(0.5, 0.5, 0.5, 0.5));
+    GameObject objectW(&transform, (char*)"play0000", 1, ObjectType::Player);
     std::cout << "A has been pressed!" << std::endl;
+    mWorld.push_back(&objectW);
+    del = true;
   }
   if (mKeyPresses[2] != 0) {
+    Transform transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+                        glm::vec3(1, 1, 1), glm::vec4(0.5, 0.5, 0.5, 0.5));
+    GameObject objectW(&transform, (char*)"play0000", 2, ObjectType::Player);
     std::cout << "S has been pressed!" << std::endl;
+    mWorld.push_back(&objectW);
+    del = true;
   }
   if (mKeyPresses[3] != 0) {
+    Transform transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+                        glm::vec3(1, 1, 1), glm::vec4(0.5, 0.5, 0.5, 0.5));
+    GameObject objectW(&transform, (char*)"play0000", 3, ObjectType::Player);
     std::cout << "D has been pressed!" << std::endl;
+    mWorld.push_back(&objectW);
+    del = true;
   }
+
+  SendInfo();
+
+  if (del) mWorld.erase(mWorld.begin() + (mWorld.size() - 1));
 
   ResetKeyPresses();
 }
@@ -146,15 +175,8 @@ void GameLogicServer::SendInfo() {
         mWorld[i]->getObjectType() == ObjectType::Projectile) {
       char* data = MarshalInfo(mWorld[i]);  // Marshal data
 
-      // Create message to send
-      // olc::net::message<CustomMsgTypes> msg;
-      // msg.header.id = CustomMsgTypes::ServerMessage;
-
-      for (int i = 0; i < MESSAGE_SIZE; i++) {
-        // msg << data[i];
-      }
-
-      // MessageAllClients(msg);
+      // Add message to queue
+      data >> mSendingBuffer;
     }
   }
 }
@@ -170,6 +192,7 @@ char* GameLogicServer::MarshalInfo(GameObject* obj) {
   char* tmpInfo = info;
 
   memcpy(tmpInfo, obj->getName(), NAME_LEN);  // Copy name into data
+
   tmpInfo += NAME_LEN;
 
   glm::vec3 pos = obj->getTransform()->getTranslation();

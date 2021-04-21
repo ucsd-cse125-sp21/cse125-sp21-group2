@@ -36,10 +36,6 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
                                      glm::vec3(1, 1, 1)),
                        (char*)"test", 12);
 
-    /*for (int i = 0; i < 9; i++) {
-      msg << *(testObj.serializeInfo() + i);
-    }*/
-
     for (int i = 0; i < 4; i++) {
       msg << keysPressed[i];
     }
@@ -93,9 +89,32 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
           case CustomMsgTypes::ServerMessage: {
             // Server has responded to a ping request
-            uint32_t clientID;
+            /*uint32_t clientID;
             msg >> clientID;
-            std::cout << "Hello from [" << clientID << "]\n";
+            std::cout << "Hello from [" << clientID << "]\n";*/
+
+            if (msg.body.size() != MESSAGE_SIZE) {
+              std::cerr << "Error: Message body size of " << msg.body.size()
+                        << " is incorrect in net_client update. Expected "
+                        << MESSAGE_SIZE << std::endl;
+              // return false;
+            }
+
+            char* data = (char*)malloc(MESSAGE_SIZE);
+
+            for (int i = 0; i < MESSAGE_SIZE; i++) {
+              data[i] = msg.body[i];
+            }
+
+            GameObject* obj = GameManager::getManager()->Unmarshal(data);
+
+            char name[NAME_LEN + 1];
+            memcpy(name, obj->getName(), NAME_LEN);
+            name[NAME_LEN] = '\0';
+
+            std::cout << "Name: " << name << std::endl;
+            std::cout << "Health: " << obj->getHealth() << std::endl;
+
           } break;
         }
       }

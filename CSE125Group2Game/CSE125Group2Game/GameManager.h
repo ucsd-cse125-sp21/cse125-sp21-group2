@@ -23,6 +23,9 @@ class GameManager {
   void Update();
 
   static GameManager* getManager();
+
+  GameObject* Unmarshal(char* data);
+
   bool mKeyPresses[NUM_KEYS];
 
  private:

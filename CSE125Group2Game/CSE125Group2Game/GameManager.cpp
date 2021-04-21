@@ -130,6 +130,55 @@ void GameManager::Update() {
   glfwTerminate();
 }
 
+GameObject* GameManager::Unmarshal(char* data) {
+  // 1) 8 byte char[] name
+  // 32 bit (4 byte) floats
+  // 2) Transform: 3 floats for location, 3 for rotation, 3 for scale
+  // 3) 4 byte int health 48 bytes
+
+  char* tmpInfo = data;
+
+  char name[NAME_LEN];
+  memcpy(name, tmpInfo, NAME_LEN);  // Copy name into data
+  tmpInfo += NAME_LEN;
+
+  GLfloat xPos, yPos, zPos;
+  memcpy(&xPos, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&yPos, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&zPos, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+
+  // TODO: In unmarshling, euler angles -> quat
+  GLfloat xRot, yRot, zRot;
+  memcpy(&xRot, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&yRot, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&zRot, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+
+  GLfloat xScale, yScale, zScale;
+  memcpy(&xScale, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&yScale, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&zScale, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+
+  int health;
+  memcpy(&health, tmpInfo, INT_SIZE);
+
+  Transform* transform =
+      new Transform(glm::vec3(xPos, yPos, zPos), glm::vec3(xRot, yRot, zRot),
+                    glm::vec3(xScale, yScale, zScale));
+
+  GameObject* obj = new GameObject(transform, name, health);
+
+  return obj;
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action,
                   int mods) {
   // Need synchronization?
