@@ -47,7 +47,7 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
 
     // TODO: make custom names for players :D && UNDO ObjectType::Default
     GameObject* newPlayer =
-        new GameObject(transform, (char*)("play0005"), 10, ObjectType::Default);
+        new GameObject(transform, (char*)("play0005"), 10, ObjectType::Player);
     logicServer->AddGameObject(newPlayer);
 
     return true;

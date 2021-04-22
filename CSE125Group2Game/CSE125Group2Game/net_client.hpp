@@ -107,15 +107,15 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             }
 
             GameObject* obj = GameManager::getManager()->Unmarshal(data);
-            GameManager::getManager()->UpdateObject(obj,
-                                                    SceneGraphNode::getRoot());
+            GameManager::getManager()->UpdateObject(obj);
+            delete obj;
 
-            char name[NAME_LEN + 1];
+            /*char name[NAME_LEN + 1];
             memcpy(name, obj->getName(), NAME_LEN);
             name[NAME_LEN] = '\0';
 
             std::cout << "Name: " << name << std::endl;
-            std::cout << "Health: " << obj->getHealth() << std::endl;
+            std::cout << "Health: " << obj->getHealth() << std::endl;*/
 
           } break;
         }

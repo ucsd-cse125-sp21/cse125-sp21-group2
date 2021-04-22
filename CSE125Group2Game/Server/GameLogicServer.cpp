@@ -85,48 +85,29 @@ void GameLogicServer::Update() {
   if (hsp != 0 || vsp != 0)
     velocity = glm::vec3(0.5) * glm::normalize(velocity);
 
+  for (int i = 0; i < mWorld.size(); i++) {
+    if (mWorld[i]->getObjectType() == ObjectType::Player) {
+      mWorld[i]->getTransform()->addTranslation(velocity);
+      break;
+    }
+  }
   // playerTransform->addTranslation(velocity);
-  bool del = false;
 
   if (mKeyPresses[0] != 0) {
-    Transform transform(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0),
-                        glm::vec3(1, 1, 1), glm::vec4(0.5, 0.5, 0.5, 0.5));
-    GameObject objectW(&transform, (char*)"play0000", 0, ObjectType::Player);
-
-    mWorld.push_back(&objectW);
-    del = true;
-
     std::cout << "W has been pressed!" << std::endl;
   }
 
   if (mKeyPresses[1] != 0) {
-    Transform transform(glm::vec3(-1, 0, 0), glm::vec3(0, 0, 0),
-                        glm::vec3(1, 1, 1), glm::vec4(0.5, 0.5, 0.5, 0.5));
-    GameObject objectW(&transform, (char*)"play0000", 1, ObjectType::Player);
     std::cout << "A has been pressed!" << std::endl;
-    mWorld.push_back(&objectW);
-    del = true;
   }
   if (mKeyPresses[2] != 0) {
-    Transform transform(glm::vec3(0, -1, 0), glm::vec3(0, 0, 0),
-                        glm::vec3(1, 1, 1), glm::vec4(0.5, 0.5, 0.5, 0.5));
-    GameObject objectW(&transform, (char*)"play0000", 2, ObjectType::Player);
     std::cout << "S has been pressed!" << std::endl;
-    mWorld.push_back(&objectW);
-    del = true;
   }
   if (mKeyPresses[3] != 0) {
-    Transform transform(glm::vec3(1, 0, 0), glm::vec3(0, 0, 0),
-                        glm::vec3(1, 1, 1), glm::vec4(0.5, 0.5, 0.5, 0.5));
-    GameObject objectW(&transform, (char*)"play0000", 3, ObjectType::Player);
     std::cout << "D has been pressed!" << std::endl;
-    mWorld.push_back(&objectW);
-    del = true;
   }
 
   SendInfo();
-
-  if (del) mWorld.erase(mWorld.begin() + (mWorld.size() - 1));
 
   ResetKeyPresses();
 }

@@ -9,13 +9,6 @@
 #include "SceneLoader.h"
 #include "Transform.h"
 
-/* TODO:
- *		1) Check reset keys
- *		1.5) Can I create window in getManager????
- *		2) Run at fixed frame rate?
- *		3) Make subfunctions for setting up network stuff?
- */
-
 class GameManager {
  public:
   GameManager(GLFWwindow* window);
@@ -26,11 +19,13 @@ class GameManager {
 
   GameObject* Unmarshal(char* data);
 
-  bool UpdateObject(GameObject* obj, SceneGraphNode* node);
+  void UpdateObject(GameObject* obj);
 
   bool mKeyPresses[NUM_KEYS];
 
  private:
+  SceneGraphNode* findNode(GameObject* obj, SceneGraphNode* node);
+
   Camera* mCamera;
   SceneGraphNode* mSceneRoot;
   GLFWwindow* mWindow;

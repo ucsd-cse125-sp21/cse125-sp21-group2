@@ -74,7 +74,10 @@ void GameManager::Update() {
 
   mPlayerTransform = &playerTransform;
 
-  SceneGraphNode playerNode(mSceneRoot, &playerTransform,
+  GameObject* playerObject =
+      new GameObject(&playerTransform, (char*)"play0005", 10);
+
+  SceneGraphNode playerNode(mSceneRoot, playerObject,
                             Model::Cube(&playerTransform, *mLoader));
 
   // TODO: Turn player into gameobject
@@ -86,18 +89,6 @@ void GameManager::Update() {
     // 1) Update local states (use key logger to update gameobject)
 
     glfwPollEvents();
-
-    /*int vsp = (glfwGetKey(mWindow, GLFW_KEY_W) != 0) -
-              (glfwGetKey(mWindow, GLFW_KEY_S) != 0);
-
-    int hsp = (glfwGetKey(mWindow, GLFW_KEY_D) != 0) -
-              (glfwGetKey(mWindow, GLFW_KEY_A) != 0);
-
-    glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
-    if (hsp != 0 || vsp != 0)
-      velocity = glm::vec3(0.5) * glm::normalize(velocity);
-
-    playerTransform.addTranslation(velocity);*/
 
     bool keysPressed[NUM_KEYS];
     keysPressed[GameObject::KEY_W] = glfwGetKey(mWindow, GLFW_KEY_W);
@@ -133,12 +124,57 @@ void GameManager::Update() {
   glfwTerminate();
 }
 
-bool GameManager::UpdateObject(GameObject* obj, SceneGraphNode* node) {
-  // if (obj->getName() == node->getName()) {
-  //}
+void GameManager::UpdateObject(GameObject* obj) {
+  SceneGraphNode* foundNode = findNode(obj, SceneGraphNode::getRoot());
+  GameObject* foundObject;
 
-  mPlayerTransform->setTranslation(obj->getTransform()->getTranslation());
-  return true;
+  // Object does not exist, create it
+  if (!foundNode) {
+    foundObject =
+        new GameObject(obj->getTransform(), obj->getName(), obj->getHealth());
+
+    // TODO: if else for model based on enum (constructor adds itself as child
+    // of parent)
+    new SceneGraphNode(SceneGraphNode::getRoot(), foundObject,
+                       Model::Cube(foundObject->getTransform(), *mLoader));
+  }
+
+  // Update object
+  foundObject = foundNode->getObject();
+  // Health is 0, delete object
+  if (obj->getHealth() == 0) {
+    std::cerr << "Deleting object, health is 0!" << std::endl;
+    foundNode->getParent()->removeChild(foundNode);
+    delete foundObject;
+    return;
+  }
+
+  // Set found objects position, rotation, scale, and health to passed in obj
+  foundObject->getTransform()->setTranslation(
+      obj->getTransform()->getTranslation());
+
+  foundObject->getTransform()->setRotation(obj->getTransform()->getRotation());
+
+  foundObject->getTransform()->setScale(obj->getTransform()->getScale());
+
+  foundObject->setHealth(obj->getHealth());
+  return;
+}
+
+SceneGraphNode* GameManager::findNode(GameObject* obj, SceneGraphNode* node) {
+  if (!strncmp(obj->getName(), node->getObject()->getName(), NAME_LEN)) {
+    return node;
+  }
+
+  for (int i = 0; i < node->getChildren().size(); i++) {
+    SceneGraphNode* foundNode = findNode(obj, node->getChildren()[i]);
+
+    if (foundNode) {
+      return foundNode;
+    }
+  }
+
+  return NULL;
 }
 GameObject* GameManager::Unmarshal(char* data) {
   // 1) 8 byte char[] name
