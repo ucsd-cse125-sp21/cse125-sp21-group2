@@ -1,9 +1,5 @@
 ﻿#include "SceneLoader.h"
 
-/*
- * TODO: refactor this as a ctor to the SceneGraph class.
- */
-
 /**
  * Constructs and populates the scene graph from the scene file passed in.
  *
@@ -155,8 +151,9 @@ SceneLoader::SceneLoader(std::string fileName, MeshLoader& loader) {
       mesh = new Model(ASSET(test), transform, loader);
     }
 
-    SceneGraphNode* node = new SceneGraphNode(parentNode, transform, mesh);
-    node->setName(((std::string)name).data());
+    GameObject* obj = new GameObject(transform, ((std::string)name).data(), 1);
+
+    SceneGraphNode* node = new SceneGraphNode(parentNode, obj, mesh);
     mObjects.insert(std::make_pair(name, node));
   }
 }

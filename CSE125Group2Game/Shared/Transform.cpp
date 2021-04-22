@@ -46,6 +46,11 @@ void Transform::setRotation(glm::vec3 degrees) {
   updateModel();
 }
 
+void Transform::setRotation(glm::quat quaternion) {
+  mRotation = quaternion;
+  updateModel();
+}
+
 void Transform::addTranslation(glm::vec3 translation) {
   mTranslation += translation;
   updateModel();

@@ -184,6 +184,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="net_client.hpp" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="SceneGraphNode.h" />
     <ClInclude Include="SceneLoader.h" />

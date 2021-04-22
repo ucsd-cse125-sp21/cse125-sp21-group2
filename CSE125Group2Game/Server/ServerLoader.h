@@ -9,9 +9,6 @@
 #include "ServerGraphNode.h"
 #include "json.hpp"
 
-// TODO: will the std::string() get optimized out? interesting question
-// actually...
-
 class ServerLoader {
  public:
   ServerLoader(std::string fileName);

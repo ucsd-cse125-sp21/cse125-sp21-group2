@@ -114,5 +114,8 @@
     <ClInclude Include="SceneLoader.h">
       <Filter>Header Files\SceneLoader</Filter>
     </ClInclude>
+    <ClInclude Include="net_client.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -126,7 +126,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>$(SolutionDir)CSE125Group2Game/glad/include;$(SolutionDir)Shared</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CSE125Group2Game/glad/include;$(SolutionDir)Shared;$(SolutionDir)Server/cpp-channel/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

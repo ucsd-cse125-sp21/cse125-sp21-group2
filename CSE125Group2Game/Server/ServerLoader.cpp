@@ -1,9 +1,5 @@
 ﻿#include "ServerLoader.h"
 
-/*
- * TODO: refactor this as a ctor to the ServerGraph class.
- */
-
 /**
  * Constructs and populates the Server graph from the Server file passed in.
  *
@@ -141,7 +137,7 @@ ServerLoader::ServerLoader(std::string fileName) {
                       glm::vec4(bbLeft, bbRight, bbTop, bbBottom));
 
     ServerGraphNode* node = new ServerGraphNode(parentNode, transform);
-    node->setName(((std::string)name).data());  // TODO: verify
+    node->setName(((std::string)name).data());
     mObjects.insert(std::make_pair(name, node));
   }
 }

@@ -45,14 +45,15 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
     Transform* transform = new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
                                          glm::vec3(1, 1, 1));
 
-    // TODO: make custom names for players :D
-    GameObject* newPlayer = new GameObject(transform, (char*)("play000" + 0),
-                                           10, ObjectType::Player);
+    // TODO: make custom names for players :D && UNDO ObjectType::Default
+    GameObject* newPlayer =
+        new GameObject(transform, (char*)("play0005"), 10, ObjectType::Player);
     logicServer->AddGameObject(newPlayer);
 
     return true;
   }
 
+  // TODO: remove player from world on disconnect
   // Called when a client appears to have disconnected
   virtual void OnClientDisconnect(
       std::shared_ptr<olc::net::connection<CustomMsgTypes>> client) {
@@ -77,13 +78,6 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
         // Construct a new message and send it to all clients
         olc::net::message<CustomMsgTypes> msg2;
         msg2.header.id = CustomMsgTypes::ServerMessage;
-
-        /*std::cout << "name: " << msg.body[0] << msg.body[1] << msg.body[2]
-                  << msg.body[3] << std::endl;
-
-        int temp;
-        memcpy(&temp, msg.body.data() + 5, sizeof(int));
-        std::cout << "temp: " << temp << std::endl;*/
 
         GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 

@@ -19,7 +19,29 @@ int main() {
 
   logicServer->PrintWorld();
 
-  thread netServerThread(&(CustomServer::Update), netServer, -1, true);
+  std::thread netServerThread(&(CustomServer::Update), netServer, -1, true);
+
+  // Write
+  auto in = [](msd::channel<char *> &ch, CustomServer *netServer) {
+    while (true) {
+      // Read from channel and populate message
+      for (char *out : ch) {
+        olc::net::message<CustomMsgTypes> msg;
+        msg.header.id = CustomMsgTypes::ServerMessage;
+
+        // Byte by byte, populate message
+        for (int i = 0; i < MESSAGE_SIZE; i++) {
+          msg << out[i];
+        }
+
+        netServer->MessageAllClients(msg);
+      }
+    }
+  };
+
+  // Spawn thread to sendMessages
+  std::thread sendMessages =
+      std::thread{in, std::ref(logicServer->mSendingBuffer), netServer};
 
   // Runs at tickrate and performs game logic
   while (1) {

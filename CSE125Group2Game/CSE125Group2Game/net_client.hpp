@@ -4,17 +4,6 @@
 
 #include "GameObject.h"
 
-/* TODOs:
- *   1. Probably game shouldn't start will connected, or there should be some
- * thing in the window that says its conencting
- *     - doesn't need to be super polished
- *   2. Refactor key press code to use GLFW callback
- *     - see https://www.glfw.org/docs/latest/input_guide.html#input_keyboard
- *   3. Refactor some code in the client so we don't need to hard-code host and
- * port (config file yeet)
- *   4. Make the server and client actually do something with the data
- */
-
 class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
  public:
   void PingServer() {
@@ -35,10 +24,6 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     GameObject testObj(new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
                                      glm::vec3(1, 1, 1)),
                        (char*)"test", 12);
-
-    /*for (int i = 0; i < 9; i++) {
-      msg << *(testObj.serializeInfo() + i);
-    }*/
 
     for (int i = 0; i < 4; i++) {
       msg << keysPressed[i];
@@ -92,10 +77,23 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
           } break;
 
           case CustomMsgTypes::ServerMessage: {
-            // Server has responded to a ping request
-            uint32_t clientID;
-            msg >> clientID;
-            std::cout << "Hello from [" << clientID << "]\n";
+            if (msg.body.size() != MESSAGE_SIZE) {
+              std::cerr << "Error: Message body size of " << msg.body.size()
+                        << " is incorrect in net_client update. Expected "
+                        << MESSAGE_SIZE << std::endl;
+              // return false;
+            }
+
+            char* data = (char*)malloc(MESSAGE_SIZE);
+
+            for (int i = 0; i < MESSAGE_SIZE; i++) {
+              data[i] = msg.body[i];
+            }
+
+            GameObject* obj = GameManager::getManager()->Unmarshal(data);
+            GameManager::getManager()->UpdateObject(obj);
+            delete obj;
+
           } break;
         }
       }

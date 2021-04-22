@@ -18,6 +18,8 @@ class Transform {
 
   void setRotation(glm::vec3 degrees);
 
+  void setRotation(glm::quat quaternion);
+
   void addTranslation(glm::vec3 translation);
 
   void setTranslation(glm::vec3 translation);

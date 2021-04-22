@@ -8,6 +8,7 @@
 
 #include "PriorityMutex.h"
 #include "ServerLoader.h"
+#include "msd/channel.hpp"
 
 /*
   //
@@ -36,6 +37,8 @@ class GameLogicServer {
   void ResetKeyPresses();
 
   void AddGameObject(GameObject* obj);
+
+  msd::channel<char*> mSendingBuffer;  // Queue for storing events to send
 
  private:
   void SendInfo();

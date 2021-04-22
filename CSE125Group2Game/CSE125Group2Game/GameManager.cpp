@@ -71,10 +71,16 @@ void GameManager::Update() {
   // Create player and set it as first layer (child of root)
   Transform playerTransform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
                             glm::vec3(1, 1, 1));
-  SceneGraphNode playerNode(mSceneRoot, &playerTransform,
-                            Model::Cube(&playerTransform, *mLoader));
 
-  // TODO: Turn player into gameobject
+  mPlayerTransform = &playerTransform;
+
+  GameObject* playerObject =
+      new GameObject(&playerTransform, (char*)"play0005", 10);
+
+  Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+                           mPlayerTransform, *mLoader);
+
+  SceneGraphNode playerNode(mSceneRoot, playerObject, model);
 
   DWORD before, after, diff;
 
@@ -83,18 +89,6 @@ void GameManager::Update() {
     // 1) Update local states (use key logger to update gameobject)
 
     glfwPollEvents();
-
-    /*int vsp = (glfwGetKey(mWindow, GLFW_KEY_W) != 0) -
-              (glfwGetKey(mWindow, GLFW_KEY_S) != 0);
-
-    int hsp = (glfwGetKey(mWindow, GLFW_KEY_D) != 0) -
-              (glfwGetKey(mWindow, GLFW_KEY_A) != 0);
-
-    glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
-    if (hsp != 0 || vsp != 0)
-      velocity = glm::vec3(0.5) * glm::normalize(velocity);
-
-    playerTransform.addTranslation(velocity);*/
 
     bool keysPressed[NUM_KEYS];
     keysPressed[GameObject::KEY_W] = glfwGetKey(mWindow, GLFW_KEY_W);
@@ -123,11 +117,112 @@ void GameManager::Update() {
     after = GetTickCount();
 
     diff = after - before;
-    if (diff <= 33) Sleep(33 - diff);
+    // if (diff <= 33) Sleep(33 - diff);
   }
 
   RenderManager::get().teardown();
   glfwTerminate();
+}
+
+void GameManager::UpdateObject(GameObject* obj) {
+  SceneGraphNode* foundNode = findNode(obj, SceneGraphNode::getRoot());
+  GameObject* foundObject;
+
+  // Object does not exist, create it
+  if (!foundNode) {
+    foundObject =
+        new GameObject(obj->getTransform(), obj->getName(), obj->getHealth());
+
+    // TODO: if else for model based on enum (constructor adds itself as child
+    // of parent)
+    new SceneGraphNode(SceneGraphNode::getRoot(), foundObject,
+                       Model::Cube(foundObject->getTransform(), *mLoader));
+  }
+
+  // Update object
+  foundObject = foundNode->getObject();
+  // Health is 0, delete object
+  if (obj->getHealth() == 0) {
+    std::cerr << "Deleting object, health is 0!" << std::endl;
+    foundNode->getParent()->removeChild(foundNode);
+    delete foundObject;
+    return;
+  }
+
+  // Set found objects position, rotation, scale, and health to passed in obj
+  foundObject->getTransform()->setTranslation(
+      obj->getTransform()->getTranslation());
+
+  foundObject->getTransform()->setRotation(obj->getTransform()->getRotation());
+
+  foundObject->getTransform()->setScale(obj->getTransform()->getScale());
+
+  foundObject->setHealth(obj->getHealth());
+  return;
+}
+
+SceneGraphNode* GameManager::findNode(GameObject* obj, SceneGraphNode* node) {
+  if (!strncmp(obj->getName(), node->getObject()->getName(), NAME_LEN)) {
+    return node;
+  }
+
+  for (int i = 0; i < node->getChildren().size(); i++) {
+    SceneGraphNode* foundNode = findNode(obj, node->getChildren()[i]);
+
+    if (foundNode) {
+      return foundNode;
+    }
+  }
+
+  return NULL;
+}
+GameObject* GameManager::Unmarshal(char* data) {
+  // 1) 8 byte char[] name
+  // 32 bit (4 byte) floats
+  // 2) Transform: 3 floats for location, 3 for rotation, 3 for scale
+  // 3) 4 byte int health 48 bytes
+
+  char* tmpInfo = data;
+
+  char name[NAME_LEN];
+  memcpy(name, tmpInfo, NAME_LEN);  // Copy name into data
+  tmpInfo += NAME_LEN;
+
+  GLfloat xPos, yPos, zPos;
+  memcpy(&xPos, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&yPos, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&zPos, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+
+  // TODO: In unmarshling, euler angles -> quat
+  GLfloat xRot, yRot, zRot;
+  memcpy(&xRot, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&yRot, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&zRot, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+
+  GLfloat xScale, yScale, zScale;
+  memcpy(&xScale, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&yScale, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&zScale, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+
+  int health;
+  memcpy(&health, tmpInfo, INT_SIZE);
+
+  Transform* transform =
+      new Transform(glm::vec3(xPos, yPos, zPos), glm::vec3(xRot, yRot, zRot),
+                    glm::vec3(xScale, yScale, zScale));
+
+  GameObject* obj = new GameObject(transform, name, health);
+
+  return obj;
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action,

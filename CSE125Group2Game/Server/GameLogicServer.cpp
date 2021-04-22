@@ -63,7 +63,10 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 }
 
 void GameLogicServer::Update() {
-  // TODO: 1) Standardized naming for objects
+  // TOOD: free ur damn memory
+  // TODO: create Enemy and Projectile Classes (child of GameObject)
+  // (server-side only)
+
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
   Transform* playerTransform = NULL;
@@ -84,11 +87,18 @@ void GameLogicServer::Update() {
   if (hsp != 0 || vsp != 0)
     velocity = glm::vec3(0.5) * glm::normalize(velocity);
 
+  for (int i = 0; i < mWorld.size(); i++) {
+    if (mWorld[i]->getObjectType() == ObjectType::Player) {
+      mWorld[i]->getTransform()->addTranslation(velocity);
+      break;
+    }
+  }
   // playerTransform->addTranslation(velocity);
 
-  if (mKeyPresses[0] != 0) {
+  /*if (mKeyPresses[0] != 0) {
     std::cout << "W has been pressed!" << std::endl;
   }
+
   if (mKeyPresses[1] != 0) {
     std::cout << "A has been pressed!" << std::endl;
   }
@@ -97,7 +107,9 @@ void GameLogicServer::Update() {
   }
   if (mKeyPresses[3] != 0) {
     std::cout << "D has been pressed!" << std::endl;
-  }
+  }*/
+
+  SendInfo();
 
   ResetKeyPresses();
 }
@@ -119,18 +131,17 @@ std::vector<GameObject*> GameLogicServer::GetWorld() { return mWorld; }
 ServerLoader GameLogicServer::GetScene() { return mScene; }
 
 void GameLogicServer::UpdateKeyPress(int keyID) {
-  // Not a priorty update -> see main gameplay loop (TODO)
+  // Not a priorty update
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
   mKeyPresses[keyID] = true;
-
   // implicit release of lock when lk is deconstructed
 }
 
 // Note: Lock is acquired in Update already
 void GameLogicServer::ResetKeyPresses() {
   assert(mMtx.isLocked());
-  // Not a priorty update -> see main gameplay loop (TODO)
+  // Not a priorty update
   for (int i = 0; i < NUM_KEYS; i++) {
     mKeyPresses[i] = false;
   }
@@ -146,15 +157,8 @@ void GameLogicServer::SendInfo() {
         mWorld[i]->getObjectType() == ObjectType::Projectile) {
       char* data = MarshalInfo(mWorld[i]);  // Marshal data
 
-      // Create message to send
-      // olc::net::message<CustomMsgTypes> msg;
-      // msg.header.id = CustomMsgTypes::ServerMessage;
-
-      for (int i = 0; i < MESSAGE_SIZE; i++) {
-        // msg << data[i];
-      }
-
-      // MessageAllClients(msg);
+      // Add message to queue
+      data >> mSendingBuffer;
     }
   }
 }
@@ -170,6 +174,7 @@ char* GameLogicServer::MarshalInfo(GameObject* obj) {
   char* tmpInfo = info;
 
   memcpy(tmpInfo, obj->getName(), NAME_LEN);  // Copy name into data
+
   tmpInfo += NAME_LEN;
 
   glm::vec3 pos = obj->getTransform()->getTranslation();
