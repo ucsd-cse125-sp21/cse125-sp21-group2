@@ -1,9 +1,5 @@
 ﻿#include "SceneLoader.h"
 
-/*
- * TODO: refactor this as a ctor to the SceneGraph class.
- */
-
 /**
  * Constructs and populates the scene graph from the scene file passed in.
  *

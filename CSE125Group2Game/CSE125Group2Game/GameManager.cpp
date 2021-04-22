@@ -82,8 +82,6 @@ void GameManager::Update() {
 
   SceneGraphNode playerNode(mSceneRoot, playerObject, model);
 
-  // TODO: Turn player into gameobject
-
   DWORD before, after, diff;
 
   while (!glfwWindowShouldClose(mWindow)) {

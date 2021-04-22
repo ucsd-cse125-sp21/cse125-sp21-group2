@@ -64,7 +64,9 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 
 void GameLogicServer::Update() {
   // TOOD: free ur damn memory
-  // TODO: 1) Standardized naming for objects
+  // TODO: create Enemy and Projectile Classes (child of GameObject)
+  // (server-side only)
+
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
   Transform* playerTransform = NULL;
@@ -129,18 +131,17 @@ std::vector<GameObject*> GameLogicServer::GetWorld() { return mWorld; }
 ServerLoader GameLogicServer::GetScene() { return mScene; }
 
 void GameLogicServer::UpdateKeyPress(int keyID) {
-  // Not a priorty update -> see main gameplay loop (TODO)
+  // Not a priorty update
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
   mKeyPresses[keyID] = true;
-
   // implicit release of lock when lk is deconstructed
 }
 
 // Note: Lock is acquired in Update already
 void GameLogicServer::ResetKeyPresses() {
   assert(mMtx.isLocked());
-  // Not a priorty update -> see main gameplay loop (TODO)
+  // Not a priorty update
   for (int i = 0; i < NUM_KEYS; i++) {
     mKeyPresses[i] = false;
   }

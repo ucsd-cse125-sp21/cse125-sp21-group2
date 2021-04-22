@@ -4,17 +4,6 @@
 
 #include "GameObject.h"
 
-/* TODOs:
- *   1. Probably game shouldn't start will connected, or there should be some
- * thing in the window that says its conencting
- *     - doesn't need to be super polished
- *   2. Refactor key press code to use GLFW callback
- *     - see https://www.glfw.org/docs/latest/input_guide.html#input_keyboard
- *   3. Refactor some code in the client so we don't need to hard-code host and
- * port (config file yeet)
- *   4. Make the server and client actually do something with the data
- */
-
 class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
  public:
   void PingServer() {

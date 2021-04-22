@@ -53,6 +53,7 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
     return true;
   }
 
+  // TODO: remove player from world on disconnect
   // Called when a client appears to have disconnected
   virtual void OnClientDisconnect(
       std::shared_ptr<olc::net::connection<CustomMsgTypes>> client) {
