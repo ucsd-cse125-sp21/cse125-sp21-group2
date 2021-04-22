@@ -77,8 +77,10 @@ void GameManager::Update() {
   GameObject* playerObject =
       new GameObject(&playerTransform, (char*)"play0005", 10);
 
-  SceneGraphNode playerNode(mSceneRoot, playerObject,
-                            Model::Cube(&playerTransform, *mLoader));
+  Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+                           mPlayerTransform, *mLoader);
+
+  SceneGraphNode playerNode(mSceneRoot, playerObject, model);
 
   // TODO: Turn player into gameobject
 
