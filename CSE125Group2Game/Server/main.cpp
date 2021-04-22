@@ -31,13 +31,8 @@ int main() {
 
         // Byte by byte, populate message
         for (int i = 0; i < MESSAGE_SIZE; i++) {
-          std::cout << out[i];
-
           msg << out[i];
         }
-
-        std::cout << std::endl
-                  << "Message size: " << msg.body.size() << std::endl;
 
         netServer->MessageAllClients(msg);
       }

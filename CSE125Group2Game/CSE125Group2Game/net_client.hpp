@@ -88,11 +88,6 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
           } break;
 
           case CustomMsgTypes::ServerMessage: {
-            // Server has responded to a ping request
-            /*uint32_t clientID;
-            msg >> clientID;
-            std::cout << "Hello from [" << clientID << "]\n";*/
-
             if (msg.body.size() != MESSAGE_SIZE) {
               std::cerr << "Error: Message body size of " << msg.body.size()
                         << " is incorrect in net_client update. Expected "
@@ -109,13 +104,6 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             GameObject* obj = GameManager::getManager()->Unmarshal(data);
             GameManager::getManager()->UpdateObject(obj);
             delete obj;
-
-            /*char name[NAME_LEN + 1];
-            memcpy(name, obj->getName(), NAME_LEN);
-            name[NAME_LEN] = '\0';
-
-            std::cout << "Name: " << name << std::endl;
-            std::cout << "Health: " << obj->getHealth() << std::endl;*/
 
           } break;
         }

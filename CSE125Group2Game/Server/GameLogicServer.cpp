@@ -93,7 +93,7 @@ void GameLogicServer::Update() {
   }
   // playerTransform->addTranslation(velocity);
 
-  if (mKeyPresses[0] != 0) {
+  /*if (mKeyPresses[0] != 0) {
     std::cout << "W has been pressed!" << std::endl;
   }
 
@@ -105,7 +105,7 @@ void GameLogicServer::Update() {
   }
   if (mKeyPresses[3] != 0) {
     std::cout << "D has been pressed!" << std::endl;
-  }
+  }*/
 
   SendInfo();
 

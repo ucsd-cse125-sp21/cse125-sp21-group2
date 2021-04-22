@@ -117,7 +117,7 @@ void GameManager::Update() {
     after = GetTickCount();
 
     diff = after - before;
-    if (diff <= 33) Sleep(33 - diff);
+    // if (diff <= 33) Sleep(33 - diff);
   }
 
   RenderManager::get().teardown();
