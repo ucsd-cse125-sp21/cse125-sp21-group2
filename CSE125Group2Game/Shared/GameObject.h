@@ -37,7 +37,7 @@ class GameObject {
 
   uint8_t* serializeInfo();
 
- private:
+ protected:
   Transform* mTransform;
   char mName[NAME_LEN];
   int mHealth;
