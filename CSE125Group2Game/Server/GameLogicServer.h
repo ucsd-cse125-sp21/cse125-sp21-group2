@@ -10,6 +10,8 @@
 #include "ServerLoader.h"
 #include "msd/channel.hpp"
 
+#define MAX_PLAYERS 4
+
 /*
   //
   http://www.cplusplus.com/reference/mutex/unique_lock/#:~:text=A%20unique%20lock%20is%20an%20object%20that%20manages,The%20object%20supports%20both%20states%3A%20locked%20and%20unlocked.
@@ -32,7 +34,7 @@ class GameLogicServer {
 
   void PrintWorld();
 
-  void UpdateKeyPress(int keyID);
+  void UpdateKeyPress(int keyID, int playerID);
 
   void ResetKeyPresses();
 
@@ -49,7 +51,8 @@ class GameLogicServer {
   uint16_t mTick_ms;
   PriorityMutex mMtx;
 
-  bool mKeyPresses[NUM_KEYS];  // Queue for storing events before each tick
+  std::vector<bool*>
+      mKeyPresses;  // Queue for storing events before each tick for each player
 
   static GameLogicServer* mLogicServer;
 };

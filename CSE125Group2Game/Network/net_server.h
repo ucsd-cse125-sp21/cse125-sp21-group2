@@ -1,9 +1,9 @@
-#pragma once
+﻿#pragma once
 
 #include "net_common.h"
-#include "net_tsqueue.h"
-#include "net_message.h"
 #include "net_connection.h"
+#include "net_message.h"
+#include "net_tsqueue.h"
 
 namespace olc {
 namespace net {
@@ -84,6 +84,8 @@ class server_interface {
 
           std::cout << "[" << m_deqConnections.back()->GetID()
                     << "] Connection Approved\n";
+
+          AddClient(m_deqConnections.back()->GetID());
         } else {
           std::cout << "[-----] Connection Denied\n";
 
@@ -191,6 +193,9 @@ class server_interface {
   // Called when a message arrives
   virtual void OnMessage(std::shared_ptr<connection<T>> client,
                          message<T>& msg) {}
+
+  // Added by Alex - Called when client connects
+  virtual void AddClient(int id) {}
 
  protected:
   // Thread Safe Queue for incoming message packets

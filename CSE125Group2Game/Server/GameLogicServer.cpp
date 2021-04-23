@@ -4,7 +4,13 @@ GameLogicServer* GameLogicServer::mLogicServer;
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
                                  ServerLoader scene, uint16_t tick_ms)
-    : mWorld(world), mScene(scene), mTick_ms(tick_ms) {}
+    : mWorld(world), mScene(scene), mTick_ms(tick_ms) {
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    bool* keyPresses = (bool*)malloc(NUM_KEYS);
+
+    mKeyPresses.push_back(keyPresses);
+  }
+}
 
 std::string server_read_config2(std::string field, std::string filename) {
   std::string line;
@@ -79,9 +85,11 @@ void GameLogicServer::Update() {
     }
   }
 
-  int vsp = mKeyPresses[GameObject::KEY_W] - mKeyPresses[GameObject::KEY_S];
+  int vsp =
+      mKeyPresses[0][GameObject::KEY_W] - mKeyPresses[0][GameObject::KEY_S];
 
-  int hsp = mKeyPresses[GameObject::KEY_D] - mKeyPresses[GameObject::KEY_A];
+  int hsp =
+      mKeyPresses[0][GameObject::KEY_D] - mKeyPresses[0][GameObject::KEY_A];
 
   glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
   if (hsp != 0 || vsp != 0)
@@ -130,11 +138,11 @@ uint16_t GameLogicServer::GetServerTick() { return mTick_ms; }
 std::vector<GameObject*> GameLogicServer::GetWorld() { return mWorld; }
 ServerLoader GameLogicServer::GetScene() { return mScene; }
 
-void GameLogicServer::UpdateKeyPress(int keyID) {
+void GameLogicServer::UpdateKeyPress(int keyID, int playerID) {
   // Not a priorty update
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
-  mKeyPresses[keyID] = true;
+  mKeyPresses[playerID][keyID] = true;
   // implicit release of lock when lk is deconstructed
 }
 
@@ -142,8 +150,10 @@ void GameLogicServer::UpdateKeyPress(int keyID) {
 void GameLogicServer::ResetKeyPresses() {
   assert(mMtx.isLocked());
   // Not a priorty update
-  for (int i = 0; i < NUM_KEYS; i++) {
-    mKeyPresses[i] = false;
+  for (int player = 0; player < MAX_PLAYERS; player++) {
+    for (int i = 0; i < NUM_KEYS; i++) {
+      mKeyPresses[player][i] = false;
+    }
   }
 }
 

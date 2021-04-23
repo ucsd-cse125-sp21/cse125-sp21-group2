@@ -34,20 +34,36 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
   }
 
  protected:
+  std::vector<olc::net::connection<CustomMsgTypes>> clients;
+  // converts from net.getID() to our ID's
+  std::unordered_map<int, int>* serverToLogicID =
+      new std::unordered_map<int, int>;
+
+  int numPlayers = 0;
+
+  virtual void AddClient(int id) {
+    serverToLogicID->insert(std::make_pair(id, numPlayers++));
+
+    std::cout << "Adding ID: " << id << std::endl;
+  }
+
   virtual bool OnClientConnect(
       std::shared_ptr<olc::net::connection<CustomMsgTypes>> client) {
     olc::net::message<CustomMsgTypes> msg;
     msg.header.id = CustomMsgTypes::ServerAccept;
-    client->Send(msg);
+    client->Send(msg);  // TODO: tell client their player ID
 
     GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
     Transform* transform = new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
                                          glm::vec3(1, 1, 1));
 
-    // TODO: make custom names for players :D && UNDO ObjectType::Default
-    GameObject* newPlayer =
-        new GameObject(transform, (char*)("play0005"), 10, ObjectType::Player);
+    // Assign incoming player a unique ID
+    std::string clientId = "play000";
+    clientId += std::to_string(numPlayers);
+
+    GameObject* newPlayer = new GameObject(transform, (char*)clientId.c_str(),
+                                           10, ObjectType::Player);
     logicServer->AddGameObject(newPlayer);
 
     return true;
@@ -83,7 +99,8 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
 
         for (int i = 0; i < msg.body.size(); i++) {
           if (msg.body[i]) {
-            logicServer->UpdateKeyPress(i);
+            logicServer->UpdateKeyPress(
+                i, serverToLogicID->find(client->GetID())->second);
           }
         }
 

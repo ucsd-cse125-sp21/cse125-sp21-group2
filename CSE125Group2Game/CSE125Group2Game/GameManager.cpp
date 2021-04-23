@@ -75,7 +75,7 @@ void GameManager::Update() {
   mPlayerTransform = &playerTransform;
 
   GameObject* playerObject =
-      new GameObject(&playerTransform, (char*)"play0005", 10);
+      new GameObject(&playerTransform, (char*)"play0000", 10);
 
   Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
                            mPlayerTransform, *mLoader);
@@ -135,8 +135,9 @@ void GameManager::UpdateObject(GameObject* obj) {
 
     // TODO: if else for model based on enum (constructor adds itself as child
     // of parent)
-    new SceneGraphNode(SceneGraphNode::getRoot(), foundObject,
-                       Model::Cube(foundObject->getTransform(), *mLoader));
+    foundNode =
+        new SceneGraphNode(SceneGraphNode::getRoot(), foundObject,
+                           Model::Cube(foundObject->getTransform(), *mLoader));
   }
 
   // Update object
