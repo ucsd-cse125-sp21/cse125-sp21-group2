@@ -68,20 +68,6 @@ void GameManager::Update() {
   CustomClient c;
   c.Init(host, port);
 
-  // Create player and set it as first layer (child of root)
-  Transform playerTransform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
-                            glm::vec3(1, 1, 1));
-
-  mPlayerTransform = &playerTransform;
-
-  GameObject* playerObject =
-      new GameObject(&playerTransform, (char*)"play0000", 10);
-
-  Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
-                           mPlayerTransform, *mLoader);
-
-  SceneGraphNode playerNode(mSceneRoot, playerObject, model);
-
   DWORD before, after, diff;
 
   while (!glfwWindowShouldClose(mWindow)) {
@@ -122,6 +108,25 @@ void GameManager::Update() {
 
   RenderManager::get().teardown();
   glfwTerminate();
+}
+
+void GameManager::AddPlayer(int clientId) {
+  // Create player and set it as first layer (child of root)
+  Transform* playerTransform =
+      new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+
+  std::string clientName = "play000";
+  clientName += std::to_string(clientId);
+
+  GameObject* playerObject =
+      new GameObject(playerTransform, (char*)clientName.c_str(), 10);
+
+  // Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+  //                         playerTransform, *mLoader);
+  Model* model = Model::Cube(playerTransform, *mLoader);
+
+  SceneGraphNode* playerNode =
+      new SceneGraphNode(SceneGraphNode::getRoot(), playerObject, model);
 }
 
 void GameManager::UpdateObject(GameObject* obj) {
@@ -225,6 +230,8 @@ GameObject* GameManager::Unmarshal(char* data) {
 
   return obj;
 }
+
+void GameManager::setClientID(int id) { mClientId = id; }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action,
                   int mods) {

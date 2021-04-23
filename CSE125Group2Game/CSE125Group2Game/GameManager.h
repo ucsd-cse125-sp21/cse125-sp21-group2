@@ -19,9 +19,15 @@ class GameManager {
 
   GameObject* Unmarshal(char* data);
 
+  void AddPlayer(int clientId);
+
   void UpdateObject(GameObject* obj);
 
   bool mKeyPresses[NUM_KEYS];
+
+  void setClientID(int id);
+
+  MeshLoader* mLoader;
 
  private:
   SceneGraphNode* findNode(GameObject* obj, SceneGraphNode* node);
@@ -29,8 +35,7 @@ class GameManager {
   Camera* mCamera;
   SceneGraphNode* mSceneRoot;
   GLFWwindow* mWindow;
-  MeshLoader* mLoader;
-  Transform* mPlayerTransform;
+  int mClientId;
 
   static GameManager* mManager;
 };

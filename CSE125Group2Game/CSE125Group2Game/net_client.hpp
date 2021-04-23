@@ -62,6 +62,13 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
           case CustomMsgTypes::ServerAccept: {
             // Server has responded to a ping request
             std::cout << "Server Accepted Connection\n";
+
+            // Get client id from message
+            int clientId;
+            msg >> clientId;
+
+            GameManager::getManager()->AddPlayer(clientId);
+
           } break;
 
           case CustomMsgTypes::ServerPing: {
@@ -81,7 +88,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
               std::cerr << "Error: Message body size of " << msg.body.size()
                         << " is incorrect in net_client update. Expected "
                         << MESSAGE_SIZE << std::endl;
-              // return false;
+              return false;
             }
 
             char* data = (char*)malloc(MESSAGE_SIZE);

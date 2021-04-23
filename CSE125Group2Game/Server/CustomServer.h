@@ -51,7 +51,8 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
       std::shared_ptr<olc::net::connection<CustomMsgTypes>> client) {
     olc::net::message<CustomMsgTypes> msg;
     msg.header.id = CustomMsgTypes::ServerAccept;
-    client->Send(msg);  // TODO: tell client their player ID
+    msg << numPlayers;  // Tell client their player ID
+    client->Send(msg);
 
     GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
@@ -104,7 +105,7 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
           }
         }
 
-        MessageAllClients(msg2, client);
+        // MessageAllClients(msg2, client);
 
       } break;
     }
