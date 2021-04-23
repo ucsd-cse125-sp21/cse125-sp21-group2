@@ -156,6 +156,7 @@
     <ClCompile Include="ServerGraphNode.cpp" />
     <ClCompile Include="ServerLoader.cpp" />
     <ClCompile Include="GameLogicServer.cpp" />
+    <ClCompile Include="Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Shared\GameObject.h" />
@@ -163,6 +164,8 @@
     <ClInclude Include="..\Shared\Transform.h" />
     <ClInclude Include="CustomServer.h" />
     <ClInclude Include="GameLogicServer.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="ServerGraphNode.h" />
     <ClInclude Include="ServerLoader.h" />
     <ClInclude Include="server_helper.h" />

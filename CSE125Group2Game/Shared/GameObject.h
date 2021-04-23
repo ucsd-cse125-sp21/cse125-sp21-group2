@@ -11,7 +11,6 @@ enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
 #define INT_SIZE sizeof(int)
 #define MESSAGE_SIZE NAME_LEN + (9 * FLOAT_SIZE) + INT_SIZE
 
-// TODO: write a destructor to free transforms
 class GameObject {
  public:
   static const int KEY_W = 0;
@@ -22,6 +21,8 @@ class GameObject {
   GameObject(Transform* transform, char* name, int health);
 
   GameObject(Transform* transform, char* name, int health, ObjectType type);
+  
+  ~GameObject();
 
   void setTransform(Transform* transform);
   void setName(char* name);
@@ -37,7 +38,7 @@ class GameObject {
 
   uint8_t* serializeInfo();
 
- private:
+ protected:
   Transform* mTransform;
   char mName[NAME_LEN];
   int mHealth;
