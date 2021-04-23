@@ -11,6 +11,10 @@ GameObject::GameObject(Transform* transform, char* name, int health,
   memcpy(mName, name, NAME_LEN);
 }
 
+GameObject::~GameObject() {
+  delete mTransform;
+}
+
 void GameObject::setTransform(Transform* transform) { mTransform = transform; }
 void GameObject::setName(char* name) { memcpy(mName, name, NAME_LEN); }
 void GameObject::setHealth(int health) { mHealth = health; }
