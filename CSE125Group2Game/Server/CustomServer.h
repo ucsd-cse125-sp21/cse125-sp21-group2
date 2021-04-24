@@ -67,6 +67,8 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
                                            10, ObjectType::Player);
     logicServer->AddGameObject(newPlayer);
 
+    logicServer->players[numPlayers] = newPlayer;
+
     return true;
   }
 
@@ -90,9 +92,8 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
       } break;
 
       case CustomMsgTypes::MessageAll: {
-        // std::cout << "[" << client->GetID() << "]: Message All\n";
-
         // Construct a new message and send it to all clients
+        // std::cout << "Received message from client" << std::endl;
         olc::net::message<CustomMsgTypes> msg2;
         msg2.header.id = CustomMsgTypes::ServerMessage;
 
@@ -104,8 +105,6 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
                 i, serverToLogicID->find(client->GetID())->second);
           }
         }
-
-        // MessageAllClients(msg2, client);
 
       } break;
     }

@@ -21,7 +21,7 @@ class GameObject {
   GameObject(Transform* transform, char* name, int health);
 
   GameObject(Transform* transform, char* name, int health, ObjectType type);
-  
+
   ~GameObject();
 
   void setTransform(Transform* transform);
@@ -36,7 +36,7 @@ class GameObject {
 
   ObjectType getObjectType();
 
-  uint8_t* serializeInfo();
+  bool isModified = true;
 
  protected:
   Transform* mTransform;

@@ -82,6 +82,10 @@ void GameManager::Update() {
     keysPressed[GameObject::KEY_S] = glfwGetKey(mWindow, GLFW_KEY_S);
     keysPressed[GameObject::KEY_D] = glfwGetKey(mWindow, GLFW_KEY_D);
 
+    if (keysPressed[GameObject::KEY_S]) {
+      std::cout << "S has been pressed! Tick: " << GetTickCount() << std::endl;
+    }
+
     // 2) Call client update
     if (c.Update(keysPressed)) {
       break;
@@ -90,6 +94,9 @@ void GameManager::Update() {
     // 3) Call drawAll on scene graph
     RenderManager::get().beginRender();
     mCamera->use();
+
+    // std::cout << "S in update(): " << mPlayerTransform->getTranslation().y
+    //        << std::endl;
 
     // Loop through every child of the root and draw them
     // Note: This only draws the first layer of the scene graph
@@ -114,6 +121,8 @@ void GameManager::AddPlayer(int clientId) {
   // Create player and set it as first layer (child of root)
   Transform* playerTransform =
       new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+
+  mPlayerTransform = playerTransform;
 
   std::string clientName = "play000";
   clientName += std::to_string(clientId);

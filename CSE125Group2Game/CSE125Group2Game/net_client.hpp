@@ -21,15 +21,18 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     olc::net::message<CustomMsgTypes> msg;
     msg.header.id = CustomMsgTypes::MessageAll;
 
-    GameObject testObj(new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
-                                     glm::vec3(1, 1, 1)),
-                       (char*)"test", 12);
+    /*std::cout << "Sending message to the server! Current tick:"
+              << GetTickCount() << std::endl;*/
 
+    int sum = 0;
     for (int i = 0; i < 4; i++) {
+      sum += keysPressed[i];
       msg << keysPressed[i];
     }
 
-    Send(msg);
+    if (sum) {
+      Send(msg);
+    }
   }
 
   void Init(const std::string& address, int port) {
@@ -91,6 +94,8 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
               return false;
             }
 
+            // std::cout << "Received message from server!" << std::endl;
+
             char* data = (char*)malloc(MESSAGE_SIZE);
 
             for (int i = 0; i < MESSAGE_SIZE; i++) {
@@ -98,7 +103,15 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             }
 
             GameObject* obj = GameManager::getManager()->Unmarshal(data);
+            std::cout << "S in net_client:"
+                      << obj->getTransform()->getTranslation().y << std::endl;
+
             GameManager::getManager()->UpdateObject(obj);
+
+            // std::cout << "Done processing! Current tick:" << GetTickCount()
+            //       << std::endl;
+
+            free(data);
             delete obj;
 
           } break;

@@ -29,6 +29,8 @@ class GameManager {
 
   MeshLoader* mLoader;
 
+  Transform* mPlayerTransform;
+
  private:
   SceneGraphNode* findNode(GameObject* obj, SceneGraphNode* node);
 

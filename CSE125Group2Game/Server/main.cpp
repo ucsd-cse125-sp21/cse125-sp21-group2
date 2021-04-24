@@ -25,7 +25,10 @@ int main() {
   auto in = [](msd::channel<char *> &ch, CustomServer *netServer) {
     while (true) {
       // Read from channel and populate message
-      for (char *out : ch) {
+      for (int i = 0; i < ch.size(); i++) {
+        char *out;
+        out << ch;
+
         olc::net::message<CustomMsgTypes> msg;
         msg.header.id = CustomMsgTypes::ServerMessage;
 
@@ -34,7 +37,10 @@ int main() {
           msg << out[i];
         }
 
+        // std::cout << "Sending message to clients!" << std::endl;
         netServer->MessageAllClients(msg);
+
+        free(out);
       }
     }
   };

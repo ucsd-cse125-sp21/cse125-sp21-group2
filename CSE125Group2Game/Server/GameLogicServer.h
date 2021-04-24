@@ -42,6 +42,8 @@ class GameLogicServer {
 
   msd::channel<char*> mSendingBuffer;  // Queue for storing events to send
 
+  GameObject* players[MAX_PLAYERS];
+
  private:
   void SendInfo();
   char* MarshalInfo(GameObject* obj);

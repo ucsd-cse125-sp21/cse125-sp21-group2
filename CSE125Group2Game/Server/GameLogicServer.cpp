@@ -1,5 +1,7 @@
 ﻿#include "GameLogicServer.h"
 
+#include <Windows.h>
+
 GameLogicServer* GameLogicServer::mLogicServer;
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
@@ -75,47 +77,41 @@ void GameLogicServer::Update() {
 
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
-  Transform* playerTransform = NULL;
-
-  for (int i = 0; i < mWorld.size(); i++) {
-    // Find player1 gameobject
-    if (mWorld[i]->getName() == "play0000") {
-      playerTransform = mWorld[i]->getTransform();
-      break;
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (players[i] == NULL) {
+      continue;
     }
+
+    int vsp =
+        mKeyPresses[i][GameObject::KEY_W] - mKeyPresses[i][GameObject::KEY_S];
+
+    int hsp =
+        mKeyPresses[i][GameObject::KEY_D] - mKeyPresses[i][GameObject::KEY_A];
+
+    glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
+    if (hsp != 0 || vsp != 0)
+      velocity = glm::vec3(0.5) * glm::normalize(velocity);
+
+    std::string clientId = "play000";
+    clientId += std::to_string(i);
+
+    players[i]->getTransform()->addTranslation(velocity);
+
+    players[i]->isModified = glm::length(velocity) != 0;
   }
-
-  int vsp =
-      mKeyPresses[0][GameObject::KEY_W] - mKeyPresses[0][GameObject::KEY_S];
-
-  int hsp =
-      mKeyPresses[0][GameObject::KEY_D] - mKeyPresses[0][GameObject::KEY_A];
-
-  glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
-  if (hsp != 0 || vsp != 0)
-    velocity = glm::vec3(0.5) * glm::normalize(velocity);
-
-  for (int i = 0; i < mWorld.size(); i++) {
-    if (mWorld[i]->getObjectType() == ObjectType::Player) {
-      mWorld[i]->getTransform()->addTranslation(velocity);
-      break;
-    }
-  }
-  // playerTransform->addTranslation(velocity);
-
-  /*if (mKeyPresses[0] != 0) {
+  if (mKeyPresses[0][0] != 0) {
     std::cout << "W has been pressed!" << std::endl;
   }
 
-  if (mKeyPresses[1] != 0) {
+  if (mKeyPresses[0][1] != 0) {
     std::cout << "A has been pressed!" << std::endl;
   }
-  if (mKeyPresses[2] != 0) {
-    std::cout << "S has been pressed!" << std::endl;
+  if (mKeyPresses[0][2] != 0) {
+    std::cout << "S has been pressed! Tick: " << GetTickCount() << std::endl;
   }
-  if (mKeyPresses[3] != 0) {
+  if (mKeyPresses[0][3] != 0) {
     std::cout << "D has been pressed!" << std::endl;
-  }*/
+  }
 
   SendInfo();
 
@@ -165,10 +161,16 @@ void GameLogicServer::SendInfo() {
     if (mWorld[i]->getObjectType() == ObjectType::Player ||
         mWorld[i]->getObjectType() == ObjectType::Enemy ||
         mWorld[i]->getObjectType() == ObjectType::Projectile) {
+      if (!mWorld[i]->isModified) {
+        continue;
+      }
+
       char* data = MarshalInfo(mWorld[i]);  // Marshal data
 
       // Add message to queue
       data >> mSendingBuffer;
+
+      // free(data);
     }
   }
 }
