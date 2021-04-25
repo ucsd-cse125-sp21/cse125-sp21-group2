@@ -72,8 +72,6 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 
 void GameLogicServer::Update() {
   // TOOD: free ur damn memory
-  // TODO: create Enemy and Projectile Classes (child of GameObject)
-  // (server-side only)
 
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
@@ -82,11 +80,11 @@ void GameLogicServer::Update() {
       continue;
     }
 
-    int vsp =
-        mKeyPresses[i][GameObject::KEY_W] - mKeyPresses[i][GameObject::KEY_S];
+    int vsp = mKeyPresses[i][GameObject::FORWARD] -
+              mKeyPresses[i][GameObject::BACKWARD];
 
     int hsp =
-        mKeyPresses[i][GameObject::KEY_D] - mKeyPresses[i][GameObject::KEY_A];
+        mKeyPresses[i][GameObject::RIGHT] - mKeyPresses[i][GameObject::LEFT];
 
     glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
     if (hsp != 0 || vsp != 0)
@@ -169,8 +167,6 @@ void GameLogicServer::SendInfo() {
 
       // Add message to queue
       data >> mSendingBuffer;
-
-      // free(data);
     }
   }
 }

@@ -5,7 +5,7 @@
 
 enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
 
-#define NUM_KEYS 4
+#define NUM_KEYS 5
 #define NAME_LEN 8
 #define FLOAT_SIZE 4
 #define INT_SIZE sizeof(int)
@@ -13,10 +13,11 @@ enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
 
 class GameObject {
  public:
-  static const int KEY_W = 0;
-  static const int KEY_A = 1;
-  static const int KEY_S = 2;
-  static const int KEY_D = 3;
+  static const int FORWARD = 0;
+  static const int LEFT = 1;
+  static const int BACKWARD = 2;
+  static const int RIGHT = 3;
+  static const int SHOOT = 4;
 
   GameObject(Transform* transform, char* name, int health);
 

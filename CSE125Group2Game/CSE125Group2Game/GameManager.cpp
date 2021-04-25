@@ -77,10 +77,11 @@ void GameManager::Update() {
     glfwPollEvents();
 
     bool keysPressed[NUM_KEYS];
-    keysPressed[GameObject::KEY_W] = glfwGetKey(mWindow, GLFW_KEY_W);
-    keysPressed[GameObject::KEY_A] = glfwGetKey(mWindow, GLFW_KEY_A);
-    keysPressed[GameObject::KEY_S] = glfwGetKey(mWindow, GLFW_KEY_S);
-    keysPressed[GameObject::KEY_D] = glfwGetKey(mWindow, GLFW_KEY_D);
+    keysPressed[GameObject::FORWARD] = glfwGetKey(mWindow, FORWARD_KEY);
+    keysPressed[GameObject::LEFT] = glfwGetKey(mWindow, LEFT_KEY);
+    keysPressed[GameObject::BACKWARD] = glfwGetKey(mWindow, BACKWARD_KEY);
+    keysPressed[GameObject::RIGHT] = glfwGetKey(mWindow, RIGHT_KEY);
+    keysPressed[GameObject::SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
 
     // if (keysPressed[GameObject::KEY_S]) {
     //  std::cout << "S has been pressed! Tick: " << GetTickCount() <<
@@ -255,20 +256,20 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
   }
 
   switch (key) {
-    case GLFW_KEY_W:
-      GameManager::getManager()->mKeyPresses[GameObject::KEY_W] =
+    case GameManager::FORWARD_KEY:
+      GameManager::getManager()->mKeyPresses[GameObject::FORWARD] =
           action == GLFW_PRESS;
       break;
-    case GLFW_KEY_A:
-      GameManager::getManager()->mKeyPresses[GameObject::KEY_A] =
+    case GameManager::LEFT_KEY:
+      GameManager::getManager()->mKeyPresses[GameObject::LEFT] =
           action == GLFW_PRESS;
       break;
-    case GLFW_KEY_S:
-      GameManager::getManager()->mKeyPresses[GameObject::KEY_S] =
+    case GameManager::BACKWARD_KEY:
+      GameManager::getManager()->mKeyPresses[GameObject::BACKWARD] =
           action == GLFW_PRESS;
       break;
-    case GLFW_KEY_D:
-      GameManager::getManager()->mKeyPresses[GameObject::KEY_D] =
+    case GameManager::RIGHT_KEY:
+      GameManager::getManager()->mKeyPresses[GameObject::RIGHT] =
           action == GLFW_PRESS;
       break;
     case GLFW_KEY_SPACE:
