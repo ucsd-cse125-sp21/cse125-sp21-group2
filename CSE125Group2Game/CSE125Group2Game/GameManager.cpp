@@ -82,9 +82,10 @@ void GameManager::Update() {
     keysPressed[GameObject::KEY_S] = glfwGetKey(mWindow, GLFW_KEY_S);
     keysPressed[GameObject::KEY_D] = glfwGetKey(mWindow, GLFW_KEY_D);
 
-    if (keysPressed[GameObject::KEY_S]) {
-      std::cout << "S has been pressed! Tick: " << GetTickCount() << std::endl;
-    }
+    // if (keysPressed[GameObject::KEY_S]) {
+    //  std::cout << "S has been pressed! Tick: " << GetTickCount() <<
+    //  std::endl;
+    //}
 
     // 2) Call client update
     if (c.Update(keysPressed)) {

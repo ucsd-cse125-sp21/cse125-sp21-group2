@@ -99,19 +99,19 @@ void GameLogicServer::Update() {
 
     players[i]->isModified = glm::length(velocity) != 0;
   }
-  if (mKeyPresses[0][0] != 0) {
-    std::cout << "W has been pressed!" << std::endl;
-  }
+  // if (mKeyPresses[0][0] != 0) {
+  //  std::cout << "W has been pressed!" << std::endl;
+  //}
 
-  if (mKeyPresses[0][1] != 0) {
-    std::cout << "A has been pressed!" << std::endl;
-  }
-  if (mKeyPresses[0][2] != 0) {
-    std::cout << "S has been pressed! Tick: " << GetTickCount() << std::endl;
-  }
-  if (mKeyPresses[0][3] != 0) {
-    std::cout << "D has been pressed!" << std::endl;
-  }
+  // if (mKeyPresses[0][1] != 0) {
+  //  std::cout << "A has been pressed!" << std::endl;
+  //}
+  // if (mKeyPresses[0][2] != 0) {
+  //  std::cout << "S has been pressed! Tick: " << GetTickCount() << std::endl;
+  //}
+  // if (mKeyPresses[0][3] != 0) {
+  //  std::cout << "D has been pressed!" << std::endl;
+  //}
 
   SendInfo();
 
