@@ -157,6 +157,7 @@
     <ClCompile Include="ServerLoader.cpp" />
     <ClCompile Include="GameLogicServer.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Projectile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Shared\GameObject.h" />

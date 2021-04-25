@@ -91,7 +91,7 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
         client->Send(msg);
       } break;
 
-      case CustomMsgTypes::MessageAll: {
+      case CustomMsgTypes::ClientMessage: {
         // Construct a new message and send it to all clients
         // std::cout << "Received message from client" << std::endl;
         olc::net::message<CustomMsgTypes> msg2;
