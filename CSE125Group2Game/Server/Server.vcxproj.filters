@@ -41,7 +41,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CustomServer.h">
+    <ClInclude Include="NetworkServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ServerGraphNode.h">

@@ -9,28 +9,33 @@
 #include "olc_net.h"
 #include "server_helper.h"
 
-class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
+class NetworkServer : public olc::net::server_interface<CustomMsgTypes> {
  public:
-  CustomServer(uint16_t nPort)
+  NetworkServer(uint16_t nPort)
       : olc::net::server_interface<CustomMsgTypes>(nPort) {}
 
-  static CustomServer* GetCustomServer() {
-    // TODO: MAKE SINGLETON AND UPDATE PLAYER COUNT
-    uint16_t port = DEFAULT_SERVER_PORT;
-    std::string config_field("port");
+  static NetworkServer* GetNetworkServer() {
+    // TODO: UPDATE PLAYER COUNT
 
-    std::string str_port = server_read_config_file(config_field, CONFIG_FILE);
+    if (!mNetServer) {
+      uint16_t port = DEFAULT_SERVER_PORT;
+      std::string config_field("port");
 
-    if (str_port.compare(std::string()) == 0) {
-      std::cout << "server couldn't read config file, using default port\n";
-    } else {
-      int temp_int(std::stoi(str_port));
-      if (temp_int <= static_cast<int>(UINT16_MAX) && temp_int >= 0) {
-        port = static_cast<uint16_t>(temp_int);
+      std::string str_port = server_read_config_file(config_field, CONFIG_FILE);
+
+      if (str_port.compare(std::string()) == 0) {
+        std::cout << "server couldn't read config file, using default port\n";
+      } else {
+        int temp_int(std::stoi(str_port));
+        if (temp_int <= static_cast<int>(UINT16_MAX) && temp_int >= 0) {
+          port = static_cast<uint16_t>(temp_int);
+        }
       }
+
+      mNetServer = new NetworkServer(port);
     }
 
-    return new CustomServer(port);
+    return mNetServer;
   }
 
  protected:
@@ -109,4 +114,7 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes> {
       } break;
     }
   }
+
+ private:
+  static NetworkServer* mNetServer;
 };

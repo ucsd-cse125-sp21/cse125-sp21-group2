@@ -5,24 +5,27 @@
 #include <iostream>
 #include <thread>
 
-#include "CustomServer.h"
 #include "GameLogicServer.h"
+#include "NetworkServer.h"
 
 using namespace std;
+
+NetworkServer *NetworkServer::mNetServer;
+
 int main() {
   DWORD before, after, diff;
 
-  CustomServer *netServer = CustomServer::GetCustomServer();
+  NetworkServer *netServer = NetworkServer::GetNetworkServer();
   netServer->Start();
 
   GameLogicServer *logicServer = GameLogicServer::getLogicServer();
 
   logicServer->PrintWorld();
 
-  std::thread netServerThread(&(CustomServer::Update), netServer, -1, true);
+  std::thread netServerThread(&(NetworkServer::Update), netServer, -1, true);
 
   // Write
-  auto in = [](msd::channel<char *> &ch, CustomServer *netServer) {
+  auto in = [](msd::channel<char *> &ch, NetworkServer *netServer) {
     while (true) {
       // Read from channel and populate message
       for (int i = 0; i < ch.size(); i++) {
