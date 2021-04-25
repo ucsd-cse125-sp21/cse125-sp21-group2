@@ -25,7 +25,7 @@ int main() {
   std::thread netServerThread(&(NetworkServer::Update), netServer, -1, true);
 
   // Write
-  auto in = [](msd::channel<char *> &ch, NetworkServer *netServer) {
+  auto sendMessage = [](msd::channel<char *> &ch, NetworkServer *netServer) {
     while (true) {
       // Read from channel and populate message
       for (int i = 0; i < ch.size(); i++) {
@@ -49,8 +49,8 @@ int main() {
   };
 
   // Spawn thread to sendMessages
-  std::thread sendMessages =
-      std::thread{in, std::ref(logicServer->mSendingBuffer), netServer};
+  std::thread sendMessagesThread = std::thread{
+      sendMessage, std::ref(logicServer->mSendingBuffer), netServer};
 
   // Runs at tickrate and performs game logic
   while (1) {
