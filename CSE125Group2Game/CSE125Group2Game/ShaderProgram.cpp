@@ -5,6 +5,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "Utils.h"
+
 /**
  * Constructs a new shader program, using the vertex and fragment shaders
  * referred to by the passed in paths.
@@ -34,7 +36,7 @@ ShaderProgram::ShaderProgram(const std::string& vertexShaderPath,
   if (!success) {
     glGetShaderInfoLog(vertId, 512, NULL, infoLog);
     std::cerr << "Shader Compilation Failed\n" << infoLog << std::endl;
-    throw std::exception("vert comp failed");
+    CRASH("Vertex shader compilation failed!");
   }
 
   // read the fragment shader from file
@@ -53,7 +55,7 @@ ShaderProgram::ShaderProgram(const std::string& vertexShaderPath,
   if (!success) {
     glGetShaderInfoLog(fragId, 512, NULL, infoLog);
     std::cerr << "Shader Compilation Failed\n" << infoLog << std::endl;
-    throw std::exception("frag comp failed");
+    CRASH("Fragment shader compilation failed!");
   }
 
   // link the shader program
@@ -66,7 +68,7 @@ ShaderProgram::ShaderProgram(const std::string& vertexShaderPath,
   if (!success) {
     glGetProgramInfoLog(mId, 512, NULL, infoLog);
     std::cerr << "Shader Link Failed\n" << infoLog << std::endl;
-    throw std::exception("program link failed");
+    CRASH("Shader program link failed!");
   }
 
   // delete shader objects, unnecessary now

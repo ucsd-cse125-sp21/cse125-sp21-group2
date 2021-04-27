@@ -9,6 +9,8 @@
 #include <glm/gtx/quaternion.hpp>
 #include <iostream>
 
+#include "Utils.h"
+
 Model* Model::Cube(Transform* transform, MeshLoader& loader) {
   std::vector<glm::vec3> positions{
       // front
@@ -139,8 +141,7 @@ Model::Model(const std::string& filePath, Transform* transform,
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
       !scene->mRootNode) {
-    std::cout << "Error Assimp loading: " << filePath << std::endl;
-    throw std::exception("failed to load file...");
+    CRASH("Failed to load model " + filePath + "!");
   }
 
   mMeshes.reserve(scene->mNumMeshes);

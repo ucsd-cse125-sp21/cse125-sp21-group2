@@ -9,9 +9,6 @@
 #include "SceneGraphNode.h"
 #include "json.hpp"
 
-// actually...
-#define ASSET(name) ("Assets/" + std::string(name))
-
 class SceneLoader {
  public:
   SceneLoader(std::string fileName, MeshLoader& loader);

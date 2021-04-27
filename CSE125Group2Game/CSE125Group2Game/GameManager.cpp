@@ -1,5 +1,6 @@
 ﻿#include "GameManager.h"
 
+#include "Utils.h"
 #include "client_helper.h"
 
 // Predefinitions to make compiler happy
@@ -38,8 +39,8 @@ GameManager* GameManager::getManager() {
     // create window object
     GLFWwindow* window = glfwCreateWindow(800, 600, "Game", NULL, NULL);
     if (window == NULL) {
-      std::cout << "Failed to create window..." << std::endl;
       glfwTerminate();
+      CRASH("Failed to create glfw window...");
       return NULL;
     }
 
