@@ -12,6 +12,7 @@
 class GameManager {
  public:
   GameManager(GLFWwindow* window);
+  ~GameManager();
 
   void Update();
 
@@ -23,9 +24,12 @@ class GameManager {
 
   bool mKeyPresses[NUM_KEYS];
 
+  void ResizeCallback(int width, int height);
+
  private:
   SceneGraphNode* findNode(GameObject* obj, SceneGraphNode* node);
 
+  std::unique_ptr<RenderManager> mpRenderManager;
   Camera* mCamera;
   SceneGraphNode* mSceneRoot;
   GLFWwindow* mWindow;
