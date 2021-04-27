@@ -17,6 +17,7 @@ ServerGraphNode* ServerGraphNode::getRoot() {
     root = new ServerGraphNode(
         NULL, new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
                             glm::vec3(1, 1, 1)));
+    root->setName((char*)"root0000");
   }
 
   return root;

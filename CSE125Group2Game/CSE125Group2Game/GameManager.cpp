@@ -122,7 +122,8 @@ void GameManager::Update() {
 void GameManager::AddPlayer(int clientId) {
   // Create player and set it as first layer (child of root)
   Transform* playerTransform =
-      new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+      new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1),
+                    glm::vec3(1, 1, 1));
 
   mPlayerTransform = playerTransform;
 

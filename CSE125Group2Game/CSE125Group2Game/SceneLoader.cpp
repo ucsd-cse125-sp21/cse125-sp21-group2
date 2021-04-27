@@ -111,30 +111,25 @@ SceneLoader::SceneLoader(std::string fileName, MeshLoader& loader) {
     float zScale = 1;
     if (!zScaleS.is_null()) zScale = zScaleS;
 
-    // Assign the bbLeft
-    nlohmann::json& bbLeftS = object["bb_left"];
-    float bbLeft = 0;
-    if (!bbLeftS.is_null()) bbLeft = bbLeftS;
-
     // Assign the bbRight
-    nlohmann::json& bbRightS = object["bb_right"];
-    float bbRight = 0;
-    if (!bbRightS.is_null()) bbRight = bbRightS;
+    nlohmann::json& bbLengthS = object["bb_length"];
+    float bbLength = 0;
+    if (!bbLengthS.is_null()) bbLength = bbLengthS;
 
     // Assign the bbTop
-    nlohmann::json& bbTopS = object["bb_top"];
-    float bbTop = 0;
-    if (!bbTopS.is_null()) bbTop = bbTopS;
+    nlohmann::json& bbHeightS = object["bb_height"];
+    float bbHeight = 0;
+    if (!bbHeightS.is_null()) bbHeight = bbHeightS;
 
     // Assign the bbBottom
-    nlohmann::json& bbBottomS = object["bb_bottom"];
-    float bbBottom = 0;
-    if (!bbBottomS.is_null()) bbBottom = bbBottomS;
+    nlohmann::json& bbWidthS = object["bb_width"];
+    float bbWidth = 0;
+    if (!bbWidthS.is_null()) bbWidth = bbWidthS;
 
     Transform* transform =
         new Transform(glm::vec3(xPos, yPos, zPos), glm::vec3(xRot, yRot, zRot),
                       glm::vec3(xScale, yScale, zScale),
-                      glm::vec4(bbLeft, bbRight, bbTop, bbBottom));
+                      glm::vec3(bbLength, bbHeight, bbWidth));
 
     // Only assign mesh if this is client code
     // Assign the mesh

@@ -2,6 +2,8 @@
 
 #include <Windows.h>
 
+#include <limits>
+
 GameLogicServer* GameLogicServer::mLogicServer;
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
@@ -71,10 +73,17 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 }
 
 void GameLogicServer::Update() {
-  // TOOD: free ur damn memory
-
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
+  // Update player locations
+  MovePlayers();
+
+  SendInfo();
+
+  ResetKeyPresses();
+}
+
+void GameLogicServer::MovePlayers() {
   for (int i = 0; i < MAX_PLAYERS; i++) {
     if (players[i] == NULL) {
       continue;
@@ -88,15 +97,34 @@ void GameLogicServer::Update() {
 
     glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
     if (hsp != 0 || vsp != 0)
-      velocity = glm::vec3(0.5) * glm::normalize(velocity);
+      velocity = glm::vec3(0.2) * glm::normalize(velocity);
 
     std::string clientId = "play000";
     clientId += std::to_string(i);
 
+    // Collision detection
     players[i]->getTransform()->addTranslation(velocity);
 
-    players[i]->isModified = glm::length(velocity) != 0;
+    if (DoesCollide(players[i])) {
+      // Remove velocity if object collides
+      players[i]->getTransform()->addTranslation(-velocity);
+
+      // Step player towards collision boundary
+      while (!DoesCollide(players[i])) {
+        players[i]->getTransform()->addTranslation(glm::vec3(0.1, 0.1, 0.1) *
+                                                   velocity);
+      }
+
+      // Move player 0.1 units away from collision
+      players[i]->getTransform()->addTranslation(glm::vec3(-0.1, -0.1, -0.1) *
+                                                 velocity);
+
+      std::cout << "Collision!" << std::endl;
+    } else {
+      players[i]->isModified = glm::length(velocity) != 0;
+    }
   }
+
   // if (mKeyPresses[0][0] != 0) {
   //  std::cout << "W has been pressed!" << std::endl;
   //}
@@ -110,10 +138,129 @@ void GameLogicServer::Update() {
   // if (mKeyPresses[0][3] != 0) {
   //  std::cout << "D has been pressed!" << std::endl;
   //}
+}
 
-  SendInfo();
+bool GameLogicServer::DoesCollide(GameObject* obj) {
+  // For every gameobject in the world, check if this object collides with
+  // anything
 
-  ResetKeyPresses();
+  // get 8 points of A in world space
+  std::vector<glm::vec3> A = GetCorners(obj);
+
+  // TODO: need to convert everything into player model coordinates then do this
+  // method (similar to ray tracing in CSE 167)
+
+  for (int i = 0; i < mWorld.size(); i++) {
+    // TODO: only continue if this is the same object (use name)
+    if (mWorld[i]->getObjectType() != ObjectType::Default ||
+        !strncmp(mWorld[i]->getName(), "root0000", NAME_LEN)) {
+      continue;
+    }
+
+    std::vector<float> B = GetMinMax(mWorld[i]);
+
+    /*std::cout << "MinX: " << B[MIN_X] << std::endl;
+    std::cout << "MinY: " << B[MIN_Y] << std::endl;
+    std::cout << "MinZ: " << B[MIN_Z] << std::endl;
+    std::cout << "MaxX: " << B[MAX_X] << std::endl;
+    std::cout << "MaxY: " << B[MAX_Y] << std::endl;
+    std::cout << "MaxZ: " << B[MAX_Z] << std::endl;*/
+
+    // for every point of A, is it in B?
+    for (int j = 0; j < 8; j++) {
+      /*std::cout << "A point " << j << " x cordinate:" << A[j].x << std::endl;
+      std::cout << "A point " << j << " y cordinate:" << A[j].y << std::endl;
+      std::cout << "A point " << j << " z cordinate:" << A[j].z << std::endl;*/
+
+      if ((A[j].x >= B[MIN_X] && A[j].x <= B[MAX_X]) &&
+          (A[j].y >= B[MIN_Y] && A[j].y <= B[MAX_Y]) &&
+          (A[j].z >= B[MIN_Z] && A[j].z <= B[MAX_Z])) {
+        // A intersects B
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+std::vector<float> GameLogicServer::GetMinMax(GameObject* obj) {
+  std::vector<glm::vec3> vertices = GetCorners(obj);
+
+  float minX = FLT_MAX, minY = FLT_MAX, minZ = FLT_MAX;
+  float maxX = -FLT_MAX, maxY = -FLT_MAX, maxZ = -FLT_MAX;
+
+  for (int j = 0; j < 8; j++) {
+    if (vertices[j].x < minX) {
+      minX = vertices[j].x;
+    }
+
+    if (vertices[j].y < minY) {
+      minY = vertices[j].y;
+    }
+
+    if (vertices[j].z < minZ) {
+      minZ = vertices[j].z;
+    }
+
+    if (vertices[j].x > maxX) {
+      maxX = vertices[j].x;
+    }
+
+    if (vertices[j].y > maxY) {
+      maxY = vertices[j].y;
+    }
+
+    if (vertices[j].z > maxZ) {
+      maxZ = vertices[j].z;
+    }
+  }
+
+  std::vector<float> result = {minX, minY, minZ, maxX, maxY, maxZ};
+
+  return result;
+}
+
+std::vector<glm::vec3> GameLogicServer::GetCorners(GameObject* obj) {
+  // TODO: Consider rotation of object when doing bounding box corners
+  // TODO: also scale :D
+  glm::vec3 center = obj->getTransform()->getTranslation();
+  glm::vec3 boundingBox = obj->getTransform()->getBBox();
+
+  std::vector<glm::vec3> vertices;
+  vertices.push_back(glm::vec3(center.x - (boundingBox.x / 2),
+                               center.y - (boundingBox.y / 2),
+                               center.z - (boundingBox.z / 2)));
+
+  vertices.push_back(glm::vec3(center.x + (boundingBox.x / 2),
+                               center.y - (boundingBox.y / 2),
+                               center.z - (boundingBox.z / 2)));
+
+  vertices.push_back(glm::vec3(center.x - (boundingBox.x / 2),
+                               center.y + (boundingBox.y / 2),
+                               center.z - (boundingBox.z / 2)));
+
+  vertices.push_back(glm::vec3(center.x + (boundingBox.x / 2),
+                               center.y + (boundingBox.y / 2),
+                               center.z - (boundingBox.z / 2)));
+
+  vertices.push_back(glm::vec3(center.x - (boundingBox.x / 2),
+                               center.y - (boundingBox.y / 2),
+                               center.z + (boundingBox.z / 2)));
+
+  vertices.push_back(glm::vec3(center.x + (boundingBox.x / 2),
+                               center.y - (boundingBox.y / 2),
+                               center.z + (boundingBox.z / 2)));
+
+  vertices.push_back(glm::vec3(center.x - (boundingBox.x / 2),
+                               center.y + (boundingBox.y / 2),
+                               center.z + (boundingBox.z / 2)));
+
+  vertices.push_back(glm::vec3(center.x + (boundingBox.x / 2),
+                               center.y + (boundingBox.y / 2),
+                               center.z + (boundingBox.z / 2)));
+
+  return vertices;
 }
 
 void GameLogicServer::PrintWorld() {
