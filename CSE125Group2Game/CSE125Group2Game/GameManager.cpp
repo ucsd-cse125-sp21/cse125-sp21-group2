@@ -18,13 +18,11 @@ GameManager::GameManager(GLFWwindow* window)
   mCamera = new Camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
                        glm::vec3(0.0f, 1.0f, 0.0));
 
-  mSceneRoot = SceneGraphNode::getRoot();
-
   mLoader = new MeshLoader();
   // RenderManager& renderMananger = RenderManager::get();
   // renderMananger.init(mWindow);
   glfwSetWindowUserPointer(mWindow, this);
-  SceneLoader sl("../Shared/scene.json", *mLoader);
+  mScene = SceneLoader::LoadFromFile("../Shared/scene.json", *mLoader);
 }
 
 GameManager* GameManager::getManager() {
@@ -83,7 +81,8 @@ void GameManager::Update() {
   Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
                            mPlayerTransform, *mLoader);
 
-  SceneGraphNode playerNode(mSceneRoot, playerObject, model);
+  // TODO: bruh
+  SceneGraphNode playerNode(mScene.getRoot(), playerObject, model);
 
   DWORD before, after, diff;
 
@@ -108,12 +107,8 @@ void GameManager::Update() {
     mpRenderManager->beginRender();
     mCamera->use();
 
-    // Loop through every child of the root and draw them
-    // Note: This only draws the first layer of the scene graph
-    for (SceneGraphNode* child : mSceneRoot->getChildren()) {
-      // cout << child->getTransform()->getTranslation().x << endl;
-      mpRenderManager->draw(*child->getMesh());
-    }
+    // draw scene
+    mpRenderManager->draw(mScene);
 
     glfwSwapBuffers(mWindow);
 
@@ -127,7 +122,7 @@ void GameManager::Update() {
 }
 
 void GameManager::UpdateObject(GameObject* obj) {
-  SceneGraphNode* foundNode = findNode(obj, SceneGraphNode::getRoot());
+  SceneGraphNode* foundNode = findNode(obj, mScene.getRoot());
   GameObject* foundObject;
 
   // Object does not exist, create it
@@ -137,7 +132,7 @@ void GameManager::UpdateObject(GameObject* obj) {
 
     // TODO: if else for model based on enum (constructor adds itself as child
     // of parent)
-    new SceneGraphNode(SceneGraphNode::getRoot(), foundObject,
+    new SceneGraphNode(mScene.getRoot(), foundObject,
                        Model::Cube(foundObject->getTransform(), *mLoader));
   }
 

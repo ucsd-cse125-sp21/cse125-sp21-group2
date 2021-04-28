@@ -1,33 +1,20 @@
 ﻿#include "SceneGraphNode.h"
 
-SceneGraphNode* SceneGraphNode::root;
-
+// TODO: This interface is kinda weird. It isn't very clear that this ctor also
+// adds the new node into the child list of the parent.
 SceneGraphNode::SceneGraphNode(SceneGraphNode* parent, GameObject* object)
-    : mParent(parent), mObject(object), mMesh(NULL) {
+    : mParent(parent), mObject(object), mModel(NULL) {
   if (parent != NULL) {
     parent->addChild(this);
   }
 }
 
 SceneGraphNode::SceneGraphNode(SceneGraphNode* parent, GameObject* object,
-                               Model* mesh)
-    : mParent(parent), mObject(object), mMesh(mesh) {
+                               Model* model)
+    : mParent(parent), mObject(object), mModel(model) {
   if (parent != NULL) {
     parent->addChild(this);
   }
-}
-
-SceneGraphNode* SceneGraphNode::getRoot() {
-  if (!root) {
-    // Create a root node at (0,0,0) with no rotation and 1x scale
-    root = new SceneGraphNode(
-        NULL,
-        new GameObject(new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
-                                     glm::vec3(1, 1, 1)),
-                       (char*)"root0000", 0));
-  }
-
-  return root;
 }
 
 void SceneGraphNode::addChild(SceneGraphNode* child) {
@@ -47,10 +34,12 @@ void SceneGraphNode::removeChild(SceneGraphNode* child) {
   return;
 }
 
-GameObject* SceneGraphNode::getObject() { return mObject; }
+GameObject* SceneGraphNode::getObject() const { return mObject; }
 
-Model* SceneGraphNode::getMesh() { return mMesh; }
+Model* SceneGraphNode::getModel() const { return mModel; }
 
-std::vector<SceneGraphNode*> SceneGraphNode::getChildren() { return mChildren; }
+std::vector<SceneGraphNode*> SceneGraphNode::getChildren() const {
+  return mChildren;
+}
 
 SceneGraphNode* SceneGraphNode::getParent() { return mParent; }

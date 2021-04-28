@@ -8,6 +8,7 @@
 
 #include "MeshLoader.h"
 #include "Model.h"
+#include "SceneGraph.h"
 #include "ShaderProgram.h"
 
 // singleton
@@ -23,6 +24,8 @@ class RenderManager {
 
   void draw(const Mesh& mesh, const Material& mat);
   void draw(const Model& model);
+  void draw(const SceneGraph& graph);
+  void draw(const SceneGraphNode& node);
 
   void setViewportSize(int width, int height);
 

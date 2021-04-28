@@ -86,6 +86,23 @@ void RenderManager::draw(const Model& model) {
   }
 }
 
+void RenderManager::draw(const SceneGraph& graph) {
+  auto root = graph.getRoot();
+  draw(*root);
+}
+
+// TODO: fix scene graph, then this will need to change.
+void RenderManager::draw(const SceneGraphNode& node) {
+  auto model = node.getModel();
+  if (model) {
+    draw(*model);
+  }
+
+  for (auto child : node.getChildren()) {
+    draw(*child);
+  }
+}
+
 /**
  * Used to set the viewport size. Should be called any time the window size
  * changes.

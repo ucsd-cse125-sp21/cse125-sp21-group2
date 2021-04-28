@@ -31,7 +31,7 @@ class GameManager {
 
   std::unique_ptr<RenderManager> mpRenderManager;
   Camera* mCamera;
-  SceneGraphNode* mSceneRoot;
+  SceneGraph mScene;
   GLFWwindow* mWindow;
   MeshLoader* mLoader;
   Transform* mPlayerTransform;

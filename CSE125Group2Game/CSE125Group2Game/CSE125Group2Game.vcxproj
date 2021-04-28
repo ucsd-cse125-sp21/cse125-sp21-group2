@@ -164,6 +164,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="RenderManager.cpp" />
+    <ClCompile Include="SceneGraph.cpp" />
     <ClCompile Include="SceneGraphNode.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="net_client.hpp" />
     <ClInclude Include="RenderManager.h" />
+    <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="SceneGraphNode.h" />
     <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="Utils.h" />

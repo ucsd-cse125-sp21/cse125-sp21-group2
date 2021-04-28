@@ -9,7 +9,8 @@
  *
  * @param fileName The path to the scene file to be loaded.
  */
-SceneLoader::SceneLoader(std::string fileName, MeshLoader& loader) {
+SceneGraph SceneLoader::LoadFromFile(const std::string& fileName,
+                                     MeshLoader& loader) {
   // Open file
   std::ifstream file(fileName);
 
@@ -28,6 +29,8 @@ SceneLoader::SceneLoader(std::string fileName, MeshLoader& loader) {
                obj_file = empty object
   */
 
+  SceneGraph graph;
+
   int count = 0;
   for (nlohmann::json& object : j["scene"]) {
     count++;
@@ -40,7 +43,7 @@ SceneLoader::SceneLoader(std::string fileName, MeshLoader& loader) {
       std::cout << "Error: object " << count << " is missing a name."
                 << std::endl;
       continue;
-    } else if (mObjects.find(name) != mObjects.end()) {
+    } else if (graph.mNameMapping.find(name) != graph.mNameMapping.end()) {
       // If the name already exists, throw an error
       std::cout << "Error: object " << count
                 << " has a duplicate name: " << name << std::endl;
@@ -51,21 +54,21 @@ SceneLoader::SceneLoader(std::string fileName, MeshLoader& loader) {
     // Get the name of the parent node
     nlohmann::json& parentName = object["parent_name"];
 
-    SceneGraphNode* parentNode = SceneGraphNode::getRoot();
+    SceneGraphNode* parentNode = graph.getRoot();
 
     // Set the parent if defined
     if (!parentName.is_null() && parentName != "root") {
       std::cout << "Here" << std::endl;
-      auto value = mObjects.find(parentName);
+      auto value = graph.getByName(parentName);
 
       // If the parent node hasn't been added yet, throw and error
-      if (value == mObjects.end()) {
+      if (value == nullptr) {
         std::cout << "Error: parent of " << name << " does not exist."
                   << std::endl;
         continue;
       }
 
-      parentNode = value->second;
+      parentNode = value;
     }
 
     // Assign the xPos
@@ -155,7 +158,10 @@ SceneLoader::SceneLoader(std::string fileName, MeshLoader& loader) {
 
     GameObject* obj = new GameObject(transform, ((std::string)name).data(), 1);
 
+    // add node into the graph
     SceneGraphNode* node = new SceneGraphNode(parentNode, obj, mesh);
-    mObjects.insert(std::make_pair(name, node));
+    graph.mNameMapping.insert(std::make_pair(name, node));
   }
+
+  return graph;
 }
