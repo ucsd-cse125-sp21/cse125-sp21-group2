@@ -9,10 +9,10 @@ class Transform {
   Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale);
 
   Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale,
-            glm::vec4 boundingBox);
+            glm::vec3 boundingBox);
 
   Transform(glm::vec3 translation, glm::quat rotation, glm::vec3 scale,
-            glm::vec4 boundingBox);
+            glm::vec3 boundingBox);
 
   void addRotation(glm::vec3 degrees);
 
@@ -38,17 +38,15 @@ class Transform {
 
   glm::mat4 getModel();
 
-  glm::vec4 getBBox();
+  glm::vec3 getBBox();
 
  private:
   glm::vec3 mTranslation;
   glm::quat mRotation;
   glm::vec3 mScale;
 
-  float mBBLeft;
-  float mBBRight;
-  float mBBTop;
-  float mBBBottom;
+  // Length, height, width
+  glm::vec3 mBoundingBox;
 
   glm::mat4 mModel;
 

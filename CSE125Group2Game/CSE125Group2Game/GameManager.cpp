@@ -69,21 +69,6 @@ void GameManager::Update() {
   CustomClient c;
   c.Init(host, port);
 
-  // Create player and set it as first layer (child of root)
-  Transform playerTransform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
-                            glm::vec3(1, 1, 1));
-
-  mPlayerTransform = &playerTransform;
-
-  GameObject* playerObject =
-      new GameObject(&playerTransform, (char*)"play0005", 10);
-
-  Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
-                           mPlayerTransform, *mLoader);
-
-  // TODO: bruh
-  SceneGraphNode playerNode(mScene.getRoot(), playerObject, model);
-
   DWORD before, after, diff;
 
   while (!glfwWindowShouldClose(mWindow)) {
@@ -93,10 +78,16 @@ void GameManager::Update() {
     glfwPollEvents();
 
     bool keysPressed[NUM_KEYS];
-    keysPressed[GameObject::KEY_W] = glfwGetKey(mWindow, GLFW_KEY_W);
-    keysPressed[GameObject::KEY_A] = glfwGetKey(mWindow, GLFW_KEY_A);
-    keysPressed[GameObject::KEY_S] = glfwGetKey(mWindow, GLFW_KEY_S);
-    keysPressed[GameObject::KEY_D] = glfwGetKey(mWindow, GLFW_KEY_D);
+    keysPressed[GameObject::FORWARD] = glfwGetKey(mWindow, FORWARD_KEY);
+    keysPressed[GameObject::LEFT] = glfwGetKey(mWindow, LEFT_KEY);
+    keysPressed[GameObject::BACKWARD] = glfwGetKey(mWindow, BACKWARD_KEY);
+    keysPressed[GameObject::RIGHT] = glfwGetKey(mWindow, RIGHT_KEY);
+    keysPressed[GameObject::SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
+
+    // if (keysPressed[GameObject::KEY_S]) {
+    //  std::cout << "S has been pressed! Tick: " << GetTickCount() <<
+    //  std::endl;
+    //}
 
     // 2) Call client update
     if (c.Update(keysPressed)) {
@@ -121,6 +112,28 @@ void GameManager::Update() {
   glfwTerminate();
 }
 
+void GameManager::AddPlayer(int clientId) {
+  // Create player and set it as first layer (child of root)
+  Transform* playerTransform =
+      new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1),
+                    glm::vec3(1, 1, 1));
+
+  mPlayerTransform = playerTransform;
+
+  std::string clientName = "play000";
+  clientName += std::to_string(clientId);
+
+  GameObject* playerObject =
+      new GameObject(playerTransform, (char*)clientName.c_str(), 10);
+
+  // Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+  //                         playerTransform, *mLoader);
+  Model* model = Model::Cube(playerTransform, *mLoader);
+
+  SceneGraphNode* playerNode =
+      new SceneGraphNode(mScene.getRoot(), playerObject, model);
+}
+
 void GameManager::UpdateObject(GameObject* obj) {
   SceneGraphNode* foundNode = findNode(obj, mScene.getRoot());
   GameObject* foundObject;
@@ -132,8 +145,9 @@ void GameManager::UpdateObject(GameObject* obj) {
 
     // TODO: if else for model based on enum (constructor adds itself as child
     // of parent)
-    new SceneGraphNode(mScene.getRoot(), foundObject,
-                       Model::Cube(foundObject->getTransform(), *mLoader));
+    foundNode =
+        new SceneGraphNode(mScene.getRoot(), foundObject,
+                           Model::Cube(foundObject->getTransform(), *mLoader));
   }
 
   // Update object
@@ -222,6 +236,8 @@ GameObject* GameManager::Unmarshal(char* data) {
   return obj;
 }
 
+void GameManager::setClientID(int id) { mClientId = id; }
+
 void GameManager::ResizeCallback(int width, int height) {
   mpRenderManager->setViewportSize(width, height);
 }
@@ -238,20 +254,20 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
   }
 
   switch (key) {
-    case GLFW_KEY_W:
-      GameManager::getManager()->mKeyPresses[GameObject::KEY_W] =
+    case GameManager::FORWARD_KEY:
+      GameManager::getManager()->mKeyPresses[GameObject::FORWARD] =
           action == GLFW_PRESS;
       break;
-    case GLFW_KEY_A:
-      GameManager::getManager()->mKeyPresses[GameObject::KEY_A] =
+    case GameManager::LEFT_KEY:
+      GameManager::getManager()->mKeyPresses[GameObject::LEFT] =
           action == GLFW_PRESS;
       break;
-    case GLFW_KEY_S:
-      GameManager::getManager()->mKeyPresses[GameObject::KEY_S] =
+    case GameManager::BACKWARD_KEY:
+      GameManager::getManager()->mKeyPresses[GameObject::BACKWARD] =
           action == GLFW_PRESS;
       break;
-    case GLFW_KEY_D:
-      GameManager::getManager()->mKeyPresses[GameObject::KEY_D] =
+    case GameManager::RIGHT_KEY:
+      GameManager::getManager()->mKeyPresses[GameObject::RIGHT] =
           action == GLFW_PRESS;
       break;
     case GLFW_KEY_SPACE:
