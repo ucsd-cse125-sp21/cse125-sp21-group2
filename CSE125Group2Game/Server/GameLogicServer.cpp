@@ -253,40 +253,49 @@ std::vector<glm::vec3> GameLogicServer::GetCorners(GameObject* obj) {
   // TODO: Consider rotation of object when doing bounding box corners
   // TODO: also scale :D
   glm::vec3 center = obj->getTransform()->getTranslation();
+  // L,H,W
   glm::vec3 boundingBox = obj->getTransform()->getBBox();
 
   std::vector<glm::vec3> vertices;
-  vertices.push_back(glm::vec3(center.x - (boundingBox.x / 2),
-                               center.y - (boundingBox.y / 2),
-                               center.z - (boundingBox.z / 2)));
+  vertices.push_back(
+      center -
+      obj->getTransform()->getRotation() *
+          (glm::vec3(boundingBox.x, boundingBox.y, boundingBox.z) / 2.0f));
 
-  vertices.push_back(glm::vec3(center.x + (boundingBox.x / 2),
-                               center.y - (boundingBox.y / 2),
-                               center.z - (boundingBox.z / 2)));
+  vertices.push_back(
+      center -
+      obj->getTransform()->getRotation() *
+          (glm::vec3(-boundingBox.x, boundingBox.y, boundingBox.z) / 2.0f));
 
-  vertices.push_back(glm::vec3(center.x - (boundingBox.x / 2),
-                               center.y + (boundingBox.y / 2),
-                               center.z - (boundingBox.z / 2)));
+  vertices.push_back(
+      center -
+      obj->getTransform()->getRotation() *
+          (glm::vec3(boundingBox.x, -boundingBox.y, boundingBox.z) / 2.0f));
 
-  vertices.push_back(glm::vec3(center.x + (boundingBox.x / 2),
-                               center.y + (boundingBox.y / 2),
-                               center.z - (boundingBox.z / 2)));
+  vertices.push_back(
+      center -
+      obj->getTransform()->getRotation() *
+          (glm::vec3(-boundingBox.x, -boundingBox.y, boundingBox.z) / 2.0f));
 
-  vertices.push_back(glm::vec3(center.x - (boundingBox.x / 2),
-                               center.y - (boundingBox.y / 2),
-                               center.z + (boundingBox.z / 2)));
+  vertices.push_back(
+      center -
+      obj->getTransform()->getRotation() *
+          (glm::vec3(boundingBox.x, boundingBox.y, -boundingBox.z) / 2.0f));
 
-  vertices.push_back(glm::vec3(center.x + (boundingBox.x / 2),
-                               center.y - (boundingBox.y / 2),
-                               center.z + (boundingBox.z / 2)));
+  vertices.push_back(
+      center -
+      obj->getTransform()->getRotation() *
+          (glm::vec3(-boundingBox.x, boundingBox.y, -boundingBox.z) / 2.0f));
 
-  vertices.push_back(glm::vec3(center.x - (boundingBox.x / 2),
-                               center.y + (boundingBox.y / 2),
-                               center.z + (boundingBox.z / 2)));
+  vertices.push_back(
+      center -
+      obj->getTransform()->getRotation() *
+          (glm::vec3(boundingBox.x, -boundingBox.y, -boundingBox.z) / 2.0f));
 
-  vertices.push_back(glm::vec3(center.x + (boundingBox.x / 2),
-                               center.y + (boundingBox.y / 2),
-                               center.z + (boundingBox.z / 2)));
+  vertices.push_back(
+      center -
+      obj->getTransform()->getRotation() *
+          (glm::vec3(-boundingBox.x, -boundingBox.y, -boundingBox.z) / 2.0f));
 
   return vertices;
 }
