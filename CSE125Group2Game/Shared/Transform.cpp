@@ -1,10 +1,11 @@
 ﻿#include "Transform.h"
 
 #include <glm/gtx/quaternion.hpp>
+#include <iostream>
 
 Transform::Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
     : mTranslation(translation),
-      mRotation(rotation),
+      mRotation(glm::quat(glm::radians(rotation))),
       mScale(scale),
       mModel(glm::mat4(1)) {
   updateModel();
@@ -13,10 +14,19 @@ Transform::Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 Transform::Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale,
                      glm::vec3 boundingBox)
     : mTranslation(translation),
-      mRotation(rotation),
+      mRotation(glm::quat(glm::radians(rotation))),
       mScale(scale),
       mModel(glm::mat4(1)),
       mBoundingBox(boundingBox) {
+  updateModel();
+}
+
+Transform::Transform(glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
+    : mTranslation(translation),
+      mRotation(rotation),
+      mScale(scale),
+      mModel(glm::mat4(1)),
+      mBoundingBox(NULL) {
   updateModel();
 }
 
@@ -51,6 +61,10 @@ void Transform::addTranslation(glm::vec3 translation) {
 }
 
 void Transform::setTranslation(glm::vec3 translation) {
+  if (translation.x < -20) {
+    std::cout << "oof < -20" << std::endl;
+  }
+
   mTranslation = translation;
   updateModel();
 }
@@ -67,7 +81,12 @@ void Transform::setScale(glm::vec3 scale) {
 
 void Transform::setModel(glm::mat4 model) { mModel = model; }
 
-glm::vec3 Transform::getTranslation() { return mTranslation; }
+glm::vec3 Transform::getTranslation() {
+  if (mTranslation.x < -20) {
+    std::cout << "oof < -20 in get" << std::endl;
+  }
+  return mTranslation;
+}
 
 glm::quat Transform::getRotation() { return mRotation; }
 

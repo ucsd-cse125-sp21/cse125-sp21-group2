@@ -14,6 +14,8 @@ class Transform {
   Transform(glm::vec3 translation, glm::quat rotation, glm::vec3 scale,
             glm::vec3 boundingBox);
 
+  Transform(glm::vec3 translation, glm::quat rotation, glm::vec3 scale);
+
   void addRotation(glm::vec3 degrees);
 
   void setRotation(glm::vec3 degrees);

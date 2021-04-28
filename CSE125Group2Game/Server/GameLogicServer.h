@@ -58,6 +58,7 @@ class GameLogicServer {
   void AddGameObject(GameObject* obj);
 
   msd::channel<char*> mSendingBuffer;  // Queue for storing events to send
+  std::vector<char*> mTestBuffer;
 
   GameObject* players[MAX_PLAYERS];
 
@@ -65,6 +66,7 @@ class GameLogicServer {
   void SendInfo();
   char* MarshalInfo(GameObject* obj);
   void MovePlayers();
+  void MoveEnemies();
   bool DoesCollide(GameObject* obj);
   std::vector<glm::vec3> GetCorners(GameObject* obj);
   std::vector<float> GetMinMax(GameObject* obj);

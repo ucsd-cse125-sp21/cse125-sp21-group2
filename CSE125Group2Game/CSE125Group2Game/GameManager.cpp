@@ -69,10 +69,7 @@ void GameManager::Update() {
   CustomClient c;
   c.Init(host, port);
 
-  DWORD before, after, diff;
-
   while (!glfwWindowShouldClose(mWindow)) {
-    before = GetTickCount();
     // 1) Update local states (use key logger to update gameobject)
 
     glfwPollEvents();
@@ -83,11 +80,6 @@ void GameManager::Update() {
     keysPressed[GameObject::BACKWARD] = glfwGetKey(mWindow, BACKWARD_KEY);
     keysPressed[GameObject::RIGHT] = glfwGetKey(mWindow, RIGHT_KEY);
     keysPressed[GameObject::SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
-
-    // if (keysPressed[GameObject::KEY_S]) {
-    //  std::cout << "S has been pressed! Tick: " << GetTickCount() <<
-    //  std::endl;
-    //}
 
     // 2) Call client update
     if (c.Update(keysPressed)) {
@@ -102,11 +94,6 @@ void GameManager::Update() {
     mpRenderManager->draw(mScene);
 
     glfwSwapBuffers(mWindow);
-
-    after = GetTickCount();
-
-    diff = after - before;
-    // if (diff <= 33) Sleep(33 - diff);
   }
 
   glfwTerminate();
@@ -126,6 +113,8 @@ void GameManager::AddPlayer(int clientId) {
   GameObject* playerObject =
       new GameObject(playerTransform, (char*)clientName.c_str(), 10);
 
+  // TODO: make camera a child of the player object in the scene graph
+
   // Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
   //                         playerTransform, *mLoader);
   Model* model = Model::Cube(playerTransform, *mLoader);
@@ -140,8 +129,12 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Object does not exist, create it
   if (!foundNode) {
+    std::cout << "creating new enemy" << std::endl;
     foundObject =
-        new GameObject(obj->getTransform(), obj->getName(), obj->getHealth());
+        new GameObject(new Transform(obj->getTransform()->getTranslation(),
+                                     obj->getTransform()->getRotation(),
+                                     obj->getTransform()->getScale()),
+                       obj->getName(), obj->getHealth());
 
     // TODO: if else for model based on enum (constructor adds itself as child
     // of parent)
@@ -152,6 +145,13 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Update object
   foundObject = foundNode->getObject();
+
+  if (!strncmp(foundObject->getName(), "enem0000", NAME_LEN)) {
+    std::cout << foundObject->getTransform()->getTranslation().x << std::endl;
+    std::cout << "Address of transform (net): " << foundObject->getTransform()
+              << std::endl;
+  }
+
   // Health is 0, delete object
   if (obj->getHealth() == 0) {
     std::cerr << "Deleting object, health is 0!" << std::endl;
@@ -163,6 +163,10 @@ void GameManager::UpdateObject(GameObject* obj) {
   // Set found objects position, rotation, scale, and health to passed in obj
   foundObject->getTransform()->setTranslation(
       obj->getTransform()->getTranslation());
+
+  // if (!strncmp(foundObject->getName(), "enem0000", NAME_LEN)) {
+  //  std::cout << foundObject->getTransform()->getTranslation().x << std::endl;
+  //}
 
   foundObject->getTransform()->setRotation(obj->getTransform()->getRotation());
 
