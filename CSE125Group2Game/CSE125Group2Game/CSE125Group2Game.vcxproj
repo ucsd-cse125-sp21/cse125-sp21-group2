@@ -167,6 +167,7 @@
     <ClCompile Include="SceneGraphNode.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shared\scene.json" />
@@ -188,6 +189,7 @@
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="SceneGraphNode.h" />
     <ClInclude Include="SceneLoader.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

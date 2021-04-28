@@ -72,11 +72,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)Network\asio\include;$(SolutionDir)Network;C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\Shared;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Network\asio\include;$(SolutionDir)Network;C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\Shared;C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\Server\cpp-channel\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)Network\asio\include;$(SolutionDir)Network;C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\Shared;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Network\asio\include;$(SolutionDir)Network;C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\Shared;C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\Server\cpp-channel\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>

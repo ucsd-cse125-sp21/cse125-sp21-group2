@@ -18,6 +18,7 @@ class GameManager {
   static const int PROJECTILE_KEY = GLFW_KEY_B;
 
   GameManager(GLFWwindow* window);
+  ~GameManager();
 
   void Update();
 
@@ -31,6 +32,8 @@ class GameManager {
 
   bool mKeyPresses[NUM_KEYS];
 
+  void ResizeCallback(int width, int height);
+
   void setClientID(int id);
 
   MeshLoader* mLoader;
@@ -40,6 +43,7 @@ class GameManager {
  private:
   SceneGraphNode* findNode(GameObject* obj, SceneGraphNode* node);
 
+  std::unique_ptr<RenderManager> mpRenderManager;
   Camera* mCamera;
   SceneGraphNode* mSceneRoot;
   GLFWwindow* mWindow;

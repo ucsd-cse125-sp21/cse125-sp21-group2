@@ -1,5 +1,7 @@
 ﻿#include "SceneLoader.h"
 
+#include "Utils.h"
+
 /**
  * Constructs and populates the scene graph from the scene file passed in.
  *
@@ -12,7 +14,7 @@ SceneLoader::SceneLoader(std::string fileName, MeshLoader& loader) {
   std::ifstream file(fileName);
 
   if (!file) {
-    throw std::exception(("Failed to open scene file!" + fileName).c_str());
+    CRASH("Failed to open scene file " + fileName + "!");
   }
 
   // Create json and populate it from file

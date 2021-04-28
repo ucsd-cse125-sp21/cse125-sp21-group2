@@ -104,8 +104,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
         }
       }
     } else {
-      std::cout << "Server Down\n";
-      return true;
+      CRASH("Server down!");
     }
 
     return false;

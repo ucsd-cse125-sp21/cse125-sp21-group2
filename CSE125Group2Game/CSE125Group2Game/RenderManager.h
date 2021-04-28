@@ -17,9 +17,7 @@
  */
 class RenderManager {
  public:
-  static RenderManager& get();
-  bool init(GLFWwindow* window);
-  void teardown();
+  RenderManager(GLFWwindow* window);
 
   void beginRender();
 

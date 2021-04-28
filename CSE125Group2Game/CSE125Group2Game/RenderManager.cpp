@@ -8,15 +8,11 @@
 #include <vector>
 
 #include "Model.h"
+#include "Utils.h"
 
 #define FOVY 90.0f
 #define NEAR_CLIP 0.1f
 #define FAR_CLIP 100.0f
-
-RenderManager& RenderManager::get() {
-  static RenderManager instance;
-  return instance;
-}
 
 /**
  * Initializes the RenderManager using the passed in window as the render
@@ -27,13 +23,12 @@ RenderManager& RenderManager::get() {
  * @param window The window to use as a render target.
  * @returns True if successful, false otherwise...
  */
-bool RenderManager::init(GLFWwindow* window) {
+RenderManager::RenderManager(GLFWwindow* window) {
   // tell opengl to use the current window context
   glfwMakeContextCurrent(window);
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    std::cerr << "Failed to init glad ..." << std::endl;
-    return false;
+    CRASH("Failed to load glad!");
   }
 
   // ensure we cull the back face to prevent wacky artifacts
@@ -56,11 +51,7 @@ bool RenderManager::init(GLFWwindow* window) {
   mProjection =
       glm::perspective(glm::radians(FOVY), static_cast<float>(width) / height,
                        NEAR_CLIP, FAR_CLIP);
-
-  return true;
 }
-
-void RenderManager::teardown() {}
 
 /**
  * Must be called before a series of render calls, to clear render state, etc.
@@ -107,7 +98,6 @@ void RenderManager::setViewportSize(int width, int height) {
 
   // project matrix encodes aspect ratio...need to update it as the aspect ratio
   // has implicitly changed
-  std::cerr << "HERE: " << static_cast<float>(width) / height << "\n";
   mProjection =
       glm::perspective(glm::radians(FOVY), static_cast<float>(width) / height,
                        NEAR_CLIP, FAR_CLIP);

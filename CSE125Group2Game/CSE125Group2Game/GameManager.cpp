@@ -1,5 +1,5 @@
 ﻿#include "GameManager.h"
-
+#include "Utils.h"
 #include "client_helper.h"
 
 // Predefinitions to make compiler happy
@@ -8,19 +8,21 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
                   int mods);
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-  RenderManager::get().setViewportSize(width, height);
+  GameManager::getManager()->ResizeCallback(width, height);
 }
 
-GameManager::GameManager(GLFWwindow* window) {
+GameManager::GameManager(GLFWwindow* window)
+    : mWindow(window),
+      mpRenderManager(std::make_unique<RenderManager>(window)) {
   mCamera = new Camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
                        glm::vec3(0.0f, 1.0f, 0.0));
 
   mSceneRoot = SceneGraphNode::getRoot();
 
-  mWindow = window;
   mLoader = new MeshLoader();
-  RenderManager& renderMananger = RenderManager::get();
-  renderMananger.init(mWindow);
+  // RenderManager& renderMananger = RenderManager::get();
+  // renderMananger.init(mWindow);
+  glfwSetWindowUserPointer(mWindow, this);
   SceneLoader sl("../Shared/scene.json", *mLoader);
 }
 
@@ -38,8 +40,8 @@ GameManager* GameManager::getManager() {
     // create window object
     GLFWwindow* window = glfwCreateWindow(800, 600, "Game", NULL, NULL);
     if (window == NULL) {
-      std::cout << "Failed to create window..." << std::endl;
       glfwTerminate();
+      CRASH("Failed to create glfw window...");
       return NULL;
     }
 
@@ -94,7 +96,7 @@ void GameManager::Update() {
     }
 
     // 3) Call drawAll on scene graph
-    RenderManager::get().beginRender();
+    mpRenderManager->beginRender();
     mCamera->use();
 
     // std::cout << "S in update(): " << mPlayerTransform->getTranslation().y
@@ -104,7 +106,7 @@ void GameManager::Update() {
     // Note: This only draws the first layer of the scene graph
     for (SceneGraphNode* child : mSceneRoot->getChildren()) {
       // cout << child->getTransform()->getTranslation().x << endl;
-      RenderManager::get().draw(*child->getMesh());
+      mpRenderManager->draw(*child->getMesh());
     }
 
     glfwSwapBuffers(mWindow);
@@ -115,7 +117,6 @@ void GameManager::Update() {
     // if (diff <= 33) Sleep(33 - diff);
   }
 
-  RenderManager::get().teardown();
   glfwTerminate();
 }
 
@@ -241,6 +242,10 @@ GameObject* GameManager::Unmarshal(char* data) {
   GameObject* obj = new GameObject(transform, name, health);
 
   return obj;
+}
+
+void GameManager::ResizeCallback(int width, int height) {
+  mpRenderManager->setViewportSize(width, height);
 }
 
 void GameManager::setClientID(int id) { mClientId = id; }
