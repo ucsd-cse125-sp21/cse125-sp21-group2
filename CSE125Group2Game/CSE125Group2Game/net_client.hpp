@@ -89,17 +89,11 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             }
 
             GameObject* obj = GameManager::getManager()->Unmarshal(data);
-            // std::cout << "S in net_client:"
-            //          << obj->getTransform()->getTranslation().y << std::endl;
 
             GameManager::getManager()->UpdateObject(obj);
 
-            // std::cout << "Done processing! Current tick:" << GetTickCount()
-            //       << std::endl;
-
             free(data);
             delete obj;
-
           } break;
         }
       }

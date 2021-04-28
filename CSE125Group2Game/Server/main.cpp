@@ -43,7 +43,7 @@ int main() {
         // std::cout << "Sending message to clients!" << std::endl;
         netServer->MessageAllClients(msg);
 
-        free(out);
+        // free(out);
       }
     }
   };
@@ -59,6 +59,24 @@ int main() {
     after = GetTickCount();
 
     diff = after - before;
+
+    /*for (int i = 0; i < logicServer->mTestBuffer.size(); i++) {
+      char *data = logicServer->mTestBuffer[i];
+
+      olc::net::message<CustomMsgTypes> msg;
+      msg.header.id = CustomMsgTypes::ServerMessage;
+
+      // Byte by byte, populate message
+      for (int i = 0; i < MESSAGE_SIZE; i++) {
+        msg << data[i];
+      }
+
+      netServer->MessageAllClients(msg);
+
+      free(data);
+    }
+
+    logicServer->mTestBuffer.clear();*/
 
     if (logicServer->GetServerTick() >
         diff) {  // need to ensure that server tick is big enough

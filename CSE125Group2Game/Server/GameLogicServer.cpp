@@ -4,7 +4,10 @@
 
 #include <limits>
 
+#include "Enemy.h"
+
 GameLogicServer* GameLogicServer::mLogicServer;
+bool Enemy::hasSpawned = false;
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
                                  ServerLoader scene, uint16_t tick_ms)
@@ -13,6 +16,8 @@ GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
     bool* keyPresses = (bool*)malloc(NUM_KEYS);
 
     mKeyPresses.push_back(keyPresses);
+
+    players[i] = NULL;
   }
 }
 
@@ -75,12 +80,35 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 void GameLogicServer::Update() {
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
+  if (!Enemy::hasSpawned) {
+    std::cout << "creating enemy" << std::endl;
+
+    Enemy* enemy =
+        new Enemy(new Transform(glm::vec3(-5, 0, 0), glm::vec3(0, 0, 0),
+                                glm::vec3(1, 1, 1)),
+                  (char*)"enem0000", 10);
+
+    mWorld.push_back(enemy);
+    Enemy::hasSpawned = true;
+  }
+
   // Update player locations
   MovePlayers();
+
+  MoveEnemies();
 
   SendInfo();
 
   ResetKeyPresses();
+}
+
+void GameLogicServer::MoveEnemies() {
+  for (int i = 0; i < mWorld.size(); i++) {
+    if (mWorld[i]->getObjectType() == ObjectType::Enemy) {
+      // call enemy update
+      mWorld[i]->Update();
+    }
+  }
 }
 
 void GameLogicServer::MovePlayers() {
@@ -313,6 +341,8 @@ void GameLogicServer::SendInfo() {
       char* data = MarshalInfo(mWorld[i]);  // Marshal data
 
       // Add message to queue
+      // mTestBuffer.push_back(data);
+
       data >> mSendingBuffer;
     }
   }

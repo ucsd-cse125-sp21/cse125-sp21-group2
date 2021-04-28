@@ -31,6 +31,8 @@ class GameObject {
 
   Transform* getTransform();
 
+  void virtual Update() {}
+
   // Returns null terminated name
   char* getName();
   int getHealth();
