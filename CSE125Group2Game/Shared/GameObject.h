@@ -9,7 +9,7 @@ enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
 #define NAME_LEN 8
 #define FLOAT_SIZE 4
 #define INT_SIZE sizeof(int)
-#define MESSAGE_SIZE NAME_LEN + (9 * FLOAT_SIZE) + INT_SIZE
+#define MESSAGE_SIZE NAME_LEN + (12 * FLOAT_SIZE) + INT_SIZE
 
 class GameObject {
  public:

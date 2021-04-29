@@ -12,17 +12,17 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   GameManager::getManager()->ResizeCallback(width, height);
 }
 
-GameManager::GameManager(GLFWwindow* window)
-    : mWindow(window),
-      mpRenderManager(std::make_unique<RenderManager>(window)) {
+GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   mCamera = new Camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
                        glm::vec3(0.0f, 1.0f, 0.0));
 
   mLoader = new MeshLoader();
+  mpRenderManager = std::make_unique<RenderManager>(window, *mLoader);
   // RenderManager& renderMananger = RenderManager::get();
   // renderMananger.init(mWindow);
   glfwSetWindowUserPointer(mWindow, this);
   mScene = SceneLoader::LoadFromFile("../Shared/scene.json", *mLoader);
+  mpRenderManager->setRenderBoundingBoxes(true);
 }
 
 GameManager* GameManager::getManager() {
@@ -91,7 +91,7 @@ void GameManager::Update() {
     mCamera->use();
 
     // draw scene
-    mpRenderManager->draw(mScene);
+    mpRenderManager->draw(mScene, *mLoader);
 
     glfwSwapBuffers(mWindow);
   }
@@ -103,7 +103,7 @@ void GameManager::AddPlayer(int clientId) {
   // Create player and set it as first layer (child of root)
   Transform* playerTransform =
       new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1),
-                    glm::vec3(1, 1, 1));
+                    glm::vec3(0.5f, 0.5f, 0.5f));
 
   mPlayerTransform = playerTransform;
 
@@ -115,9 +115,9 @@ void GameManager::AddPlayer(int clientId) {
 
   // TODO: make camera a child of the player object in the scene graph
 
-  // Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
-  //                         playerTransform, *mLoader);
-  Model* model = Model::Cube(playerTransform, *mLoader);
+  Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+                           playerTransform, *mLoader);
+  // Model* model = Model::Cube(playerTransform, *mLoader);
 
   SceneGraphNode* playerNode =
       new SceneGraphNode(mScene.getRoot(), playerObject, model);
@@ -230,10 +230,19 @@ GameObject* GameManager::Unmarshal(char* data) {
 
   int health;
   memcpy(&health, tmpInfo, INT_SIZE);
+  tmpInfo += INT_SIZE;
 
-  Transform* transform =
-      new Transform(glm::vec3(xPos, yPos, zPos), glm::vec3(xRot, yRot, zRot),
-                    glm::vec3(xScale, yScale, zScale));
+  GLfloat xbb, ybb, zbb;
+  memcpy(&xbb, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&ybb, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&zbb, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+
+  Transform* transform = new Transform(
+      glm::vec3(xPos, yPos, zPos), glm::vec3(xRot, yRot, zRot),
+      glm::vec3(xScale, yScale, zScale), glm::vec3(xbb, ybb, zbb));
 
   GameObject* obj = new GameObject(transform, name, health);
 

@@ -23,7 +23,7 @@
  * @param window The window to use as a render target.
  * @returns True if successful, false otherwise...
  */
-RenderManager::RenderManager(GLFWwindow* window) {
+RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader) {
   // tell opengl to use the current window context
   glfwMakeContextCurrent(window);
 
@@ -51,6 +51,8 @@ RenderManager::RenderManager(GLFWwindow* window) {
   mProjection =
       glm::perspective(glm::radians(FOVY), static_cast<float>(width) / height,
                        NEAR_CLIP, FAR_CLIP);
+
+  cubeboi = Model::Cube(nullptr, loader);
 }
 
 /**
@@ -67,10 +69,11 @@ void RenderManager::beginRender() {
 
 void RenderManager::draw(const Mesh& mesh, const Material& mat) {
   // set material colors...
-  glUniform3fv(3, 1, glm::value_ptr(mat.ambient));
-  glUniform3fv(4, 1, glm::value_ptr(mat.diffuse));
-  glUniform3fv(5, 1, glm::value_ptr(mat.specular));
-  glUniform1fv(6, 1, &mat.shininess);
+  // TODO: refactor this stuff
+  glUniform3fv(3, 1, glm::value_ptr(mat.mAmbient));
+  glUniform3fv(4, 1, glm::value_ptr(mat.mDiffuse));
+  glUniform3fv(5, 1, glm::value_ptr(mat.mSpecular));
+  glUniform1fv(6, 1, &mat.mShininess);
 
   // render the mesh
   glBindVertexArray(mesh.vao());
@@ -86,20 +89,74 @@ void RenderManager::draw(const Model& model) {
   }
 }
 
-void RenderManager::draw(const SceneGraph& graph) {
+void RenderManager::draw(const SceneGraph& graph, MeshLoader& loader) {
   auto root = graph.getRoot();
-  draw(*root);
+  draw(*root, loader);
 }
 
 // TODO: fix scene graph, then this will need to change.
-void RenderManager::draw(const SceneGraphNode& node) {
+void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader) {
+  if (mRenderBoundingBoxes) {
+    auto bb = node.getObject()->getTransform()->getBBox();
+
+    glm::mat4 model =
+        node.getObject()->getTransform()->getModel() *
+        glm::scale(glm::mat4(1), 2.0f * glm::vec3(bb.x, bb.y, bb.z));
+
+    glm::vec4 god[8];
+    // this is gross
+    god[0] = model * glm::vec4(-0.5f, -0.5f, 0.5f, 1.0f);
+    god[1] = model * glm::vec4(0.5f, -0.5f, 0.5f, 1.0f);
+    god[2] = model * glm::vec4(-0.5f, 0.5f, 0.5f, 1.0f);
+    god[3] = model * glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+    god[4] = model * glm::vec4(-0.5f, 0.5f, -0.5f, 1.0f);
+    god[5] = model * glm::vec4(0.5f, 0.5f, -0.5f, 1.0f);
+    god[6] = model * glm::vec4(-0.5f, -0.5f, -0.5f, 1.0f);
+    god[7] = model * glm::vec4(0.5f, -0.5f, -0.5f, 1.0f);
+
+    glm::vec3 max = god[0];
+    glm::vec3 min = god[0];
+    for (int i = 0; i < 8; i++) {
+      if (god[i].x > max.x) {
+        max.x = god[i].x;
+      }
+      if (god[i].y > max.y) {
+        max.y = god[i].y;
+      }
+      if (god[i].z > max.z) {
+        max.z = god[i].z;
+      }
+      if (god[i].x < min.x) {
+        min.x = god[i].x;
+      }
+      if (god[i].y < min.y) {
+        min.y = god[i].y;
+      }
+      if (god[i].z < min.z) {
+        min.z = god[i].z;
+      }
+    }
+
+    glm::vec3 scale = max - min;
+    glm::vec3 trans = node.getObject()->getTransform()->getTranslation();
+    glm::mat4 mememodel =
+        glm::scale(glm::translate(glm::mat4(1.0f), trans), scale);
+
+    glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mememodel));
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    draw(cubeboi->meshes()[0], Material(glm::vec3(0.0f, 1.0f, 0.0f),
+                                        glm::vec3(0.0f), glm::vec3(0.0f), 0));
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  }
+
   auto model = node.getModel();
   if (model) {
     draw(*model);
   }
 
   for (auto child : node.getChildren()) {
-    draw(*child);
+    draw(*child, loader);
   }
 }
 
@@ -118,4 +175,8 @@ void RenderManager::setViewportSize(int width, int height) {
   mProjection =
       glm::perspective(glm::radians(FOVY), static_cast<float>(width) / height,
                        NEAR_CLIP, FAR_CLIP);
+}
+
+void RenderManager::setRenderBoundingBoxes(bool shouldRender) {
+  mRenderBoundingBoxes = shouldRender;
 }

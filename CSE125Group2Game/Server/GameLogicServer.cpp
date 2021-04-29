@@ -254,48 +254,54 @@ std::vector<glm::vec3> GameLogicServer::GetCorners(GameObject* obj) {
   // TODO: also scale :D
   glm::vec3 center = obj->getTransform()->getTranslation();
   // L,H,W
-  glm::vec3 boundingBox = obj->getTransform()->getBBox();
+  glm::vec3 boundingBox = -1.0f * obj->getTransform()->getBBox();
 
   std::vector<glm::vec3> vertices;
   vertices.push_back(
-      center -
-      obj->getTransform()->getRotation() *
-          (glm::vec3(boundingBox.x, boundingBox.y, boundingBox.z) / 2.0f));
-
+      glm::vec3(obj->getTransform()->getModel() *
+                glm::vec4(boundingBox.x, boundingBox.y, boundingBox.z, 1.0f)));
   vertices.push_back(
-      center -
-      obj->getTransform()->getRotation() *
-          (glm::vec3(-boundingBox.x, boundingBox.y, boundingBox.z) / 2.0f));
-
+      glm::vec3(obj->getTransform()->getModel() *
+                glm::vec4(-boundingBox.x, boundingBox.y, boundingBox.z, 1.0f)));
   vertices.push_back(
-      center -
-      obj->getTransform()->getRotation() *
-          (glm::vec3(boundingBox.x, -boundingBox.y, boundingBox.z) / 2.0f));
-
+      glm::vec3(obj->getTransform()->getModel() *
+                glm::vec4(boundingBox.x, -boundingBox.y, boundingBox.z, 1.0f)));
+  vertices.push_back(glm::vec3(
+      obj->getTransform()->getModel() *
+      glm::vec4(-boundingBox.x, -boundingBox.y, boundingBox.z, 1.0f)));
   vertices.push_back(
-      center -
-      obj->getTransform()->getRotation() *
-          (glm::vec3(-boundingBox.x, -boundingBox.y, boundingBox.z) / 2.0f));
+      glm::vec3(obj->getTransform()->getModel() *
+                glm::vec4(boundingBox.x, boundingBox.y, -boundingBox.z, 1.0f)));
+  vertices.push_back(glm::vec3(
+      obj->getTransform()->getModel() *
+      glm::vec4(-boundingBox.x, boundingBox.y, -boundingBox.z, 1.0f)));
+  vertices.push_back(glm::vec3(
+      obj->getTransform()->getModel() *
+      glm::vec4(boundingBox.x, -boundingBox.y, -boundingBox.z, 1.0f)));
+  vertices.push_back(glm::vec3(
+      obj->getTransform()->getModel() *
+      glm::vec4(-boundingBox.x, -boundingBox.y, -boundingBox.z, 1.0f)));
 
-  vertices.push_back(
-      center -
-      obj->getTransform()->getRotation() *
-          (glm::vec3(boundingBox.x, boundingBox.y, -boundingBox.z) / 2.0f));
+  // smol bbs
+  /*
+  vertices.push_back(center -
+                     glm::vec3(boundingBox.x, boundingBox.y, boundingBox.z));
+  vertices.push_back(center -
+                     glm::vec3(boundingBox.x, -boundingBox.y, boundingBox.z));
+  vertices.push_back(center -
+                     glm::vec3(-boundingBox.x, -boundingBox.y, boundingBox.z));
+  vertices.push_back(center -
+                     glm::vec3(boundingBox.x, boundingBox.y, -boundingBox.z));
+  vertices.push_back(center -
+                     glm::vec3(-boundingBox.x, boundingBox.y, boundingBox.z));
+  vertices.push_back(center -
+                     glm::vec3(-boundingBox.x, boundingBox.y, -boundingBox.z));
+  vertices.push_back(center -
+                     glm::vec3(boundingBox.x, -boundingBox.y, -boundingBox.z));
+  vertices.push_back(center -
+                     glm::vec3(-boundingBox.x, -boundingBox.y, -boundingBox.z));
 
-  vertices.push_back(
-      center -
-      obj->getTransform()->getRotation() *
-          (glm::vec3(-boundingBox.x, boundingBox.y, -boundingBox.z) / 2.0f));
-
-  vertices.push_back(
-      center -
-      obj->getTransform()->getRotation() *
-          (glm::vec3(boundingBox.x, -boundingBox.y, -boundingBox.z) / 2.0f));
-
-  vertices.push_back(
-      center -
-      obj->getTransform()->getRotation() *
-          (glm::vec3(-boundingBox.x, -boundingBox.y, -boundingBox.z) / 2.0f));
+   */
 
   return vertices;
 }
@@ -398,6 +404,15 @@ char* GameLogicServer::MarshalInfo(GameObject* obj) {
 
   int health = obj->getHealth();
   memcpy(tmpInfo, &(health), INT_SIZE);
+  tmpInfo += INT_SIZE;
+
+  glm::vec3 bb = obj->getTransform()->getBBox();
+  memcpy(tmpInfo, &(bb.x), FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(tmpInfo, &(bb.y), FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(tmpInfo, &(bb.z), FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
 
   return info;
 }

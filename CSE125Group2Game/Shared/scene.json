@@ -12,9 +12,9 @@
       "xScale": 2,
       "yScale": 1,
       "zScale": 1,
-      "bb_length": 2,
-      "bb_height": 1,
-      "bb_width": 1,
+      "bb_length": 0.5,
+      "bb_height": 0.5,
+      "bb_width": 0.5,
       "obj_file": "cube"
     },
     {

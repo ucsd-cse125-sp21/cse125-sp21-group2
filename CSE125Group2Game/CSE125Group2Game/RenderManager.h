@@ -18,16 +18,18 @@
  */
 class RenderManager {
  public:
-  RenderManager(GLFWwindow* window);
+  RenderManager(GLFWwindow* window, MeshLoader& loader);
 
   void beginRender();
 
   void draw(const Mesh& mesh, const Material& mat);
   void draw(const Model& model);
-  void draw(const SceneGraph& graph);
-  void draw(const SceneGraphNode& node);
+  void draw(const SceneGraph& graph, MeshLoader& loader);
+  void draw(const SceneGraphNode& node, MeshLoader& loader);
 
   void setViewportSize(int width, int height);
+
+  void setRenderBoundingBoxes(bool shouldRender);
 
  private:
   // for now, just support one shader program...
@@ -36,4 +38,7 @@ class RenderManager {
   // https://en.cppreference.com/w/cpp/memory/unique_ptr
   std::unique_ptr<ShaderProgram> mpShaderProgram;
   glm::mat4 mProjection = glm::mat4(1.0f);
+
+  bool mRenderBoundingBoxes = false;
+  Model* cubeboi;
 };

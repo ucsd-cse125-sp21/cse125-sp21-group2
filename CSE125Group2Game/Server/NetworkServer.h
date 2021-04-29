@@ -63,7 +63,7 @@ class NetworkServer : public olc::net::server_interface<CustomMsgTypes> {
 
     Transform* transform =
         new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
-                      glm::vec3(1, 1, 1), glm::vec3(1, 1, 1));
+                      glm::vec3(1, 1, 1), glm::vec3(0.5, 0.5, 0.5));
 
     // Assign incoming player a unique ID
     std::string clientId = "play000";
