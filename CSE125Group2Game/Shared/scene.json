@@ -19,9 +19,11 @@
     },
     {
       "name": "spaceship",
-      "yPos": -3,
+      "yPos": 0,
+      "zPos": 5,
       "parent_name": "root",
       "obj_file": "models/enemy/mainEnemyShip/enemyShip.obj",
+      "xRot": 90,
       "bb_length": 5,
       "bb_height": 1.3555169105529785,
       "bb_width": 5.666064739227295

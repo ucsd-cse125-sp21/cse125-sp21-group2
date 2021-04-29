@@ -8,12 +8,11 @@ layout(location = 1) uniform mat4 view;
 layout(location = 2) uniform mat4 projection;
 
 out vec3 normal;
-out vec3 fragPos;  // position of the fragment in world space
 
 void main() {
   gl_Position = projection * view * model * vec4(pos, 1.0);
 
   // TODO: better to calculate inverse before, then send it as uniform
-  normal = mat3(transpose(inverse(model))) * norm;
-  fragPos = vec3(model * vec4(pos, 1.0));
+  // normal = mat3(transpose(inverse(model))) * norm;
+  normal = norm;
 }

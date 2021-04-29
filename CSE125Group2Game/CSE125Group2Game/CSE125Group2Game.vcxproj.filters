@@ -25,6 +25,9 @@
     <Filter Include="Header Files\SceneLoader">
       <UniqueIdentifier>{c83fc989-59bb-4ffa-89a8-3514179d60a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\render\shaders">
+      <UniqueIdentifier>{4f48eff9-2468-4b82-90b6-ec945badb18a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -72,16 +75,37 @@
     <ClCompile Include="SceneGraph.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureLoader.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
+    <ClCompile Include="stb_image.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="fragment.glsl">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="vertex.glsl">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="..\Shared\scene.json" />
+    <None Include="color_frag.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="color_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="normal_frag.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="normal_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="texture_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="texture_frag.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderManager.h">
@@ -111,9 +135,6 @@
     <ClInclude Include="..\Shared\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MeshLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -127,6 +148,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SceneGraph.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureLoader.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshLoader.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
   </ItemGroup>

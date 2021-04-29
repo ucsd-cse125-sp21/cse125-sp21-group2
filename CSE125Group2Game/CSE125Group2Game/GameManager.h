@@ -44,6 +44,8 @@ class GameManager {
   SceneGraphNode* findNode(GameObject* obj, SceneGraphNode* node);
 
   std::unique_ptr<RenderManager> mpRenderManager;
+  TextureLoader mTLoader;
+
   Camera* mCamera;
   SceneGraph mScene;
   GLFWwindow* mWindow;

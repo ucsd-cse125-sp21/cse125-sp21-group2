@@ -17,11 +17,12 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
                        glm::vec3(0.0f, 1.0f, 0.0));
 
   mLoader = new MeshLoader();
-  mpRenderManager = std::make_unique<RenderManager>(window, *mLoader);
+  mpRenderManager = std::make_unique<RenderManager>(window, *mLoader, mTLoader);
   // RenderManager& renderMananger = RenderManager::get();
   // renderMananger.init(mWindow);
   glfwSetWindowUserPointer(mWindow, this);
-  mScene = SceneLoader::LoadFromFile("../Shared/scene.json", *mLoader);
+  mScene =
+      SceneLoader::LoadFromFile("../Shared/scene.json", *mLoader, mTLoader);
   mpRenderManager->setRenderBoundingBoxes(true);
 }
 
@@ -86,9 +87,10 @@ void GameManager::Update() {
       break;
     }
 
+    mpRenderManager->mCamera = mCamera;
     // 3) Call drawAll on scene graph
     mpRenderManager->beginRender();
-    mCamera->use();
+    // mCamera->use();
 
     // draw scene
     mpRenderManager->draw(mScene, *mLoader);

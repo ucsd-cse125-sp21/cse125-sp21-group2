@@ -10,7 +10,8 @@
  * @param fileName The path to the scene file to be loaded.
  */
 SceneGraph SceneLoader::LoadFromFile(const std::string& fileName,
-                                     MeshLoader& loader) {
+                                     MeshLoader& loader,
+                                     TextureLoader& tloader) {
   // Open file
   std::ifstream file(fileName);
 
@@ -148,7 +149,7 @@ SceneGraph SceneLoader::LoadFromFile(const std::string& fileName,
       mesh = Model::Cube(transform, loader);
     } else if (!objectFile.is_null()) {
       // Object is a obj file
-      mesh = new Model(ASSET(test), transform, loader);
+      mesh = new Model(ASSET(test), transform, loader, tloader);
     }
 
     GameObject* obj = new GameObject(transform, ((std::string)name).data(), 1);

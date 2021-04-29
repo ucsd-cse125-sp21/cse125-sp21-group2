@@ -16,7 +16,8 @@ class Model {
   Model(const std::vector<Vertex>& vertices,
         const std::vector<glm::uvec3>& indices, Transform* transform,
         MeshLoader& loader);
-  Model(const std::string& filePath, Transform* transform, MeshLoader& loader);
+  Model(const std::string& filePath, Transform* transform, MeshLoader& loader,
+        TextureLoader& tloader);
 
   // TODO: may want to refactor this for better encapsulation...
   Transform& transform() { return *mTransform; }
