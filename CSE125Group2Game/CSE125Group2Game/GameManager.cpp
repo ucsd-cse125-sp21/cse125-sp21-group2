@@ -115,9 +115,10 @@ void GameManager::AddPlayer(int clientId) {
 
   // TODO: make camera a child of the player object in the scene graph
 
-  Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
-                           playerTransform, *mLoader);
-  // Model* model = Model::Cube(playerTransform, *mLoader);
+  // Model* model =
+  // new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+  // playerTransform, *mLoader);
+  Model* model = Model::Cube(playerTransform, *mLoader);
 
   SceneGraphNode* playerNode =
       new SceneGraphNode(mScene.getRoot(), playerObject, model);

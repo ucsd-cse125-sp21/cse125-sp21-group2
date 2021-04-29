@@ -22,7 +22,7 @@
       "yPos": -3,
       "parent_name": "root",
       "obj_file": "models/enemy/mainEnemyShip/enemyShip.obj",
-      "bb_length": 10,
+      "bb_length": 5,
       "bb_height": 1.3555169105529785,
       "bb_width": 5.666064739227295
     }
