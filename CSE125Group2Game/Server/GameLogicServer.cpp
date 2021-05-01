@@ -85,12 +85,14 @@ void GameLogicServer::Update() {
 
     Enemy* enemy =
         new Enemy(new Transform(glm::vec3(-5, 0, 0), glm::vec3(0, 0, 0),
-                                glm::vec3(1, 1, 1)),
+                                glm::vec3(1, 1, 1), glm::vec3(0.5, 0.5, 0.5)),
                   (char*)"enem0000", 10);
 
     mWorld.push_back(enemy);
     Enemy::hasSpawned = true;
   }
+
+  // 1) Player's, 2) enemies, 3) projectile
 
   // Update player locations
   MovePlayers();
@@ -117,99 +119,85 @@ void GameLogicServer::MovePlayers() {
       continue;
     }
 
-    int vsp = mKeyPresses[i][GameObject::FORWARD] -
-              mKeyPresses[i][GameObject::BACKWARD];
-
-    int hsp =
-        mKeyPresses[i][GameObject::RIGHT] - mKeyPresses[i][GameObject::LEFT];
-
-    glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
-    if (hsp != 0 || vsp != 0)
-      velocity = glm::vec3(0.2) * glm::normalize(velocity);
-
-    std::string clientId = "play000";
-    clientId += std::to_string(i);
-
-    // Collision detection
-    players[i]->getTransform()->addTranslation(velocity);
-
-    if (DoesCollide(players[i])) {
-      // Remove velocity if object collides
-      players[i]->getTransform()->addTranslation(-velocity);
-
-      // Step player towards collision boundary
-      while (!DoesCollide(players[i])) {
-        players[i]->getTransform()->addTranslation(glm::vec3(0.1, 0.1, 0.1) *
-                                                   velocity);
-      }
-
-      // Move player 0.1 units away from collision
-      players[i]->getTransform()->addTranslation(glm::vec3(-0.1, -0.1, -0.1) *
-                                                 velocity);
-
-      std::cout << "Collision!" << std::endl;
-    } else {
-      players[i]->isModified = glm::length(velocity) != 0;
-    }
+    HandlePlayerCollision(i);
   }
-
-  // if (mKeyPresses[0][0] != 0) {
-  //  std::cout << "W has been pressed!" << std::endl;
-  //}
-
-  // if (mKeyPresses[0][1] != 0) {
-  //  std::cout << "A has been pressed!" << std::endl;
-  //}
-  // if (mKeyPresses[0][2] != 0) {
-  //  std::cout << "S has been pressed! Tick: " << GetTickCount() << std::endl;
-  //}
-  // if (mKeyPresses[0][3] != 0) {
-  //  std::cout << "D has been pressed!" << std::endl;
-  //}
 }
 
-bool GameLogicServer::DoesCollide(GameObject* obj) {
-  // For every gameobject in the world, check if this object collides with
-  // anything
+void GameLogicServer::HandlePlayerCollision(int playerIndex) {
+  int vsp = mKeyPresses[playerIndex][GameObject::FORWARD] -
+            mKeyPresses[playerIndex][GameObject::BACKWARD];
 
+  int hsp = mKeyPresses[playerIndex][GameObject::RIGHT] -
+            mKeyPresses[playerIndex][GameObject::LEFT];
+
+  glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
+  if (hsp != 0 || vsp != 0)
+    velocity = glm::vec3(0.2) * glm::normalize(velocity);
+
+  std::string clientId = "play000";
+  clientId += std::to_string(playerIndex);
+
+  GameObject* player = players[playerIndex];
+
+  // Collision detection
+  player->addTranslation(velocity);
+
+  GameObject* collidedObj = DoesCollide(player);
+  if (!collidedObj) {
+    return;
+  }
+
+  std::string name = collidedObj->getName();
+
+  std::cout << "Collision with: " << name << std::endl;
+
+  if (collidedObj->getObjectType() == ObjectType::Enemy) {
+    // Set enemy health to 0
+    collidedObj->setHealth(0);
+  } else if (collidedObj->getObjectType() == ObjectType::Default) {
+    // Collision with scene object
+    // Remove velocity if object collides
+    player->addTranslation(-velocity);
+
+    // Step player towards collision boundary
+    while (!DoesCollide(player)) {
+      player->addTranslation(glm::vec3(0.1, 0.1, 0.1) * velocity);
+    }
+
+    // Move player 0.1 units away from collision
+    player->addTranslation(glm::vec3(-0.1, -0.1, -0.1) * velocity);
+  }
+}
+
+GameObject* GameLogicServer::DoesCollide(GameObject* obj) {
   // get 8 points of A in world space
   std::vector<glm::vec3> A = GetCorners(obj);
 
-  // TODO: need to convert everything into player model coordinates then do this
-  // method (similar to ray tracing in CSE 167)
-
+  // For every gameobject in the world, check if this object collides with
+  // anything
   for (int i = 0; i < mWorld.size(); i++) {
-    // TODO: only continue if this is the same object (use name)
-    if (mWorld[i]->getObjectType() != ObjectType::Default ||
-        !strncmp(mWorld[i]->getName(), "root0000", NAME_LEN)) {
+    // If this object is the root, or has 0 health, or is itself, do not collide
+    if (!strncmp(mWorld[i]->getName(), "root0000", NAME_LEN) ||
+        (mWorld[i]->getHealth() <= 0 &&
+         mWorld[i]->getObjectType() != ObjectType::Default) ||
+        !strncmp(mWorld[i]->getName(), obj->getName(), NAME_LEN)) {
       continue;
     }
 
     std::vector<float> B = GetMinMax(mWorld[i]);
 
-    /*std::cout << "MinX: " << B[MIN_X] << std::endl;
-    std::cout << "MinY: " << B[MIN_Y] << std::endl;
-    std::cout << "MinZ: " << B[MIN_Z] << std::endl;
-    std::cout << "MaxX: " << B[MAX_X] << std::endl;
-    std::cout << "MaxY: " << B[MAX_Y] << std::endl;
-    std::cout << "MaxZ: " << B[MAX_Z] << std::endl;*/
-
-    // for every point of A, is it in B?
+    // For every point of A, is it in B?
     for (int j = 0; j < 8; j++) {
-      /*std::cout << "A point " << j << " x cordinate:" << A[j].x << std::endl;
-      std::cout << "A point " << j << " y cordinate:" << A[j].y << std::endl;
-      std::cout << "A point " << j << " z cordinate:" << A[j].z << std::endl;*/
-
       if ((A[j].x >= B[MIN_X] && A[j].x <= B[MAX_X]) &&
           (A[j].y >= B[MIN_Y] && A[j].y <= B[MAX_Y]) &&
           (A[j].z >= B[MIN_Z] && A[j].z <= B[MAX_Z])) {
         // A intersects B
-        return true;
+        return mWorld[i];
       }
     }
   }
 
-  return false;
+  return nullptr;
 }
 
 std::vector<float> GameLogicServer::GetMinMax(GameObject* obj) {
@@ -354,11 +342,12 @@ void GameLogicServer::SendInfo() {
       }
 
       char* data = MarshalInfo(mWorld[i]);  // Marshal data
+      data >> mSendingBuffer;               // Add message to queue
 
-      // Add message to queue
-      // mTestBuffer.push_back(data);
-
-      data >> mSendingBuffer;
+      // If the enemy has health 0, remove it from the world
+      if (mWorld[i]->getHealth() == 0) {
+        mWorld.erase(mWorld.begin() + i);
+      }
     }
   }
 }

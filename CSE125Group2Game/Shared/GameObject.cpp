@@ -11,13 +11,24 @@ GameObject::GameObject(Transform* transform, char* name, int health,
   memcpy(mName, name, NAME_LEN);
 }
 
-GameObject::~GameObject() {
-  delete mTransform;
-}
+GameObject::~GameObject() { delete mTransform; }
 
 void GameObject::setTransform(Transform* transform) { mTransform = transform; }
+void GameObject::addTranslation(glm::vec3 translation) {
+  // Only modifiy translation if it is non-zero
+  if (glm::length(translation) == 0) {
+    return;
+  }
+
+  mTransform->addTranslation(translation);
+  isModified = true;
+}
+
 void GameObject::setName(char* name) { memcpy(mName, name, NAME_LEN); }
-void GameObject::setHealth(int health) { mHealth = health; }
+void GameObject::setHealth(int health) {
+  mHealth = health;
+  isModified = true;
+}
 
 Transform* GameObject::getTransform() { return mTransform; }
 char* GameObject::getName() { return mName; }

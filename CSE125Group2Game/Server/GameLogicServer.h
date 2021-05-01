@@ -66,8 +66,9 @@ class GameLogicServer {
   void SendInfo();
   char* MarshalInfo(GameObject* obj);
   void MovePlayers();
+  void HandlePlayerCollision(int playerIndex);
   void MoveEnemies();
-  bool DoesCollide(GameObject* obj);
+  GameObject* DoesCollide(GameObject* obj);
   std::vector<glm::vec3> GetCorners(GameObject* obj);
   std::vector<float> GetMinMax(GameObject* obj);
 

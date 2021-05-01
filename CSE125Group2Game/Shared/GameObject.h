@@ -3,6 +3,7 @@
 
 #include "Transform.h"
 
+// Todo: create isDefault() method
 enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
 
 #define NUM_KEYS 5
@@ -26,6 +27,7 @@ class GameObject {
   ~GameObject();
 
   void setTransform(Transform* transform);
+  void addTranslation(glm::vec3 translation);
   void setName(char* name);
   void setHealth(int health);
 
