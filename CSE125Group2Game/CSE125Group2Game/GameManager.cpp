@@ -147,15 +147,10 @@ void GameManager::UpdateObject(GameObject* obj) {
   // Update object
   foundObject = foundNode->getObject();
 
-  if (!strncmp(foundObject->getName(), "enem0000", NAME_LEN)) {
-    std::cout << foundObject->getTransform()->getTranslation().x << std::endl;
-    std::cout << "Address of transform (net): " << foundObject->getTransform()
-              << std::endl;
-  }
-
   // Health is 0, delete object
   if (obj->getHealth() == 0) {
-    std::cerr << "Deleting object, health is 0!" << std::endl;
+    std::cerr << "Deleting object: " << ((std::string)obj->getName())
+              << std::endl;
     foundNode->getParent()->removeChild(foundNode);
     delete foundObject;
     return;
@@ -164,10 +159,6 @@ void GameManager::UpdateObject(GameObject* obj) {
   // Set found objects position, rotation, scale, and health to passed in obj
   foundObject->getTransform()->setTranslation(
       obj->getTransform()->getTranslation());
-
-  // if (!strncmp(foundObject->getName(), "enem0000", NAME_LEN)) {
-  //  std::cout << foundObject->getTransform()->getTranslation().x << std::endl;
-  //}
 
   foundObject->getTransform()->setRotation(obj->getTransform()->getRotation());
 

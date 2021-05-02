@@ -42,20 +42,18 @@ class GameLogicServer {
   GameLogicServer(std::vector<GameObject*> world, ServerLoader scene,
                   uint16_t tick_ms);
 
-  void Update();
+  void update();
   static GameLogicServer* getLogicServer();
 
-  uint16_t GetServerTick();
-  std::vector<GameObject*> GetWorld();
-  ServerLoader GetScene();
+  uint16_t getServerTick();
+  std::vector<GameObject*> getWorld();
+  ServerLoader getScene();
 
-  void PrintWorld();
+  void printWorld();
 
-  void UpdateKeyPress(int keyID, int playerID);
+  void updateKeyPress(int keyID, int playerID);
 
-  void ResetKeyPresses();
-
-  void AddGameObject(GameObject* obj);
+  void addGameObject(GameObject* obj);
 
   msd::channel<char*> mSendingBuffer;  // Queue for storing events to send
   std::vector<char*> mTestBuffer;
@@ -63,13 +61,16 @@ class GameLogicServer {
   GameObject* players[MAX_PLAYERS];
 
  private:
-  void SendInfo();
-  char* MarshalInfo(GameObject* obj);
-  void MovePlayers();
-  void MoveEnemies();
-  bool DoesCollide(GameObject* obj);
-  std::vector<glm::vec3> GetCorners(GameObject* obj);
-  std::vector<float> GetMinMax(GameObject* obj);
+  void resetKeyPresses();
+  void sendInfo();
+  char* marshalInfo(GameObject* obj);
+  void movePlayers();
+  void handlePlayerCollision(int playerIndex);
+  void moveEnemies();
+  GameObject* doesCollide(GameObject* obj);
+  std::vector<glm::vec3> getCorners(GameObject* obj);
+  std::vector<float> getMinMax(GameObject* obj);
+  void deleteObject(int worldIndex);
 
   std::vector<GameObject*> mWorld;
   ServerLoader mScene;

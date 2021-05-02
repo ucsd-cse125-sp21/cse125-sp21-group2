@@ -3,7 +3,7 @@
 
 class Enemy : public GameObject {
  public:
-  static bool hasSpawned;
+  static int enemysSpawned;
 
   Enemy(Transform* transform, char* name, int health);
 
