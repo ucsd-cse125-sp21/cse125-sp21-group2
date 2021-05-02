@@ -41,7 +41,7 @@ class GameObject {
 
   ObjectType getObjectType();
 
-  bool isModified = true;
+  bool mIsModified = true;
 
  protected:
   Transform* mTransform;

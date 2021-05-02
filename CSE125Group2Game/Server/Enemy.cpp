@@ -4,16 +4,16 @@
 
 Enemy::Enemy(Transform* transform, char* name, int health)
     : GameObject(transform, name, health, ObjectType::Enemy) {
-  isModified = true;
+  mIsModified = true;
 }
 
 void Enemy::Update() {
   if (--mTicksTillUpdate > 0) {
-    isModified = false;
+    mIsModified = false;
     return;
   }
 
-  isModified = true;
+  mIsModified = true;
   mTicksTillUpdate = mTicksPerUpdate;
 
   GameObject* nearestPlayer = GetNearestPlayer();

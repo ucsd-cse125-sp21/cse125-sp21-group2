@@ -21,13 +21,13 @@ void GameObject::addTranslation(glm::vec3 translation) {
   }
 
   mTransform->addTranslation(translation);
-  isModified = true;
+  mIsModified = true;
 }
 
 void GameObject::setName(char* name) { memcpy(mName, name, NAME_LEN); }
 void GameObject::setHealth(int health) {
   mHealth = health;
-  isModified = true;
+  mIsModified = true;
 }
 
 Transform* GameObject::getTransform() { return mTransform; }

@@ -20,7 +20,7 @@ int main() {
 
   GameLogicServer *logicServer = GameLogicServer::getLogicServer();
 
-  logicServer->PrintWorld();
+  logicServer->printWorld();
 
   std::thread netServerThread(&(NetworkServer::Update), netServer, -1, true);
 
@@ -55,7 +55,7 @@ int main() {
   // Runs at tickrate and performs game logic
   while (1) {
     before = GetTickCount();
-    logicServer->Update();
+    logicServer->update();
     after = GetTickCount();
 
     diff = after - before;
@@ -78,9 +78,9 @@ int main() {
 
     logicServer->mTestBuffer.clear();*/
 
-    if (logicServer->GetServerTick() >
+    if (logicServer->getServerTick() >
         diff) {  // need to ensure that server tick is big enough
-      Sleep(logicServer->GetServerTick() - diff);
+      Sleep(logicServer->getServerTick() - diff);
     }
   }
 
