@@ -64,6 +64,7 @@ void WaveManager::removeEnemy(Enemy* enemy) {
   for (int i = 0; i < mWaveEnemies.size(); i++) {
     if (!strncmp(enemy->getName(), mWaveEnemies[i]->getName(), NAME_LEN)) {
       mWaveEnemies.erase(mWaveEnemies.begin() + i);
+      mNextEnemyIndex--;
       return;
     }
   }
