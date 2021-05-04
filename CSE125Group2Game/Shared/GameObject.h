@@ -28,6 +28,11 @@ class GameObject {
 
   ~GameObject();
 
+  bool isDefault();
+  bool isPlayer();
+  bool isEnemy();
+  bool isProjectile();
+
   void setTransform(Transform* transform);
   void addTranslation(glm::vec3 translation);
   void setName(char* name);

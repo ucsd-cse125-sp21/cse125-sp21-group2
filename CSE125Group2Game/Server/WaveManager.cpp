@@ -48,8 +48,8 @@ void WaveManager::startWave() {
 
   mNextEnemyIndex = 0;
   mEnemiesSpawnedInWave = 0;
-  std::cout << "starting wave, mNextEnemyIndex: " << mNextEnemyIndex
-            << "mWaveEnemies.size(): " << mWaveEnemies.size() << std::endl;
+  // std::cout << "starting wave, mNextEnemyIndex: " << mNextEnemyIndex
+  //          << "mWaveEnemies.size(): " << mWaveEnemies.size() << std::endl;
 }
 
 void WaveManager::spawnEnemy() {
@@ -61,11 +61,8 @@ void WaveManager::spawnEnemy() {
   mNextEnemyIndex++;
   mEnemiesSpawnedInWave++;
 
-  // if (mNextEnemyIndex == mMaxWaveSize) {
-  //  mFullWaveSpawned = true;
-  //}
-  std::cout << "adding player, mNextEnemyIndex: " << mNextEnemyIndex
-            << "mWaveEnemies.size(): " << mWaveEnemies.size() << std::endl;
+  // std::cout << "adding player, mNextEnemyIndex: " << mNextEnemyIndex
+  //          << "mWaveEnemies.size(): " << mWaveEnemies.size() << std::endl;
 }
 
 void WaveManager::removeEnemy(Enemy* enemy) {
@@ -74,8 +71,9 @@ void WaveManager::removeEnemy(Enemy* enemy) {
     if (!strncmp(enemy->getName(), mWaveEnemies[i]->getName(), NAME_LEN)) {
       mWaveEnemies.erase(mWaveEnemies.begin() + i);
       mNextEnemyIndex--;
-      std::cout << "deleting player, mNextEnemyIndex: " << mNextEnemyIndex
-                << "mWaveEnemies.size(): " << mWaveEnemies.size() << std::endl;
+      // std::cout << "deleting player, mNextEnemyIndex: " << mNextEnemyIndex
+      //          << "mWaveEnemies.size(): " << mWaveEnemies.size() <<
+      //          std::endl;
       return;
     }
   }
@@ -88,19 +86,6 @@ std::string WaveManager::makeName() {
   if (Enemy::enemysSpawned >= 10000) {
     Enemy::enemysSpawned = 0;
   }
-
-  // if ((Enemy::enemysSpawned / 1000) != 0) {
-  //  std::string name = "enem";
-  //} else if ((Enemy::enemysSpawned / 100) == 0) {
-  //  std::string name = "enem0";
-  //} else if ((Enemy::enemysSpawned / 10) == 0) {
-  //  std::string name = "enem00";
-  //} else {
-  //  std::string name = "enem000";
-  //}
-
-  // name += std::to_string(Enemy::enemysSpawned);
-  // std::cout << "New Enemy Name: " << name << std::endl;
 
   std::string name = GameObject::makeName("enem", Enemy::enemysSpawned);
   Enemy::enemysSpawned++;

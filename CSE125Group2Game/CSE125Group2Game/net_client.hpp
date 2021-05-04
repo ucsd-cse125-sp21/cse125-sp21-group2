@@ -90,6 +90,10 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
             GameObject* obj = GameManager::getManager()->Unmarshal(data);
 
+            if (obj->isProjectile()) {
+              std::cout << "received projectile!!" << std::endl;
+            }
+
             GameManager::getManager()->UpdateObject(obj);
 
             free(data);

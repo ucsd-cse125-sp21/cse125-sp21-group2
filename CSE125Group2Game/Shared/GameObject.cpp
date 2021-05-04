@@ -58,9 +58,9 @@ std::string GameObject::makeName(std::string prefix, int count) {
   // If the enemysSpawned is more than 4 digits, reset it
   if ((count / 1000) != 0) {
     // no need to update prefix
-  } else if ((count / 100) == 0) {
+  } else if ((count / 100) != 0) {
     name += "0";
-  } else if ((count / 10) == 0) {
+  } else if ((count / 10) != 0) {
     name += "00";
   } else {
     name += "000";
@@ -70,4 +70,11 @@ std::string GameObject::makeName(std::string prefix, int count) {
   std::cout << "New Enemy Name: " << name << std::endl;
 
   return name;
+}
+
+bool GameObject::isDefault() { return mObjectType == ObjectType::Default; }
+bool GameObject::isPlayer() { return mObjectType == ObjectType::Player; }
+bool GameObject::isEnemy() { return mObjectType == ObjectType::Enemy; }
+bool GameObject::isProjectile() {
+  return mObjectType == ObjectType::Projectile;
 }

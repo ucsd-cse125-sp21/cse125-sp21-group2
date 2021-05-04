@@ -102,7 +102,7 @@ void GameLogicServer::update() {
 
 void GameLogicServer::updateEnemies() {
   for (int i = 0; i < mWorld.size(); i++) {
-    if (mWorld[i]->getObjectType() == ObjectType::Enemy) {
+    if (mWorld[i]->isEnemy()) {
       // call enemy update
       mWorld[i]->Update();
     }
@@ -115,7 +115,17 @@ void GameLogicServer::updateProjectiles() {
       continue;
     }
     if (mKeyPresses[i][GameObject::SHOOT]) {
-      Projectile::spawnProjectile(players[i]->getForwardVector());
+      std::cout << "Player " << i << " wants to spawn a projectile!!";
+      Projectile::spawnProjectile(players[i]->getTransform()->getTranslation(),
+                                  players[i]->getForwardVector());
+    }
+  }
+
+  for (int i = 0; i < mWorld.size(); i++) {
+    // if (mWorld[i]->getObjectType() == ObjectType::Projectile) {
+    if (mWorld[i]->isProjectile()) {
+      // call enemy update
+      mWorld[i]->Update();
     }
   }
 }
@@ -158,10 +168,10 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
 
   std::cout << "Collision with: " << name << std::endl;
 
-  if (collidedObj->getObjectType() == ObjectType::Enemy) {
+  if (collidedObj->isEnemy()) {
     // Set enemy health to 0
     collidedObj->setHealth(0);
-  } else if (collidedObj->getObjectType() == ObjectType::Default) {
+  } else if (collidedObj->isDefault()) {
     // Collision with scene object
     // Remove velocity if object collides
     player->addTranslation(-velocity);
@@ -185,8 +195,7 @@ GameObject* GameLogicServer::doesCollide(GameObject* obj) {
   for (int i = 0; i < mWorld.size(); i++) {
     // If this object is the root, or has 0 health, or is itself, do not collide
     if (!strncmp(mWorld[i]->getName(), "root0000", NAME_LEN) ||
-        (mWorld[i]->getHealth() <= 0 &&
-         mWorld[i]->getObjectType() != ObjectType::Default) ||
+        (mWorld[i]->getHealth() <= 0 && !mWorld[i]->isDefault()) ||
         !strncmp(mWorld[i]->getName(), obj->getName(), NAME_LEN)) {
       continue;
     }
@@ -341,9 +350,15 @@ void GameLogicServer::addGameObject(GameObject* obj) { mWorld.push_back(obj); }
 void GameLogicServer::sendInfo() {
   for (int i = 0; i < mWorld.size(); i++) {
     // Only send info for moving objects
-    if (mWorld[i]->getObjectType() == ObjectType::Player ||
-        mWorld[i]->getObjectType() == ObjectType::Enemy ||
-        mWorld[i]->getObjectType() == ObjectType::Projectile) {
+    if (mWorld[i]->isPlayer() || mWorld[i]->isEnemy() ||
+        mWorld[i]->isProjectile()) {
+      if (mWorld[i]->isProjectile()) {
+        std::cout << "sending projectile!!!" << std::endl;
+        if (!mWorld[i]->mIsModified) {
+          std::cout << "hmmm projectile NOT modified???" << std::endl;
+          continue;
+        }
+      }
       if (!mWorld[i]->mIsModified) {
         continue;
       }
@@ -363,7 +378,7 @@ void GameLogicServer::deleteObject(int worldIndex) {
   GameObject* tmpObj = mWorld[worldIndex];
 
   // Remove from WaveManager if this is an enemy
-  if (ObjectType::Enemy == tmpObj->getObjectType()) {
+  if (tmpObj->isEnemy()) {
     WaveManager::getWaveManager()->removeEnemy((Enemy*)tmpObj);
   }
 
