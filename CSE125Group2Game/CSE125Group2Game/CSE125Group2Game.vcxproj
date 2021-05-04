@@ -180,6 +180,8 @@
     <None Include="normal_vert.glsl" />
     <None Include="packages.config" />
     <None Include="color_vert.glsl" />
+    <None Include="rainbow_frag.glsl" />
+    <None Include="rainbow_vert.glsl" />
     <None Include="texture_frag.glsl" />
     <None Include="texture_vert.glsl" />
   </ItemGroup>

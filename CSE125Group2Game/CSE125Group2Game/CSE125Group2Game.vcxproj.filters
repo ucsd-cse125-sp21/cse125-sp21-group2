@@ -106,6 +106,12 @@
     <None Include="texture_frag.glsl">
       <Filter>Source Files\render\shaders</Filter>
     </None>
+    <None Include="rainbow_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="rainbow_frag.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderManager.h">

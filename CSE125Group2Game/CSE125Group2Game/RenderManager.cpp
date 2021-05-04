@@ -53,6 +53,8 @@ RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader,
       std::make_unique<ShaderProgram>("normal_vert.glsl", "normal_frag.glsl");
   mpTextureProgram =
       std::make_unique<ShaderProgram>("texture_vert.glsl", "texture_frag.glsl");
+  mpRainbowProgram =
+      std::make_unique<ShaderProgram>("rainbow_vert.glsl", "rainbow_frag.glsl");
 
   mProjection =
       glm::perspective(glm::radians(FOVY), static_cast<float>(width) / height,
@@ -92,6 +94,7 @@ void RenderManager::draw(const Mesh& mesh, const Material& mat,
     mTexLoader->use(mat.diffuseMap);
   } else {
     mpColorProgram->use();
+    // glUniform1f(7, currentTime);
     glUniform3fv(3, 1, glm::value_ptr(mat.mAmbient));
     glUniform3fv(4, 1, glm::value_ptr(mat.mDiffuse));
     glUniform3fv(5, 1, glm::value_ptr(mat.mSpecular));

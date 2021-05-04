@@ -136,8 +136,7 @@ Model::Model(const std::string& filePath, Transform* transform,
              MeshLoader& loader, TextureLoader& tloader)
     : mTransform(transform) {
   Assimp::Importer importer;
-  const aiScene* scene = importer.ReadFile(
-      filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+  const aiScene* scene = importer.ReadFile(filePath, 0);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
       !scene->mRootNode) {

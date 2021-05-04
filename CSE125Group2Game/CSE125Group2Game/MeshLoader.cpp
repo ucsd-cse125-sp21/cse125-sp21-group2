@@ -2,6 +2,9 @@
 
 #include <glad/glad.h>
 
+#include <iostream>
+#include <ostream>
+
 static inline glm::vec3 vec3_cast(aiVector3D& vec) {
   return glm::vec3(vec.x, vec.y, vec.z);
 }
@@ -139,8 +142,14 @@ Mesh MeshLoader::loadMesh(const aiMesh* mesh) {
   }
 
   // get indices out .... must do because they are in ptrs...
+  std::cerr << mesh->mNumFaces << std::endl;
   std::vector<glm::uvec3> indices;
   for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+    // TODO: some faces aren't complete for some reason (i.e. lines) .... just
+    // add this guard
+    if (mesh->mFaces[i].mNumIndices != 3) {
+      continue;
+    }
     indices.emplace_back(mesh->mFaces[i].mIndices[0],
                          mesh->mFaces[i].mIndices[1],
                          mesh->mFaces[i].mIndices[2]);

@@ -33,6 +33,8 @@ class RenderManager {
 
   void setRenderBoundingBoxes(bool shouldRender);
 
+  void updateTime(float delta) { currentTime += delta; };
+
   Camera* mCamera;
 
  private:
@@ -46,6 +48,7 @@ class RenderManager {
   std::unique_ptr<ShaderProgram> mpColorProgram;
   std::unique_ptr<ShaderProgram> mpNormalProgram;
   std::unique_ptr<ShaderProgram> mpTextureProgram;
+  std::unique_ptr<ShaderProgram> mpRainbowProgram;
 
   bool mUseNormalShading = false;
 
@@ -53,4 +56,6 @@ class RenderManager {
 
   bool mRenderBoundingBoxes = false;
   Model* cubeboi;
+
+  float currentTime = 0.0f;
 };

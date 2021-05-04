@@ -23,7 +23,6 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   glfwSetWindowUserPointer(mWindow, this);
   mScene =
       SceneLoader::LoadFromFile("../Shared/scene.json", *mLoader, mTLoader);
-  mpRenderManager->setRenderBoundingBoxes(true);
 }
 
 GameManager* GameManager::getManager() {
@@ -70,7 +69,13 @@ void GameManager::Update() {
   CustomClient c;
   c.Init(host, port);
 
+  float lastTime = glfwGetTime();
+
   while (!glfwWindowShouldClose(mWindow)) {
+    float now = glfwGetTime();
+    float delta = now - lastTime;
+    lastTime = now;
+
     // 1) Update local states (use key logger to update gameobject)
 
     glfwPollEvents();
@@ -94,6 +99,9 @@ void GameManager::Update() {
 
     // draw scene
     mpRenderManager->draw(mScene, *mLoader);
+
+    // TODO: refactor just inside renderer itself imo
+    mpRenderManager->updateTime(delta);
 
     glfwSwapBuffers(mWindow);
   }
