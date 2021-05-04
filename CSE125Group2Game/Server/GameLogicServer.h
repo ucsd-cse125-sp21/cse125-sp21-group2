@@ -72,6 +72,7 @@ class GameLogicServer {
   std::vector<glm::vec3> getCorners(GameObject* obj);
   std::vector<float> getMinMax(GameObject* obj);
   void deleteObject(int worldIndex);
+  void printKeyPresses();
 
   std::vector<GameObject*> mWorld;
   ServerLoader mScene;

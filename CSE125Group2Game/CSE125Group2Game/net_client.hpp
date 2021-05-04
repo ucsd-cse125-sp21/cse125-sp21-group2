@@ -25,7 +25,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
               << GetTickCount() << std::endl;*/
 
     int sum = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < NUM_KEYS; i++) {
       sum += keysPressed[i];
       msg << keysPressed[i];
     }
@@ -90,9 +90,9 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
             GameObject* obj = GameManager::getManager()->Unmarshal(data);
 
-            if (obj->isProjectile()) {
-              std::cout << "received projectile!!" << std::endl;
-            }
+            // if (obj->isProjectile()) {
+            //  std::cout << "received projectile!!" << std::endl;
+            //}
 
             GameManager::getManager()->UpdateObject(obj);
 

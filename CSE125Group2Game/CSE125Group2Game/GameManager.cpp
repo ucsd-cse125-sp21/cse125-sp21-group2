@@ -130,7 +130,7 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Object does not exist, create it
   if (!foundNode) {
-    std::cout << "creating new enemy" << std::endl;
+    std::cout << "creating new  object" << std::endl;
     foundObject = new GameObject(
         new Transform(obj->getTransform()->getTranslation(),
                       obj->getTransform()->getRotation(),

@@ -82,6 +82,7 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 void GameLogicServer::update() {
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
+  // printKeyPresses();
   WaveManager::getWaveManager()->update();
 
   // 1) Player's, 2) enemies, 3) projectile
@@ -115,7 +116,7 @@ void GameLogicServer::updateProjectiles() {
       continue;
     }
     if (mKeyPresses[i][GameObject::SHOOT]) {
-      std::cout << "Player " << i << " wants to spawn a projectile!!";
+      // std::cout << "Player " << i << " wants to spawn a projectile!!";
       Projectile::spawnProjectile(players[i]->getTransform()->getTranslation(),
                                   players[i]->getForwardVector());
     }
@@ -352,13 +353,13 @@ void GameLogicServer::sendInfo() {
     // Only send info for moving objects
     if (mWorld[i]->isPlayer() || mWorld[i]->isEnemy() ||
         mWorld[i]->isProjectile()) {
-      if (mWorld[i]->isProjectile()) {
-        std::cout << "sending projectile!!!" << std::endl;
-        if (!mWorld[i]->mIsModified) {
-          std::cout << "hmmm projectile NOT modified???" << std::endl;
-          continue;
-        }
-      }
+      // if (mWorld[i]->isProjectile()) {
+      //  std::cout << "sending projectile!!!" << std::endl;
+      //  if (!mWorld[i]->mIsModified) {
+      //    std::cout << "hmmm projectile NOT modified???" << std::endl;
+      //    continue;
+      //  }
+      //}
       if (!mWorld[i]->mIsModified) {
         continue;
       }
@@ -438,4 +439,20 @@ char* GameLogicServer::marshalInfo(GameObject* obj) {
   tmpInfo += FLOAT_SIZE;
 
   return info;
+}
+
+void GameLogicServer::printKeyPresses() {
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (players[i] == NULL) {
+      continue;
+    }
+
+    std::cout << "key presses for player " << i << std::endl;
+
+    std::cout << "forward: " << mKeyPresses[i][GameObject::FORWARD];
+    std::cout << "backward: " << mKeyPresses[i][GameObject::BACKWARD];
+    std::cout << "left: " << mKeyPresses[i][GameObject::LEFT];
+    std::cout << "right: " << mKeyPresses[i][GameObject::RIGHT];
+    std::cout << "shoot: " << mKeyPresses[i][GameObject::SHOOT];
+  }
 }

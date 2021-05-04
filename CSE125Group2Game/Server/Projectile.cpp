@@ -30,7 +30,7 @@ void Projectile::spawnProjectile(glm::vec3 translation,
   // add to game world
   GameLogicServer::getLogicServer()->addGameObject(projectile);
 
-  std::cout << "Projecile spawned!";
+  // std::cout << "Projecile spawned!";
 }
 
 // TODO: add method update every tick or whatever
@@ -45,7 +45,7 @@ void Projectile::Update() {
 
   // projectile is dead
   if (mProjectileNextTick >= mProjectileMaxTicks) {
-    setHealth(0);
+    // setHealth(0); - TODO add back in
     return;
   }
 
