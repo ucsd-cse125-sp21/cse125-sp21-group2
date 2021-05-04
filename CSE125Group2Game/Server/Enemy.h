@@ -5,7 +5,7 @@ class Enemy : public GameObject {
  public:
   static int enemysSpawned;
 
-  Enemy(Transform* transform, char* name, int health);
+  Enemy(Transform* transform, char* name, int health, glm::vec3 forwardVector);
 
   void Update();
 

@@ -21,8 +21,9 @@ class WaveManager {
   static WaveManager* mWaveManager;
 
   bool mInWave = false;
+  bool mFullWaveSpawned = false;
   int mWavesCompleted = 0;
-  int maxWaveSize = 2;
+  int mMaxWaveSize = 2;
   int mNextEnemyIndex = 0;
 
   unsigned long mTimeOfLastSpawn;

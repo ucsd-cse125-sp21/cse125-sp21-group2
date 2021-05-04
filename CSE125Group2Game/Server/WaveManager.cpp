@@ -30,24 +30,26 @@ void WaveManager::update() {
   }
 
   // Only spawn enemy once every mSpawnSpeed (3 seconds)
-  if (mNextEnemyIndex < maxWaveSize &&
-      GetTickCount() - mTimeOfLastSpawn > mSpawnSpeed) {
+  if ( !mFullWaveSpawned && GetTickCount() - mTimeOfLastSpawn > mSpawnSpeed) {
     spawnEnemy();
   }
 }
 
 void WaveManager::startWave() {
   // TODO????: random enemy spawns would be dope
-  for (int i = 0; i < maxWaveSize; i++) {
+  for (int i = 0; i < mMaxWaveSize; i++) {
     Enemy* enemy =
         new Enemy(new Transform(glm::vec3(-5 - i, 0, 0), glm::vec3(0, 0, 0),
                                 glm::vec3(1, 1, 1), glm::vec3(0.5, 0.5, 0.5)),
-                  (char*)makeName().c_str(), 10);
+                  (char*)makeName().c_str(), 10, glm::vec3(1, 0, 0));
 
     mWaveEnemies.push_back(enemy);
   }
 
   mNextEnemyIndex = 0;
+  mFullWaveSpawned = (mNextEnemyIndex >= mMaxWaveSize); 
+  std::cout << "starting wave, mNextEnemyIndex: " << mNextEnemyIndex
+            << "mWaveEnemies.size(): " << mWaveEnemies.size() << std::endl;
 }
 
 void WaveManager::spawnEnemy() {
@@ -57,6 +59,12 @@ void WaveManager::spawnEnemy() {
 
   mTimeOfLastSpawn = GetTickCount();
   mNextEnemyIndex++;
+
+  if (mNextEnemyIndex == mMaxWaveSize) {
+    mFullWaveSpawned = true;
+  } 
+  std::cout << "adding player, mNextEnemyIndex: " << mNextEnemyIndex
+            << "mWaveEnemies.size(): " << mWaveEnemies.size() << std::endl;
 }
 
 void WaveManager::removeEnemy(Enemy* enemy) {
@@ -65,6 +73,8 @@ void WaveManager::removeEnemy(Enemy* enemy) {
     if (!strncmp(enemy->getName(), mWaveEnemies[i]->getName(), NAME_LEN)) {
       mWaveEnemies.erase(mWaveEnemies.begin() + i);
       mNextEnemyIndex--;
+      std::cout << "deleting player, mNextEnemyIndex: " << mNextEnemyIndex
+                << "mWaveEnemies.size(): " << mWaveEnemies.size() << std::endl;
       return;
     }
   }

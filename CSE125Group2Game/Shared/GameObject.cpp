@@ -1,13 +1,20 @@
 ﻿#include "GameObject.h"
 
-GameObject::GameObject(Transform* transform, char* name, int health)
-    : mTransform(transform), mHealth(health), mObjectType(ObjectType::Default) {
+GameObject::GameObject(Transform* transform, char* name, int health,
+                       glm::vec3 forwardVector)
+    : mTransform(transform),
+      mHealth(health),
+      mObjectType(ObjectType::Default),
+      mForwardVector(forwardVector) {
   memcpy(mName, name, NAME_LEN);
 }
 
 GameObject::GameObject(Transform* transform, char* name, int health,
-                       ObjectType type)
-    : mTransform(transform), mHealth(health), mObjectType(type) {
+                       ObjectType type, glm::vec3 forwardVector)
+    : mTransform(transform),
+      mHealth(health),
+      mObjectType(type),
+      mForwardVector(forwardVector) {
   memcpy(mName, name, NAME_LEN);
 }
 
@@ -34,3 +41,11 @@ Transform* GameObject::getTransform() { return mTransform; }
 char* GameObject::getName() { return mName; }
 int GameObject::getHealth() { return mHealth; }
 ObjectType GameObject::getObjectType() { return mObjectType; }
+glm::vec3 GameObject::getForwardVector() { return mForwardVector; }
+
+void GameObject::setForwardVector(glm::vec3 forwardVector) {
+  // TODO: is this right?
+  mForwardVector.x = forwardVector.x;
+  mForwardVector.y = forwardVector.y;
+  mForwardVector.z = forwardVector.z;
+}
