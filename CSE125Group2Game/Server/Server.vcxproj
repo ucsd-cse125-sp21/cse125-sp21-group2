@@ -158,6 +158,7 @@
     <ClCompile Include="GameLogicServer.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="WaveManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Shared\GameObject.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="ServerGraphNode.h" />
     <ClInclude Include="ServerLoader.h" />
     <ClInclude Include="server_helper.h" />
+    <ClInclude Include="WaveManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shared\scene.json" />

@@ -71,7 +71,7 @@ class NetworkServer : public olc::net::server_interface<CustomMsgTypes> {
 
     GameObject* newPlayer = new GameObject(transform, (char*)clientId.c_str(),
                                            10, ObjectType::Player);
-    logicServer->AddGameObject(newPlayer);
+    logicServer->addGameObject(newPlayer);
 
     logicServer->players[numPlayers] = newPlayer;
 
@@ -107,7 +107,7 @@ class NetworkServer : public olc::net::server_interface<CustomMsgTypes> {
 
         for (int i = 0; i < msg.body.size(); i++) {
           if (msg.body[i]) {
-            logicServer->UpdateKeyPress(
+            logicServer->updateKeyPress(
                 i, serverToLogicID->find(client->GetID())->second);
           }
         }
