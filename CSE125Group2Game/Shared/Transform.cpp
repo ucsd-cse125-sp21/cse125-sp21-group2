@@ -92,7 +92,7 @@ glm::quat Transform::getRotation() { return mRotation; }
 
 glm::vec3 Transform::getScale() { return mScale; }
 
-glm::mat4 Transform::getModel() { return mModel; }
+glm::mat4 Transform::getModel() const { return mModel; }
 
 glm::vec3 Transform::getBBox() { return mBoundingBox; }
 

@@ -6,6 +6,7 @@
 
 class Transform {
  public:
+  Transform() : mTranslation(0.0f), mRotation(), mScale(1.0f) { updateModel(); }
   Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale);
 
   Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale,
@@ -38,7 +39,7 @@ class Transform {
 
   glm::vec3 getScale();
 
-  glm::mat4 getModel();
+  glm::mat4 getModel() const;
 
   glm::vec3 getBBox();
 

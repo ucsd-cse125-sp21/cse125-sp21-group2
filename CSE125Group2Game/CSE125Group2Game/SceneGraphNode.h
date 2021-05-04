@@ -9,7 +9,6 @@
 class SceneGraphNode {
  public:
   SceneGraphNode(SceneGraphNode* parent, GameObject* object);
-
   SceneGraphNode(SceneGraphNode* parent, GameObject* object, Model* mesh);
 
   // static SceneGraphNode* getRoot();
@@ -26,11 +25,14 @@ class SceneGraphNode {
 
   SceneGraphNode* getParent();
 
- private:
-  // static SceneGraphNode* root;
+  const Transform& getTransform() const { return mTransform; };
+  void setTransform(const Transform& transform) { mTransform = transform; }
 
+ private:
   GameObject* mObject;
   Model* mModel;
+
+  Transform mTransform;
 
   std::vector<SceneGraphNode*> mChildren;
   SceneGraphNode* mParent;

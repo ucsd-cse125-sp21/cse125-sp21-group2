@@ -110,20 +110,23 @@ void RenderManager::draw(const Mesh& mesh, const Material& mat,
   glDrawElements(GL_TRIANGLES, mesh.indexCount(), GL_UNSIGNED_INT, nullptr);
 }
 
-void RenderManager::draw(const Model& model) {
+void RenderManager::draw(const Model& model) { draw(model, glm::mat4(1.0f)); }
+
+void RenderManager::draw(const Model& model, const glm::mat4& prev) {
   for (int i = 0; i < model.meshes().size(); i++) {
     draw(model.meshes()[i], model.materials()[i],
-         model.transformConst().getModel());
+         prev * model.transformConst().getModel());
   }
 }
 
 void RenderManager::draw(const SceneGraph& graph, MeshLoader& loader) {
   auto root = graph.getRoot();
-  draw(*root, loader);
+  draw(*root, loader, glm::mat4(1));
 }
 
 // TODO: fix scene graph, then this will need to change.
-void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader) {
+void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
+                         const glm::mat4& prev) {
   if (mRenderBoundingBoxes) {
     auto bb = node.getObject()->getTransform()->getBBox();
 
@@ -180,13 +183,14 @@ void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader) {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   }
 
+  glm::mat4 curr = prev * node.getTransform().getModel();
   auto model = node.getModel();
   if (model) {
-    draw(*model);
+    draw(*model, curr);
   }
 
   for (auto child : node.getChildren()) {
-    draw(*child, loader);
+    draw(*child, loader, curr);
   }
 }
 

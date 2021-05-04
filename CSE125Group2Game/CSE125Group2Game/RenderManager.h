@@ -24,8 +24,10 @@ class RenderManager {
   void beginRender();
   void draw(const Mesh& mesh, const Material& mat, const glm::mat4& model);
   void draw(const Model& model);
+  void draw(const Model& model, const glm::mat4& prev);
   void draw(const SceneGraph& graph, MeshLoader& loader);
-  void draw(const SceneGraphNode& node, MeshLoader& loader);
+  void draw(const SceneGraphNode& node, MeshLoader& loader,
+            const glm::mat4& prev);
 
   void setViewportSize(int width, int height);
 
