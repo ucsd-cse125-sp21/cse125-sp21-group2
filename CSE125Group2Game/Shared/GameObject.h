@@ -47,6 +47,8 @@ class GameObject {
 
   bool mIsModified = true;
 
+  static std::string makeName(std::string prefix, int count);
+
  protected:
   Transform* mTransform;
   char mName[NAME_LEN];

@@ -4,6 +4,7 @@
 
 #include <limits>
 
+#include "Projectile.h"
 #include "WaveManager.h"
 
 GameLogicServer* GameLogicServer::mLogicServer;
@@ -13,6 +14,10 @@ GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
     : mWorld(world), mScene(scene), mTick_ms(tick_ms) {
   for (int i = 0; i < MAX_PLAYERS; i++) {
     bool* keyPresses = (bool*)malloc(NUM_KEYS);
+
+    for (int j = 0; j < NUM_KEYS; j++) {
+      keyPresses[j] = false;
+    }
 
     mKeyPresses.push_back(keyPresses);
 
@@ -82,16 +87,20 @@ void GameLogicServer::update() {
   // 1) Player's, 2) enemies, 3) projectile
 
   // Update player locations
-  movePlayers();
+  updatePlayers();
 
-  moveEnemies();
+  updateEnemies();
+
+  // TODO: should we create projectiles before moving players or after? moving
+  // changes their forward vector
+  updateProjectiles();
 
   sendInfo();
 
   resetKeyPresses();
 }
 
-void GameLogicServer::moveEnemies() {
+void GameLogicServer::updateEnemies() {
   for (int i = 0; i < mWorld.size(); i++) {
     if (mWorld[i]->getObjectType() == ObjectType::Enemy) {
       // call enemy update
@@ -100,7 +109,18 @@ void GameLogicServer::moveEnemies() {
   }
 }
 
-void GameLogicServer::movePlayers() {
+void GameLogicServer::updateProjectiles() {
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (players[i] == NULL) {
+      continue;
+    }
+    if (mKeyPresses[i][GameObject::SHOOT]) {
+      Projectile::spawnProjectile(players[i]->getForwardVector());
+    }
+  }
+}
+
+void GameLogicServer::updatePlayers() {
   for (int i = 0; i < MAX_PLAYERS; i++) {
     if (players[i] == NULL) {
       continue;

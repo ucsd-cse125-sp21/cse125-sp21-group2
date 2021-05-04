@@ -30,7 +30,7 @@ void WaveManager::update() {
   }
 
   // Only spawn enemy once every mSpawnSpeed (3 seconds)
-  if ( !mFullWaveSpawned && GetTickCount() - mTimeOfLastSpawn > mSpawnSpeed) {
+  if (!fullWaveSpawned() && GetTickCount() - mTimeOfLastSpawn > mSpawnSpeed) {
     spawnEnemy();
   }
 }
@@ -47,7 +47,7 @@ void WaveManager::startWave() {
   }
 
   mNextEnemyIndex = 0;
-  mFullWaveSpawned = (mNextEnemyIndex >= mMaxWaveSize); 
+  mEnemiesSpawnedInWave = 0;
   std::cout << "starting wave, mNextEnemyIndex: " << mNextEnemyIndex
             << "mWaveEnemies.size(): " << mWaveEnemies.size() << std::endl;
 }
@@ -59,10 +59,11 @@ void WaveManager::spawnEnemy() {
 
   mTimeOfLastSpawn = GetTickCount();
   mNextEnemyIndex++;
+  mEnemiesSpawnedInWave++;
 
-  if (mNextEnemyIndex == mMaxWaveSize) {
-    mFullWaveSpawned = true;
-  } 
+  // if (mNextEnemyIndex == mMaxWaveSize) {
+  //  mFullWaveSpawned = true;
+  //}
   std::cout << "adding player, mNextEnemyIndex: " << mNextEnemyIndex
             << "mWaveEnemies.size(): " << mWaveEnemies.size() << std::endl;
 }
@@ -81,28 +82,32 @@ void WaveManager::removeEnemy(Enemy* enemy) {
 }
 
 std::string WaveManager::makeName() {
-  std::string name;
+  // std::string name;
 
   // If the enemysSpawned is more than 4 digits, reset it
   if (Enemy::enemysSpawned >= 10000) {
     Enemy::enemysSpawned = 0;
   }
 
-  if ((Enemy::enemysSpawned / 1000) != 0) {
-    std::string name = "enem";
-  } else if ((Enemy::enemysSpawned / 100) == 0) {
-    std::string name = "enem0";
-  } else if ((Enemy::enemysSpawned / 10) == 0) {
-    std::string name = "enem00";
-  } else {
-    std::string name = "enem000";
-  }
+  // if ((Enemy::enemysSpawned / 1000) != 0) {
+  //  std::string name = "enem";
+  //} else if ((Enemy::enemysSpawned / 100) == 0) {
+  //  std::string name = "enem0";
+  //} else if ((Enemy::enemysSpawned / 10) == 0) {
+  //  std::string name = "enem00";
+  //} else {
+  //  std::string name = "enem000";
+  //}
 
-  name += std::to_string(Enemy::enemysSpawned);
-  std::cout << "New Enemy Name: " << name << std::endl;
+  // name += std::to_string(Enemy::enemysSpawned);
+  // std::cout << "New Enemy Name: " << name << std::endl;
 
+  std::string name = GameObject::makeName("enem", Enemy::enemysSpawned);
   Enemy::enemysSpawned++;
   return name;
 }
 
 bool WaveManager::isWaveComplete() { return mWaveEnemies.size() == 0; }
+bool WaveManager::fullWaveSpawned() {
+  return mEnemiesSpawnedInWave >= mMaxWaveSize;
+}

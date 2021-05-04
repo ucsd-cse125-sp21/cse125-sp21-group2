@@ -2,8 +2,11 @@
 #include "GameObject.h"
 
 class Projectile : public GameObject {
+ public:
   Projectile(Transform* transform, char* name, int health,
              glm::vec3 forwardVector);
+
+  static void spawnProjectile(glm::vec3 forwardVector);
 
   void calculatePath();
 

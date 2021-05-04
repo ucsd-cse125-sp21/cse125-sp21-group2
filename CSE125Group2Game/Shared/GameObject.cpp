@@ -1,5 +1,7 @@
 ﻿#include "GameObject.h"
 
+#include <iostream>
+
 GameObject::GameObject(Transform* transform, char* name, int health,
                        glm::vec3 forwardVector)
     : mTransform(transform),
@@ -48,4 +50,24 @@ void GameObject::setForwardVector(glm::vec3 forwardVector) {
   mForwardVector.x = forwardVector.x;
   mForwardVector.y = forwardVector.y;
   mForwardVector.z = forwardVector.z;
+}
+
+std::string GameObject::makeName(std::string prefix, int count) {
+  std::string name(prefix);
+
+  // If the enemysSpawned is more than 4 digits, reset it
+  if ((count / 1000) != 0) {
+    // no need to update prefix
+  } else if ((count / 100) == 0) {
+    name += "0";
+  } else if ((count / 10) == 0) {
+    name += "00";
+  } else {
+    name += "000";
+  }
+
+  name += std::to_string(count);
+  std::cout << "New Enemy Name: " << name << std::endl;
+
+  return name;
 }
