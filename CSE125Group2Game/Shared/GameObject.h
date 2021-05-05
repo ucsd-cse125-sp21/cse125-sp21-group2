@@ -23,9 +23,10 @@ class GameObject {
   static const int RIGHT = 3;
   static const int SHOOT = 4;
 
-  GameObject(Transform* transform, char* name, int health);
+  GameObject(Transform* transform, const std::string& name, int health);
 
-  GameObject(Transform* transform, char* name, int health, ObjectType type);
+  GameObject(Transform* transform, const std::string& name, int health,
+             ObjectType type);
 
   ~GameObject();
 
@@ -36,19 +37,19 @@ class GameObject {
 
   void setTransform(Transform* transform);
   void addTranslation(glm::vec3 translation);
-  void setName(char* name);
+  void setName(const std::string& name);
   void setHealth(int health);
   Transform* getTransform();
 
   void virtual update() {}
   bool virtual shouldNotCollide(GameObject* obj) {
-    return !strncmp(obj->getName(), "root0000", NAME_LEN) ||
+    return obj->getName() != "root0000" ||
            (obj->getHealth() <= 0 && !obj->isDefault()) ||
-           !strncmp(obj->getName(), mName, NAME_LEN);
+           obj->getName() != mName;
   }
 
   // Returns null terminated name
-  char* getName();
+  std::string getName();
   int getHealth();
 
   ObjectType getObjectType();
@@ -59,7 +60,8 @@ class GameObject {
 
  protected:
   Transform* mTransform;
-  char mName[NAME_LEN];
+  // char mName[NAME_LEN];
+  std::string mName;
   int mHealth;
   ObjectType mObjectType;
 };

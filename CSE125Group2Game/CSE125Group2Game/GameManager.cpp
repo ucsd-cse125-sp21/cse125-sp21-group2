@@ -22,8 +22,7 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   // RenderManager& renderMananger = RenderManager::get();
   // renderMananger.init(mWindow);
   glfwSetWindowUserPointer(mWindow, this);
-  mScene =
-      SceneLoader::LoadFromFile("../Shared/scene.json", *mLoader, mTLoader);
+  mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
   mpRenderManager->setRenderBoundingBoxes(true);
 }
 
@@ -72,8 +71,10 @@ void GameManager::Update() {
   c.Init(host, port);
 
   while (!glfwWindowShouldClose(mWindow)) {
-    std::cerr << "Frame " << glfwGetTime() << std::endl;
     // 1) Update local states (use key logger to update gameobject)
+
+    auto node = mScene.getByName("cube1");
+    node->getObject()->getTransform()->addRotation(glm::vec3(0, 0, 0.1f));
 
     glfwPollEvents();
 
@@ -113,8 +114,8 @@ void GameManager::AddPlayer(int clientId) {
   std::string clientName = "play000";
   clientName += std::to_string(clientId);
 
-  GameObject* playerObject = new GameObject(
-      playerTransform, (char*)clientName.c_str(), 10, glm::vec3(1, 0, 0));
+  GameObject* playerObject =
+      new GameObject(playerTransform, (char*)clientName.c_str(), 10);
 
   // TODO: make camera a child of the player object in the scene graph
 
@@ -123,28 +124,27 @@ void GameManager::AddPlayer(int clientId) {
   // playerTransform, *mLoader);
   Model* model = Model::Cube(playerTransform, *mLoader);
 
-  SceneGraphNode* playerNode =
-      new SceneGraphNode(mScene.getRoot(), playerObject, model);
+  mScene.addChild(playerObject, model);
 }
 
 void GameManager::UpdateObject(GameObject* obj) {
-  SceneGraphNode* foundNode = findNode(obj, mScene.getRoot());
+  // SceneGraphNode* foundNode = findNode(obj, mScene.getRoot());
+  SceneGraphNode* foundNode = mScene.getByName(obj->getName());
   GameObject* foundObject;
 
   // Object does not exist, create it
   if (!foundNode) {
     // std::cout << "creating new  object" << std::endl;
-    foundObject = new GameObject(
-        new Transform(obj->getTransform()->getTranslation(),
-                      obj->getTransform()->getRotation(),
-                      obj->getTransform()->getScale()),
-        obj->getName(), obj->getHealth(), obj->getForwardVector());
+    foundObject =
+        new GameObject(new Transform(obj->getTransform()->getTranslation(),
+                                     obj->getTransform()->getRotation(),
+                                     obj->getTransform()->getScale()),
+                       obj->getName(), obj->getHealth());
 
     // TODO: if else for model based on enum (constructor adds itself as child
     // of parent)
-    foundNode =
-        new SceneGraphNode(mScene.getRoot(), foundObject,
-                           Model::Cube(foundObject->getTransform(), *mLoader));
+    foundNode = mScene.addChild(
+        foundObject, Model::Cube(foundObject->getTransform(), *mLoader));
   }
 
   // Update object
@@ -154,8 +154,7 @@ void GameManager::UpdateObject(GameObject* obj) {
   if (obj->getHealth() <= 0) {
     // std::cerr << "Deleting object: " << ((std::string)obj->getName())
     //        << std::endl;
-    foundNode->getParent()->removeChild(foundNode);
-    delete foundObject;
+    mScene.removeChild(foundNode);
     return;
   }
 
@@ -172,7 +171,7 @@ void GameManager::UpdateObject(GameObject* obj) {
 }
 
 SceneGraphNode* GameManager::findNode(GameObject* obj, SceneGraphNode* node) {
-  if (!strncmp(obj->getName(), node->getObject()->getName(), NAME_LEN)) {
+  if (obj->getName() == node->getObject()->getName()) {
     return node;
   }
 
@@ -194,7 +193,8 @@ GameObject* GameManager::Unmarshal(char* data) {
 
   char* tmpInfo = data;
 
-  char name[NAME_LEN];
+  // NAME_LEN + 1 so we ensure it is null terminated
+  char name[NAME_LEN + 1] = {0};
   memcpy(name, tmpInfo, NAME_LEN);  // Copy name into data
   tmpInfo += NAME_LEN;
 
@@ -240,7 +240,7 @@ GameObject* GameManager::Unmarshal(char* data) {
       glm::vec3(xScale, yScale, zScale), glm::vec3(xbb, ybb, zbb));
 
   // TODO: should we add forward vector on client?
-  GameObject* obj = new GameObject(transform, name, health, glm::vec3(1, 0, 0));
+  GameObject* obj = new GameObject(transform, name, health);
 
   return obj;
 }

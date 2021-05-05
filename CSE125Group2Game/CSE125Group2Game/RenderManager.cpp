@@ -113,10 +113,9 @@ void RenderManager::draw(const Mesh& mesh, const Material& mat,
 
 void RenderManager::draw(const Model& model) { draw(model, glm::mat4(1.0f)); }
 
-void RenderManager::draw(const Model& model, const glm::mat4& prev) {
+void RenderManager::draw(const Model& model, const glm::mat4& transform) {
   for (int i = 0; i < model.meshes().size(); i++) {
-    draw(model.meshes()[i], model.materials()[i],
-         prev * model.transformConst().getModel());
+    draw(model.meshes()[i], model.materials()[i], transform);
   }
 }
 
@@ -128,12 +127,13 @@ void RenderManager::draw(const SceneGraph& graph, MeshLoader& loader) {
 // TODO: fix scene graph, then this will need to change.
 void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
                          const glm::mat4& prev) {
+  glm::mat4 currTransform = prev * node.getObject()->getTransform()->getModel();
   // TODO: PLEASE REFACTOR :((
   if (mRenderBoundingBoxes) {
     auto bb = node.getObject()->getTransform()->getBBox();
 
     glm::mat4 model =
-        node.getObject()->getTransform()->getModel() *
+        currTransform *
         glm::scale(glm::mat4(1), 2.0f * glm::vec3(bb.x, bb.y, bb.z));
 
     glm::vec4 god[8];
@@ -171,7 +171,7 @@ void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
     }
 
     glm::vec3 scale = max - min;
-    glm::vec3 trans = node.getObject()->getTransform()->getTranslation();
+    glm::vec3 trans = glm::vec3(model * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     glm::mat4 mememodel =
         glm::scale(glm::translate(glm::mat4(1.0f), trans), scale);
 
@@ -185,14 +185,13 @@ void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   }
 
-  glm::mat4 curr = prev * node.getTransform().getModel();
   auto model = node.getModel();
   if (model) {
-    draw(*model, curr);
+    draw(*model, currTransform);
   }
 
   for (auto child : node.getChildren()) {
-    draw(*child, loader, curr);
+    draw(*child, loader, currTransform);
   }
 }
 

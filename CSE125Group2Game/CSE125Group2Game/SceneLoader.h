@@ -14,9 +14,6 @@ class SceneLoader {
  public:
   SceneLoader(std::string fileName, MeshLoader& loader);
 
-  static SceneGraph LoadFromFile(const std::string& fileName,
-                                 MeshLoader& loader, TextureLoader& tloader);
-
  private:
   std::unordered_map<std::string, SceneGraphNode*> mObjects;
 };

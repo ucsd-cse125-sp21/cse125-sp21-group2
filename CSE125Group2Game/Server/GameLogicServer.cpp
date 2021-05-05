@@ -80,7 +80,6 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 }
 
 void GameLogicServer::update() {
-  std::cerr << "Frame " << rand() << std::endl;
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
   // printKeyPresses();
@@ -129,6 +128,7 @@ void GameLogicServer::updateProjectiles() {
       GameObject* collider = doesCollide(mWorld[i]);
 
       if (collider != nullptr) {
+        std::cerr << "hey you" << std::endl;
         mWorld[i]->setHealth(0);
         collider->setHealth(collider->getHealth() - 5);
         continue;
@@ -401,10 +401,13 @@ char* GameLogicServer::marshalInfo(GameObject* obj) {
   // 3) 4 byte int health 48 bytes
 
   char* info = (char*)malloc(MESSAGE_SIZE);
+  if (!info) {
+    std::cerr << "bruh" << std::endl;
+  }
 
   char* tmpInfo = info;
 
-  memcpy(tmpInfo, obj->getName(), NAME_LEN);  // Copy name into data
+  memcpy(tmpInfo, obj->getName().c_str(), NAME_LEN);  // Copy name into data
 
   tmpInfo += NAME_LEN;
 
