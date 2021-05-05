@@ -196,4 +196,42 @@ void SceneGraph::removeChild(SceneGraphNode* node) {
   node->getParent()->removeChild(node);
   mNameMapping.erase(node->getObject()->getName());
   delete node;
+
+  // TODO: what happens if you delete the camera node? Things will probably
+  // die...
+}
+
+Camera& SceneGraph::addCamera() {
+  cameraNode = mpRoot.get();
+  return mCamera;
+}
+
+Camera& SceneGraph::addCamera(SceneGraphNode* node) {
+  cameraNode = node;
+  return mCamera;
+}
+
+std::optional<glm::mat4> SceneGraph::getViewMatrix() const {
+  if (!cameraNode) {
+    // return none, there is no camera attached to the scene.
+    return std::optional<glm::mat4>();
+  }
+
+  // Inverse here is necessary because we really need to transform the
+  // camera matrix, not the view matrix. Probably better to just get
+  // Camera matrix directly but meh
+  SceneGraphNode* currentNode = cameraNode;
+  glm::mat4 matAccumulator =
+      currentNode->getObject()->getTransform()->getModel() *
+      glm::inverse(mCamera.getViewMatrix());
+
+  // climb up the scene graph, accumulating view transforms
+  while (currentNode->getParent()) {
+    currentNode = currentNode->getParent();
+
+    matAccumulator =
+        currentNode->getObject()->getTransform()->getModel() * matAccumulator;
+  }
+
+  return std::optional<glm::mat4>(std::move(glm::inverse(matAccumulator)));
 }

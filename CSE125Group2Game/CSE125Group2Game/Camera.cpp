@@ -6,10 +6,14 @@
 #include "glad/glad.h"
 
 Camera::Camera(glm::vec3 position, glm::vec3 facing, glm::vec3 up)
-    : mPosition(position), mFacing(facing), mUp(up) {
-  mView = glm::lookAt(mPosition, mFacing, mUp);
+    : mPosition(position), mFacing(facing), mUp(up) {}
+
+void Camera::use() {}
+
+glm::mat4 Camera::getViewMatrix() const {
+  return glm::lookAt(mPosition, mFacing, mUp);
 }
 
-void Camera::use() {
-  glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(mView));
-}
+void Camera::setPosition(const glm::vec3& position) { mPosition = position; }
+void Camera::setFacing(const glm::vec3& facing) { mFacing = facing; }
+void Camera::setUp(const glm::vec3& up) { mUp = up; }

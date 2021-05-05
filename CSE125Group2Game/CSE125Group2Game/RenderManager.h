@@ -23,12 +23,14 @@ class RenderManager {
                 Camera* camera);
 
   void beginRender();
-  void draw(const Mesh& mesh, const Material& mat, const glm::mat4& model);
-  void draw(const Model& model);
-  void draw(const Model& model, const glm::mat4& prev);
+  void draw(const Mesh& mesh, const Material& mat, const glm::mat4& model,
+            const glm::mat4& view);
+  void draw(const Model& model, const glm::mat4& view);
+  void draw(const Model& model, const glm::mat4& transform,
+            const glm::mat4& view);
   void draw(const SceneGraph& graph, MeshLoader& loader);
   void draw(const SceneGraphNode& node, MeshLoader& loader,
-            const glm::mat4& prev);
+            const glm::mat4& prev, const glm::mat4& view);
 
   void setViewportSize(int width, int height);
 

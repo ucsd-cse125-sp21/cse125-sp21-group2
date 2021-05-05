@@ -13,9 +13,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
-  mCamera = new Camera(glm::vec3(0, 0, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f),
-                       glm::vec3(0.0f, 1.0f, 0.0));
-
   mLoader = new MeshLoader();
   mpRenderManager =
       std::make_unique<RenderManager>(window, *mLoader, mTLoader, mCamera);
@@ -23,6 +20,7 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   // renderMananger.init(mWindow);
   glfwSetWindowUserPointer(mWindow, this);
   mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
+
   mpRenderManager->setRenderBoundingBoxes(true);
 }
 
@@ -89,7 +87,6 @@ void GameManager::Update() {
 
     // 3) Call drawAll on scene graph
     mpRenderManager->beginRender();
-    mCamera->use();
 
     // draw scene
     mpRenderManager->draw(mScene, *mLoader);
@@ -121,7 +118,13 @@ void GameManager::AddPlayer(int clientId) {
   // playerTransform, *mLoader);
   Model* model = Model::Cube(playerTransform, *mLoader);
 
-  mScene.addChild(playerObject, model);
+  SceneGraphNode* playerNode = mScene.addChild(playerObject, model);
+
+  // attach the camera to the player
+  Camera& camera = mScene.addCamera(playerNode);
+  camera.setPosition(glm::vec3(0, 0, 10.0f));
+  camera.setFacing(glm::vec3(0, 0, -1.0f));
+  camera.setUp(glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void GameManager::UpdateObject(GameObject* obj) {

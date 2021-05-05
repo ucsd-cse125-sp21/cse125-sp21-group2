@@ -41,7 +41,9 @@ class GameManager {
   void ResizeCallback(int width, int height);
 
  private:
-  SceneGraphNode* findNode(GameObject* obj, SceneGraphNode* node);
+  // TODO: fix formatting on this...
+  [[deprecated("Replaced by SceneGraph.getByName()")]] SceneGraphNode* findNode(
+      GameObject* obj, SceneGraphNode* node);
 
   std::unique_ptr<RenderManager> mpRenderManager;
   TextureLoader mTLoader;
