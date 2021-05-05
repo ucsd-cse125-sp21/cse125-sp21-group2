@@ -14,6 +14,8 @@ struct Material {
   // TODO: make optional?
   Texture diffuseMap;
 
+  bool isRainbow = false;
+
   Material()
       : mAmbient(glm::vec3(1.0f, 0.0f, 0.0f)),
         mDiffuse(glm::vec3(1.0f, 0.0f, 0.0f)),

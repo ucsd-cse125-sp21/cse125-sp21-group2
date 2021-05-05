@@ -21,6 +21,9 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   glfwSetWindowUserPointer(mWindow, this);
   mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
 
+  mScene.getByName("tree1")->getModel()->mMaterials[0].isRainbow = true;
+  mScene.getByName("tree1")->getModel()->mMaterials[1].isRainbow = true;
+
   mpRenderManager->setRenderBoundingBoxes(true);
 }
 

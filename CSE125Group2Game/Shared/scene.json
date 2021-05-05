@@ -16,6 +16,23 @@
       "bb_height": 0.5,
       "bb_width": 0.5,
       "obj_file": "cube"
+    },
+    {
+      "name": "tree1",
+      "parent_name": "root",
+      "xPos": 0,
+      "yPos": -3,
+      "zPos": 0,
+      "xRot": 0,
+      "yRot": 0,
+      "zRot": 0,
+      "xScale": 0.2,
+      "yScale": 0.2,
+      "zScale": 0.2,
+      "bb_length": 5,
+      "bb_height": 5,
+      "bb_width": 5,
+      "obj_file": "tree.obj"
     }
   ]
 }

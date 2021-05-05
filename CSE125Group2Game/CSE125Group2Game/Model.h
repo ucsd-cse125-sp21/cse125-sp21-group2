@@ -25,10 +25,11 @@ class Model {
   const std::vector<Mesh>& meshes() const { return mMeshes; }
   const std::vector<Material>& materials() const { return mMaterials; }
 
+  // TODO: refacotor this yay
+  std::vector<Material> mMaterials;
  private:
   // an array of submeshes that makes up this mesh and materials
   std::vector<Mesh> mMeshes;
-  std::vector<Material> mMaterials;
 
   Transform*
       mTransform;  // Probably not the best way for now, but good for testing

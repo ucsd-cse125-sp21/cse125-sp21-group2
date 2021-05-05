@@ -141,9 +141,6 @@
     <ClInclude Include="..\Shared\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SceneLoader.h">
       <Filter>Header Files\SceneLoader</Filter>
     </ClInclude>
@@ -166,6 +163,9 @@
       <Filter>Header Files\render</Filter>
     </ClInclude>
     <ClInclude Include="MeshLoader.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
   </ItemGroup>

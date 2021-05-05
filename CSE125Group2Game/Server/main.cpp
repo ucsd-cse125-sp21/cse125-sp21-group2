@@ -25,12 +25,16 @@ int main() {
   std::thread netServerThread(&(NetworkServer::Update), netServer, -1, true);
 
   // Write
-  auto sendMessage = [](msd::channel<char *> &ch, NetworkServer *netServer) {
+  /*auto sendMessage = [](msd::channel<char *> &ch, NetworkServer *netServer) {
     while (true) {
       // Read from channel and populate message
       for (int i = 0; i < ch.size(); i++) {
-        char *out;
+        char *out = nullptr;
         out << ch;
+
+        if (!out) {
+          continue;
+        }
 
         olc::net::message<CustomMsgTypes> msg;
         msg.header.id = CustomMsgTypes::ServerMessage;
@@ -50,7 +54,7 @@ int main() {
 
   // Spawn thread to sendMessages
   std::thread sendMessagesThread = std::thread{
-      sendMessage, std::ref(logicServer->mSendingBuffer), netServer};
+      sendMessage, std::ref(logicServer->mSendingBuffer), netServer};*/
 
   // Runs at tickrate and performs game logic
   while (1) {
@@ -60,7 +64,7 @@ int main() {
 
     diff = after - before;
 
-    /*for (int i = 0; i < logicServer->mTestBuffer.size(); i++) {
+    for (int i = 0; i < logicServer->mTestBuffer.size(); i++) {
       char *data = logicServer->mTestBuffer[i];
 
       olc::net::message<CustomMsgTypes> msg;
@@ -76,7 +80,7 @@ int main() {
       free(data);
     }
 
-    logicServer->mTestBuffer.clear();*/
+    logicServer->mTestBuffer.clear();
 
     if (logicServer->getServerTick() >
         diff) {  // need to ensure that server tick is big enough
