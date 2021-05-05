@@ -43,9 +43,9 @@ class GameObject {
 
   void virtual update() {}
   bool virtual shouldNotCollide(GameObject* obj) {
-    return obj->getName() != "root0000" ||
+    return obj->getName() == "root0000" ||
            (obj->getHealth() <= 0 && !obj->isDefault()) ||
-           obj->getName() != mName;
+           obj->getName() == mName;
   }
 
   // Returns null terminated name

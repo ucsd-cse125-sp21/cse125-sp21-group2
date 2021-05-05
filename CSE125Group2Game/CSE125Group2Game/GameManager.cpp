@@ -73,9 +73,6 @@ void GameManager::Update() {
   while (!glfwWindowShouldClose(mWindow)) {
     // 1) Update local states (use key logger to update gameobject)
 
-    auto node = mScene.getByName("cube1");
-    node->getObject()->getTransform()->addRotation(glm::vec3(0, 0, 0.1f));
-
     glfwPollEvents();
 
     bool keysPressed[NUM_KEYS];

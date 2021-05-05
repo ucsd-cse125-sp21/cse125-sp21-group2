@@ -66,7 +66,7 @@ void Projectile::update() {
 
 bool Projectile::shouldNotCollide(GameObject* obj) {
   return GameObject::shouldNotCollide(obj) ||  // Call super method
-         obj->getName() != mParent->getName() || obj->isProjectile() ||
+         obj->getName() == mParent->getName() || obj->isProjectile() ||
          obj->isPlayer();
   // TODO: Perhaps would be worth making more complex... enemies with
   // projectiles???? interesting question

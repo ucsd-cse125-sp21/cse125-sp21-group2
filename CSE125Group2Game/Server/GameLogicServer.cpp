@@ -128,7 +128,6 @@ void GameLogicServer::updateProjectiles() {
       GameObject* collider = doesCollide(mWorld[i]);
 
       if (collider != nullptr) {
-        std::cerr << "hey you" << std::endl;
         mWorld[i]->setHealth(0);
         collider->setHealth(collider->getHealth() - 5);
         continue;

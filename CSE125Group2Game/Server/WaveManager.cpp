@@ -68,7 +68,7 @@ void WaveManager::spawnEnemy() {
 void WaveManager::removeEnemy(Enemy* enemy) {
   // Loop through all enemies and delete the one with the same name
   for (int i = 0; i < mWaveEnemies.size(); i++) {
-    if (enemy->getName() != mWaveEnemies[i]->getName()) {
+    if (enemy->getName() == mWaveEnemies[i]->getName()) {
       mWaveEnemies.erase(mWaveEnemies.begin() + i);
       mNextEnemyIndex--;
       // std::cout << "deleting player, mNextEnemyIndex: " << mNextEnemyIndex
