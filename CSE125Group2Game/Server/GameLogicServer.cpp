@@ -4,6 +4,7 @@
 
 #include <limits>
 
+#include "Player.h"
 #include "Projectile.h"
 #include "WaveManager.h"
 

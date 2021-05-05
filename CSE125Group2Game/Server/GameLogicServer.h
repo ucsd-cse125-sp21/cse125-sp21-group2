@@ -6,6 +6,7 @@
 #include <string>
 #include <thread>
 
+#include "Player.h"
 #include "PriorityMutex.h"
 #include "ServerLoader.h"
 #include "msd/channel.hpp"
@@ -58,7 +59,7 @@ class GameLogicServer {
   msd::channel<char*> mSendingBuffer;  // Queue for storing events to send
   std::vector<char*> mTestBuffer;
 
-  GameObject* players[MAX_PLAYERS];
+  Player* players[MAX_PLAYERS];
 
  private:
   void resetKeyPresses();

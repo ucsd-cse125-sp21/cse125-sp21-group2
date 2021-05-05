@@ -2,7 +2,7 @@
 
 #include "GameLogicServer.h"
 
-Enemy::Enemy(Transform* transform, char* name, int health)
+Enemy::Enemy(Transform* transform, std::string name, int health)
     : Moveable(transform, name, health, ObjectType::Enemy) {
   mIsModified = true;
 }

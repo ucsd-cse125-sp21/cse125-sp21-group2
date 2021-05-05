@@ -2,7 +2,7 @@
 #include "Moveable.h"
 class Player : public Moveable {
  public:
-  Player(Transform* transform, char* name, int health, int id);
+  Player(Transform* transform, std::string name, int health, int id);
 
   void update();
 

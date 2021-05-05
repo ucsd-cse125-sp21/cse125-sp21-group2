@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(Transform* transform, char* name, int health, int id)
+Player::Player(Transform* transform, std::string name, int health, int id)
     : Moveable(transform, name, health) {
   mPlayerId = id;
 }
