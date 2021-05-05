@@ -8,7 +8,8 @@ class Projectile : public Moveable {
   static int mProjectilesSpawned;
   static unsigned long mTickLastSpawn;  // [MAX_PLAYERS];
 
-  Projectile(Transform* transform, char* name, int health, GameObject* parent);
+  Projectile(Transform* transform, std::string name, int health,
+             GameObject* parent);
 
   static void spawnProjectile(GameObject* parent);
 

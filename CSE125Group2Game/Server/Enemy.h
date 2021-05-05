@@ -9,6 +9,8 @@ class Enemy : public Moveable {
 
   void update();
 
+  static std::string makeName();
+
  private:
   GameObject* GetNearestPlayer();
 

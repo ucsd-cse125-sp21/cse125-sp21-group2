@@ -16,6 +16,8 @@ class Player : public Moveable {
   void setVelocity(glm::vec3 velocity);
   glm::vec3 getVelocity();
 
+  static std::string makeName(int id);
+
  private:
   glm::vec3 mMoveSpeed = glm::vec3(0.3);
   glm::vec3 mVelocity;

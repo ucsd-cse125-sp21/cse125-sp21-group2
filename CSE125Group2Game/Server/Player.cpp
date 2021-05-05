@@ -17,3 +17,7 @@ int Player::getHsp() { return mVelocity.x; }
 glm::vec3 Player::getVelocity() { return mVelocity; }
 
 void Player::setVelocity(glm::vec3 velocity) { mVelocity = velocity; }
+
+std::string Player::makeName(int id) {
+  return GameObject::makeName("play", id);
+}

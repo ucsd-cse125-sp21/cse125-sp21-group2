@@ -87,8 +87,8 @@ bool NetworkServer::OnClientConnect(
   // string clientId = "play000";
   // clientId += to_string(numPlayers);
 
-  Player* newPlayer = new Player(
-      transform, GameObject::makeName("play", numPlayers), 10, numPlayers);
+  Player* newPlayer =
+      new Player(transform, Player::makeName(numPlayers), 10, numPlayers);
   logicServer->addGameObject(newPlayer);
 
   logicServer->players[numPlayers] = newPlayer;

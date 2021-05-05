@@ -53,3 +53,13 @@ GameObject* Enemy::GetNearestPlayer() {
 
   return logicServer->players[playerIndex];
 }
+
+std::string Enemy::makeName() {
+  if (enemysSpawned >= 10000) {
+    enemysSpawned = 0;
+  }
+
+  std::string name = GameObject::makeName("enem", enemysSpawned);
+  enemysSpawned++;
+  return name;
+}
