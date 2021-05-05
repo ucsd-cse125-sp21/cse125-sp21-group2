@@ -2,10 +2,11 @@
 
 SceneGraph::SceneGraph()
     : mpRoot(std::make_unique<SceneGraphNode>(
-          nullptr,
-          new GameObject(new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
-                                       glm::vec3(1, 1, 1)),
-                         const_cast<char*>("root0000"), 0))) {}
+          nullptr, new GameObject(
+                       new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+                                     glm::vec3(1, 1, 1)),
+                       const_cast<char*>("root0000"), 0, glm::vec3(0, 0, 0)))) {
+}
 
 SceneGraphNode* SceneGraph::getRoot() const { return mpRoot.get(); }
 

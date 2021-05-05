@@ -3,11 +3,11 @@
 #include "GameLogicServer.h"
 
 Enemy::Enemy(Transform* transform, char* name, int health)
-    : GameObject(transform, name, health, ObjectType::Enemy) {
+    : Moveable(transform, name, health, ObjectType::Enemy) {
   mIsModified = true;
 }
 
-void Enemy::Update() {
+void Enemy::update() {
   if (--mTicksTillUpdate > 0) {
     mIsModified = false;
     return;
@@ -26,6 +26,7 @@ void Enemy::Update() {
                      mTransform->getTranslation());
 
   mTransform->addTranslation(mMoveDirection * mMoveSpeed);
+  // std::cout << mTransform->getTranslation().x << std::endl;
 }
 
 GameObject* Enemy::GetNearestPlayer() {

@@ -152,7 +152,8 @@ SceneGraph SceneLoader::LoadFromFile(const std::string& fileName,
       mesh = new Model(ASSET(test), transform, loader, tloader);
     }
 
-    GameObject* obj = new GameObject(transform, ((std::string)name).data(), 1);
+    GameObject* obj = new GameObject(transform, ((std::string)name).data(), 1,
+                                     glm::vec3(0, 0, 0));
 
     // add node into the graph
     SceneGraphNode* node = new SceneGraphNode(parentNode, obj, mesh);

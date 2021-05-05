@@ -113,8 +113,8 @@ void GameManager::AddPlayer(int clientId) {
   std::string clientName = "play000";
   clientName += std::to_string(clientId);
 
-  GameObject* playerObject =
-      new GameObject(playerTransform, (char*)clientName.c_str(), 10);
+  GameObject* playerObject = new GameObject(
+      playerTransform, (char*)clientName.c_str(), 10, glm::vec3(1, 0, 0));
 
   // TODO: make camera a child of the player object in the scene graph
 
@@ -133,12 +133,12 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Object does not exist, create it
   if (!foundNode) {
-    std::cout << "creating new enemy" << std::endl;
-    foundObject =
-        new GameObject(new Transform(obj->getTransform()->getTranslation(),
-                                     obj->getTransform()->getRotation(),
-                                     obj->getTransform()->getScale()),
-                       obj->getName(), obj->getHealth());
+    // std::cout << "creating new  object" << std::endl;
+    foundObject = new GameObject(
+        new Transform(obj->getTransform()->getTranslation(),
+                      obj->getTransform()->getRotation(),
+                      obj->getTransform()->getScale()),
+        obj->getName(), obj->getHealth(), obj->getForwardVector());
 
     // TODO: if else for model based on enum (constructor adds itself as child
     // of parent)
@@ -151,9 +151,9 @@ void GameManager::UpdateObject(GameObject* obj) {
   foundObject = foundNode->getObject();
 
   // Health is 0, delete object
-  if (obj->getHealth() == 0) {
-    std::cerr << "Deleting object: " << ((std::string)obj->getName())
-              << std::endl;
+  if (obj->getHealth() <= 0) {
+    // std::cerr << "Deleting object: " << ((std::string)obj->getName())
+    //        << std::endl;
     foundNode->getParent()->removeChild(foundNode);
     delete foundObject;
     return;
@@ -239,7 +239,8 @@ GameObject* GameManager::Unmarshal(char* data) {
       glm::vec3(xPos, yPos, zPos), glm::vec3(xRot, yRot, zRot),
       glm::vec3(xScale, yScale, zScale), glm::vec3(xbb, ybb, zbb));
 
-  GameObject* obj = new GameObject(transform, name, health);
+  // TODO: should we add forward vector on client?
+  GameObject* obj = new GameObject(transform, name, health, glm::vec3(1, 0, 0));
 
   return obj;
 }

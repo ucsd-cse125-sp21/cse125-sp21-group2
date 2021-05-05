@@ -3,7 +3,9 @@
 
 #include "Transform.h"
 
-// Todo: create isDefault() method
+// TODO: Create moveable class which deals with rotation (each object has its
+// own pivot)
+
 enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
 
 #define NUM_KEYS 5
@@ -11,6 +13,7 @@ enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
 #define FLOAT_SIZE 4
 #define INT_SIZE sizeof(int)
 #define MESSAGE_SIZE NAME_LEN + (12 * FLOAT_SIZE) + INT_SIZE
+#define MAX_PLAYERS 4
 
 class GameObject {
  public:
@@ -26,14 +29,23 @@ class GameObject {
 
   ~GameObject();
 
+  bool isDefault();
+  bool isPlayer();
+  bool isEnemy();
+  bool isProjectile();
+
   void setTransform(Transform* transform);
   void addTranslation(glm::vec3 translation);
   void setName(char* name);
   void setHealth(int health);
-
   Transform* getTransform();
 
-  void virtual Update() {}
+  void virtual update() {}
+  bool virtual shouldNotCollide(GameObject* obj) {
+    return !strncmp(obj->getName(), "root0000", NAME_LEN) ||
+           (obj->getHealth() <= 0 && !obj->isDefault()) ||
+           !strncmp(obj->getName(), mName, NAME_LEN);
+  }
 
   // Returns null terminated name
   char* getName();
@@ -42,6 +54,8 @@ class GameObject {
   ObjectType getObjectType();
 
   bool mIsModified = true;
+
+  static std::string makeName(std::string prefix, int count);
 
  protected:
   Transform* mTransform;

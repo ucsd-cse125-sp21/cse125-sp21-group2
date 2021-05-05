@@ -15,7 +15,7 @@ class GameManager {
   static const int LEFT_KEY = GLFW_KEY_A;
   static const int BACKWARD_KEY = GLFW_KEY_S;
   static const int RIGHT_KEY = GLFW_KEY_D;
-  static const int PROJECTILE_KEY = GLFW_KEY_B;
+  static const int PROJECTILE_KEY = GLFW_KEY_SPACE;
 
   GameManager(GLFWwindow* window);
   ~GameManager();

@@ -1,5 +1,7 @@
 ﻿#include "GameObject.h"
 
+#include <iostream>
+
 GameObject::GameObject(Transform* transform, char* name, int health)
     : mTransform(transform), mHealth(health), mObjectType(ObjectType::Default) {
   memcpy(mName, name, NAME_LEN);
@@ -34,3 +36,30 @@ Transform* GameObject::getTransform() { return mTransform; }
 char* GameObject::getName() { return mName; }
 int GameObject::getHealth() { return mHealth; }
 ObjectType GameObject::getObjectType() { return mObjectType; }
+
+std::string GameObject::makeName(std::string prefix, int count) {
+  std::string name(prefix);
+
+  // If the enemysSpawned is more than 4 digits, reset it
+  if ((count / 1000) != 0) {
+    // no need to update prefix
+  } else if ((count / 100) != 0) {
+    name += "0";
+  } else if ((count / 10) != 0) {
+    name += "00";
+  } else {
+    name += "000";
+  }
+
+  name += std::to_string(count);
+  // std::cout << "New Enemy Name: " << name << std::endl;
+
+  return name;
+}
+
+bool GameObject::isDefault() { return mObjectType == ObjectType::Default; }
+bool GameObject::isPlayer() { return mObjectType == ObjectType::Player; }
+bool GameObject::isEnemy() { return mObjectType == ObjectType::Enemy; }
+bool GameObject::isProjectile() {
+  return mObjectType == ObjectType::Projectile;
+}

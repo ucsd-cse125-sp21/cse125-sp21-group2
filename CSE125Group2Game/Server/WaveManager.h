@@ -15,14 +15,17 @@ class WaveManager {
 
  private:
   void startWave();
+  bool fullWaveSpawned();
   bool isWaveComplete();
   void spawnEnemy();
   std::string makeName();
   static WaveManager* mWaveManager;
 
   bool mInWave = false;
+  // bool mFullWaveSpawned = false;
+  int mEnemiesSpawnedInWave = 0;
   int mWavesCompleted = 0;
-  int maxWaveSize = 2;
+  int mMaxWaveSize = 5;
   int mNextEnemyIndex = 0;
 
   unsigned long mTimeOfLastSpawn;

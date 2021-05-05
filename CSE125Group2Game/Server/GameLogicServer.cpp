@@ -4,6 +4,7 @@
 
 #include <limits>
 
+#include "Projectile.h"
 #include "WaveManager.h"
 
 GameLogicServer* GameLogicServer::mLogicServer;
@@ -13,6 +14,10 @@ GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
     : mWorld(world), mScene(scene), mTick_ms(tick_ms) {
   for (int i = 0; i < MAX_PLAYERS; i++) {
     bool* keyPresses = (bool*)malloc(NUM_KEYS);
+
+    for (int j = 0; j < NUM_KEYS; j++) {
+      keyPresses[j] = false;
+    }
 
     mKeyPresses.push_back(keyPresses);
 
@@ -78,30 +83,64 @@ void GameLogicServer::update() {
   std::cerr << "Frame " << rand() << std::endl;
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
+  // printKeyPresses();
   WaveManager::getWaveManager()->update();
 
   // 1) Player's, 2) enemies, 3) projectile
 
   // Update player locations
-  movePlayers();
+  updatePlayers();
 
-  moveEnemies();
+  updateEnemies();
+
+  // TODO: should we create projectiles before moving players or after? moving
+  // changes their forward vector
+  updateProjectiles();
 
   sendInfo();
 
   resetKeyPresses();
 }
 
-void GameLogicServer::moveEnemies() {
+void GameLogicServer::updateEnemies() {
   for (int i = 0; i < mWorld.size(); i++) {
-    if (mWorld[i]->getObjectType() == ObjectType::Enemy) {
+    if (mWorld[i]->isEnemy()) {
       // call enemy update
-      mWorld[i]->Update();
+      mWorld[i]->update();
     }
   }
 }
 
-void GameLogicServer::movePlayers() {
+void GameLogicServer::updateProjectiles() {
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (players[i] == NULL) {
+      continue;
+    }
+
+    if (mKeyPresses[i][GameObject::SHOOT]) {
+      // std::cout << "Player " << i << " wants to spawn a projectile!!";
+      Projectile::spawnProjectile(players[i]);
+    }
+  }
+
+  for (int i = 0; i < mWorld.size(); i++) {
+    // if (mWorld[i]->getObjectType() == ObjectType::Projectile) {
+    if (mWorld[i]->isProjectile()) {
+      GameObject* collider = doesCollide(mWorld[i]);
+
+      if (collider != nullptr) {
+        mWorld[i]->setHealth(0);
+        collider->setHealth(collider->getHealth() - 5);
+        continue;
+      }
+
+      // call enemy update
+      mWorld[i]->update();
+    }
+  }
+}
+
+void GameLogicServer::updatePlayers() {
   for (int i = 0; i < MAX_PLAYERS; i++) {
     if (players[i] == NULL) {
       continue;
@@ -120,7 +159,7 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
 
   glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
   if (hsp != 0 || vsp != 0)
-    velocity = glm::vec3(0.2) * glm::normalize(velocity);
+    velocity = glm::vec3(0.4) * glm::normalize(velocity);
 
   std::string clientId = "play000";
   clientId += std::to_string(playerIndex);
@@ -139,10 +178,10 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
 
   std::cout << "Collision with: " << name << std::endl;
 
-  if (collidedObj->getObjectType() == ObjectType::Enemy) {
+  if (collidedObj->isEnemy()) {
     // Set enemy health to 0
     collidedObj->setHealth(0);
-  } else if (collidedObj->getObjectType() == ObjectType::Default) {
+  } else if (collidedObj->isDefault()) {
     // Collision with scene object
     // Remove velocity if object collides
     player->addTranslation(-velocity);
@@ -165,10 +204,7 @@ GameObject* GameLogicServer::doesCollide(GameObject* obj) {
   // anything
   for (int i = 0; i < mWorld.size(); i++) {
     // If this object is the root, or has 0 health, or is itself, do not collide
-    if (!strncmp(mWorld[i]->getName(), "root0000", NAME_LEN) ||
-        (mWorld[i]->getHealth() <= 0 &&
-         mWorld[i]->getObjectType() != ObjectType::Default) ||
-        !strncmp(mWorld[i]->getName(), obj->getName(), NAME_LEN)) {
+    if (obj->shouldNotCollide(mWorld[i])) {
       continue;
     }
 
@@ -322,9 +358,15 @@ void GameLogicServer::addGameObject(GameObject* obj) { mWorld.push_back(obj); }
 void GameLogicServer::sendInfo() {
   for (int i = 0; i < mWorld.size(); i++) {
     // Only send info for moving objects
-    if (mWorld[i]->getObjectType() == ObjectType::Player ||
-        mWorld[i]->getObjectType() == ObjectType::Enemy ||
-        mWorld[i]->getObjectType() == ObjectType::Projectile) {
+    if (mWorld[i]->isPlayer() || mWorld[i]->isEnemy() ||
+        mWorld[i]->isProjectile()) {
+      // if (mWorld[i]->isProjectile()) {
+      //  std::cout << "sending projectile!!!" << std::endl;
+      //  if (!mWorld[i]->mIsModified) {
+      //    std::cout << "hmmm projectile NOT modified???" << std::endl;
+      //    continue;
+      //  }
+      //}
       if (!mWorld[i]->mIsModified) {
         continue;
       }
@@ -344,7 +386,7 @@ void GameLogicServer::deleteObject(int worldIndex) {
   GameObject* tmpObj = mWorld[worldIndex];
 
   // Remove from WaveManager if this is an enemy
-  if (ObjectType::Enemy == tmpObj->getObjectType()) {
+  if (tmpObj->isEnemy()) {
     WaveManager::getWaveManager()->removeEnemy((Enemy*)tmpObj);
   }
 
@@ -404,4 +446,20 @@ char* GameLogicServer::marshalInfo(GameObject* obj) {
   tmpInfo += FLOAT_SIZE;
 
   return info;
+}
+
+void GameLogicServer::printKeyPresses() {
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (players[i] == NULL) {
+      continue;
+    }
+
+    std::cout << "key presses for player " << i << std::endl;
+
+    std::cout << "forward: " << mKeyPresses[i][GameObject::FORWARD];
+    std::cout << "backward: " << mKeyPresses[i][GameObject::BACKWARD];
+    std::cout << "left: " << mKeyPresses[i][GameObject::LEFT];
+    std::cout << "right: " << mKeyPresses[i][GameObject::RIGHT];
+    std::cout << "shoot: " << mKeyPresses[i][GameObject::SHOOT];
+  }
 }
