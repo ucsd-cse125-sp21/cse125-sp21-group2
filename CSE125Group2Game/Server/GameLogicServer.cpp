@@ -5,7 +5,9 @@
 #include <limits>
 
 #include "Projectile.h"
+#include "Tower.h"
 #include "WaveManager.h"
+#define DEFAULT_TOWER_COUNT 2
 
 GameLogicServer* GameLogicServer::mLogicServer;
 
@@ -75,6 +77,20 @@ GameLogicServer* GameLogicServer::getLogicServer() {
     }
 
     mLogicServer = new GameLogicServer(world, scene, tick);
+    int tower_count;
+    std::string config_tower("tower_count");
+    std::string str_tower = server_read_config2(config_tower, "../config.txt");
+    if (str_tower.compare(std::string()) == 0) {
+        tower_count = DEFAULT_TOWER_COUNT;
+        std::cout << "server couldn't find tower config, use default tower count." << std::endl;
+    }
+    else {
+        tower_count = std::stoi(str_tower);
+    }
+    Tower::spawn(tower_count);
+    std::cout << "Spawning " << tower_count << " towers." << std::endl;
+
+
   }
   return mLogicServer;
 }
@@ -92,6 +108,8 @@ void GameLogicServer::update() {
 
   updateEnemies();
 
+  updateTowers();
+
   // TODO: should we create projectiles before moving players or after? moving
   // changes their forward vector
   updateProjectiles();
@@ -108,6 +126,25 @@ void GameLogicServer::updateEnemies() {
       mWorld[i]->update();
     }
   }
+}
+
+
+void GameLogicServer::updateTowers() {
+    for (int i = 0; i < mWorld.size(); i++) {
+        if (mWorld[i]->isTower()) {
+            GameObject* collider = doesCollide(mWorld[i]);
+
+            if (collider != nullptr && collider->getObjectType() == ObjectType::Enemy) {
+                // Take Damage when enemy collide with tower
+                // TODO: make damage dynamic
+                mWorld[i]->setHealth(mWorld[i]->getHealth() - 5);
+                std::cout << "Tower Health:" << mWorld[i]->getHealth() << std::endl;
+                continue;
+            }
+            // call tower update
+            mWorld[i]->update();
+        }
+    }
 }
 
 void GameLogicServer::updateProjectiles() {
@@ -358,7 +395,7 @@ void GameLogicServer::sendInfo() {
   for (int i = 0; i < mWorld.size(); i++) {
     // Only send info for moving objects
     if (mWorld[i]->isPlayer() || mWorld[i]->isEnemy() ||
-        mWorld[i]->isProjectile()) {
+        mWorld[i]->isProjectile() || mWorld[i]->isTower()) {
       // if (mWorld[i]->isProjectile()) {
       //  std::cout << "sending projectile!!!" << std::endl;
       //  if (!mWorld[i]->mIsModified) {

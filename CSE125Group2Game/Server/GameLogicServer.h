@@ -67,6 +67,7 @@ class GameLogicServer {
   void updatePlayers();
   void handlePlayerCollision(int playerIndex);
   void updateEnemies();
+  void updateTowers();
   void updateProjectiles();
   GameObject* doesCollide(GameObject* obj);
   std::vector<glm::vec3> getCorners(GameObject* obj);
