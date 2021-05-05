@@ -86,7 +86,7 @@ void RenderManager::beginRender() {
 }
 
 void RenderManager::draw(const Mesh& mesh, const Material& mat,
-                         const glm::mat4& model) {
+                         const glm::mat4& model, const glm::mat4& view) {
   glBindTexture(GL_TEXTURE_2D, 1);
   // set material colors...
   // in this case, we should use the texture shader
@@ -102,7 +102,7 @@ void RenderManager::draw(const Mesh& mesh, const Material& mat,
     glUniform1fv(6, 1, &mat.mShininess);
   }
   glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(mProjection));
-  mpCamera->use();
+  glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(view));
   glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(model));
 
   // render the mesh
@@ -111,22 +111,38 @@ void RenderManager::draw(const Mesh& mesh, const Material& mat,
   glDrawElements(GL_TRIANGLES, mesh.indexCount(), GL_UNSIGNED_INT, nullptr);
 }
 
-void RenderManager::draw(const Model& model) { draw(model, glm::mat4(1.0f)); }
+/*void RenderManager::draw(const Model& model, const glm::mat4& view) {
+  draw(model, glm::mat4(1.0f), view);
+}*/
 
-void RenderManager::draw(const Model& model, const glm::mat4& transform) {
+void RenderManager::draw(const Model& model, const glm::mat4& transform,
+                         const glm::mat4& view) {
   for (int i = 0; i < model.meshes().size(); i++) {
-    draw(model.meshes()[i], model.materials()[i], transform);
+    draw(model.meshes()[i], model.materials()[i], transform, view);
   }
 }
 
 void RenderManager::draw(const SceneGraph& graph, MeshLoader& loader) {
-  auto root = graph.getRoot();
-  draw(*root, loader, glm::mat4(1));
+  SceneGraphNode* root = graph.getRoot();
+  auto viewOption = graph.getViewMatrix();
+
+  // what should default behavior be? i.e. if there is no camera, what do we do?
+  // id matrix? idk
+  if (!viewOption.has_value()) {
+    // for now, if we don't ahve camera, just crash to make it easy to notice
+    // LOL
+    CRASH(
+        "There isn't a camera! This probably isn't fatal, but Evan wanted to "
+        "make it easy to debug for now");
+  }
+
+  auto view = viewOption.value();
+  draw(*root, loader, glm::mat4(1), view);
 }
 
 // TODO: fix scene graph, then this will need to change.
 void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
-                         const glm::mat4& prev) {
+                         const glm::mat4& prev, const glm::mat4& view) {
   glm::mat4 currTransform = prev * node.getObject()->getTransform()->getModel();
   // TODO: PLEASE REFACTOR :((
   if (mRenderBoundingBoxes) {
@@ -181,17 +197,17 @@ void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
     draw(cubeboi->meshes()[0],
          Material(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f),
                   0),
-         mememodel);
+         mememodel, view);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   }
 
   auto model = node.getModel();
   if (model) {
-    draw(*model, currTransform);
+    draw(*model, currTransform, view);
   }
 
   for (auto child : node.getChildren()) {
-    draw(*child, loader, currTransform);
+    draw(*child, loader, currTransform, view);
   }
 }
 
