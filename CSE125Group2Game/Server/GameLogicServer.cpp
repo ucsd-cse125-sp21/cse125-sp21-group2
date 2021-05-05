@@ -371,7 +371,8 @@ void GameLogicServer::sendInfo() {
       }
 
       char* data = marshalInfo(mWorld[i]);  // Marshal data
-      data >> mSendingBuffer;               // Add message to queue
+      // data >> mSendingBuffer;               // Add message to queue
+      mTestBuffer.push_back(data);
 
       // If the enemy has health 0, remove it from the world
       if (mWorld[i]->getHealth() == 0) {

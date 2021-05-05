@@ -72,6 +72,8 @@ RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader,
  * Must be called before a series of render calls, to clear render state, etc.
  */
 void RenderManager::beginRender() {
+  currentTime = glfwGetTime();
+
   glClearColor(0.2f, 0.4f, 0.4f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -87,15 +89,16 @@ void RenderManager::beginRender() {
 
 void RenderManager::draw(const Mesh& mesh, const Material& mat,
                          const glm::mat4& model, const glm::mat4& view) {
-  glBindTexture(GL_TEXTURE_2D, 1);
   // set material colors...
   // in this case, we should use the texture shader
   if (mat.diffuseMap.isValid()) {
     mpTextureProgram->use();
     mTexLoader->use(mat.diffuseMap);
+  } else if (mat.isRainbow) {
+    mpRainbowProgram->use();
+    glUniform1f(7, currentTime);
   } else {
     mpColorProgram->use();
-    // glUniform1f(7, currentTime);
     glUniform3fv(3, 1, glm::value_ptr(mat.mAmbient));
     glUniform3fv(4, 1, glm::value_ptr(mat.mDiffuse));
     glUniform3fv(5, 1, glm::value_ptr(mat.mSpecular));
@@ -131,12 +134,12 @@ void RenderManager::draw(const SceneGraph& graph, MeshLoader& loader) {
   if (!viewOption.has_value()) {
     // for now, if we don't ahve camera, just crash to make it easy to notice
     // LOL
-    CRASH(
+    /*CRASH(
         "There isn't a camera! This probably isn't fatal, but Evan wanted to "
-        "make it easy to debug for now");
+        "make it easy to debug for now");*/
   }
 
-  auto view = viewOption.value();
+  auto view = viewOption.value_or(glm::mat4(1.0f));
   draw(*root, loader, glm::mat4(1), view);
 }
 
