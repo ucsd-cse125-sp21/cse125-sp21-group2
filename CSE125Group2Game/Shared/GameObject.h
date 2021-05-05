@@ -23,11 +23,9 @@ class GameObject {
   static const int RIGHT = 3;
   static const int SHOOT = 4;
 
-  GameObject(Transform* transform, char* name, int health,
-             glm::vec3 forwardVector);
+  GameObject(Transform* transform, char* name, int health);
 
-  GameObject(Transform* transform, char* name, int health, ObjectType type,
-             glm::vec3 forwardVector);
+  GameObject(Transform* transform, char* name, int health, ObjectType type);
 
   ~GameObject();
 
@@ -40,9 +38,6 @@ class GameObject {
   void addTranslation(glm::vec3 translation);
   void setName(char* name);
   void setHealth(int health);
-  glm::vec3 getForwardVector();
-  void setForwardVector(glm::vec3 forwardVector);
-
   Transform* getTransform();
 
   void virtual update() {}
@@ -67,5 +62,4 @@ class GameObject {
   char mName[NAME_LEN];
   int mHealth;
   ObjectType mObjectType;
-  glm::vec3 mForwardVector;  // could be moved to transform, idk tho
 };

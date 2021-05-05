@@ -9,8 +9,8 @@ int Projectile::mProjectilesSpawned = 0;
 unsigned long Projectile::mTickLastSpawn = 0;  //[MAX_PLAYERS] = {0, 0, 0, 0};
 
 Projectile::Projectile(Transform* transform, char* name, int health,
-                       glm::vec3 forwardVector, GameObject* parent)
-    : Moveable(transform, name, health, ObjectType::Projectile, forwardVector) {
+                       GameObject* parent)
+    : Moveable(transform, name, health, ObjectType::Projectile) {
   mProjectileNextTick = 0;
   mParent = parent;
 };
@@ -20,7 +20,7 @@ void Projectile::calculatePath() {
   mPath.push_back(mTransform->getTranslation());
 
   for (int i = 1; i < mProjectileMaxTicks; i++) {
-    mPath.push_back(mPath[mPath.size() - 1] + glm::normalize(mForwardVector));
+    mPath.push_back(mPath[mPath.size() - 1] + glm::vec3(1, 0, 0));
   }
 };
 
@@ -32,11 +32,11 @@ void Projectile::spawnProjectile(GameObject* parent) {
   Projectile::mTickLastSpawn = GetTickCount();  // update last spawn time
 
   // create projectile
-  GameObject* projectile = new Projectile(
-      new Transform(parent->getTransform()->getTranslation(),
-                    glm::vec3(0, 0, 0), glm::vec3(0.1, 0.1, 0.1),
-                    glm::vec3(0.05, 0.05, 0.05)),
-      (char*)makeName().c_str(), 15, parent->getForwardVector(), parent);
+  GameObject* projectile =
+      new Projectile(new Transform(parent->getTransform()->getTranslation(),
+                                   glm::vec3(0, 0, 0), glm::vec3(0.1, 0.1, 0.1),
+                                   glm::vec3(0.05, 0.05, 0.05)),
+                     (char*)makeName().c_str(), 15, parent);
   // calculate path
   ((Projectile*)projectile)->calculatePath();
   // add to game world

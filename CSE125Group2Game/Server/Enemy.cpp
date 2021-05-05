@@ -2,9 +2,8 @@
 
 #include "GameLogicServer.h"
 
-Enemy::Enemy(Transform* transform, char* name, int health,
-             glm::vec3 fowardVector)
-    : Moveable(transform, name, health, ObjectType::Enemy, fowardVector) {
+Enemy::Enemy(Transform* transform, char* name, int health)
+    : Moveable(transform, name, health, ObjectType::Enemy) {
   mIsModified = true;
 }
 

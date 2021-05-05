@@ -67,7 +67,7 @@ std::vector<GameObject*> ServerGraphNode::makeWorld(glm::vec3 cPosition,
                     cRotation * mTransform->getRotation(),
                     cScale * mTransform->getScale(), mTransform->getBBox());
 
-  result.push_back(new GameObject(transform, mName, 10, glm::vec3(0, 0, 0)));
+  result.push_back(new GameObject(transform, mName, 10));
 
   return result;
 }

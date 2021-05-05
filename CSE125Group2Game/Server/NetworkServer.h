@@ -69,9 +69,8 @@ class NetworkServer : public olc::net::server_interface<CustomMsgTypes> {
     std::string clientId = "play000";
     clientId += std::to_string(numPlayers);
 
-    GameObject* newPlayer =
-        new GameObject(transform, (char*)clientId.c_str(), 10,
-                       ObjectType::Player, glm::vec3(1, 0, 0));
+    GameObject* newPlayer = new GameObject(transform, (char*)clientId.c_str(),
+                                           10, ObjectType::Player);
     logicServer->addGameObject(newPlayer);
 
     logicServer->players[numPlayers] = newPlayer;

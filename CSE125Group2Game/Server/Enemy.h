@@ -5,7 +5,7 @@ class Enemy : public Moveable {
  public:
   static int enemysSpawned;
 
-  Enemy(Transform* transform, char* name, int health, glm::vec3 forwardVector);
+  Enemy(Transform* transform, char* name, int health);
 
   void update();
 

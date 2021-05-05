@@ -2,21 +2,14 @@
 
 #include <iostream>
 
-GameObject::GameObject(Transform* transform, char* name, int health,
-                       glm::vec3 forwardVector)
-    : mTransform(transform),
-      mHealth(health),
-      mObjectType(ObjectType::Default),
-      mForwardVector(forwardVector) {
+GameObject::GameObject(Transform* transform, char* name, int health)
+    : mTransform(transform), mHealth(health), mObjectType(ObjectType::Default) {
   memcpy(mName, name, NAME_LEN);
 }
 
 GameObject::GameObject(Transform* transform, char* name, int health,
-                       ObjectType type, glm::vec3 forwardVector)
-    : mTransform(transform),
-      mHealth(health),
-      mObjectType(type),
-      mForwardVector(forwardVector) {
+                       ObjectType type)
+    : mTransform(transform), mHealth(health), mObjectType(type) {
   memcpy(mName, name, NAME_LEN);
 }
 
@@ -43,14 +36,6 @@ Transform* GameObject::getTransform() { return mTransform; }
 char* GameObject::getName() { return mName; }
 int GameObject::getHealth() { return mHealth; }
 ObjectType GameObject::getObjectType() { return mObjectType; }
-glm::vec3 GameObject::getForwardVector() { return mForwardVector; }
-
-void GameObject::setForwardVector(glm::vec3 forwardVector) {
-  // TODO: is this right?
-  mForwardVector.x = forwardVector.x;
-  mForwardVector.y = forwardVector.y;
-  mForwardVector.z = forwardVector.z;
-}
 
 std::string GameObject::makeName(std::string prefix, int count) {
   std::string name(prefix);

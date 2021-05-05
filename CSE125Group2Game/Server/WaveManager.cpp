@@ -41,7 +41,7 @@ void WaveManager::startWave() {
     Enemy* enemy =
         new Enemy(new Transform(glm::vec3(-5 - i, 0, 0), glm::vec3(0, 0, 0),
                                 glm::vec3(1, 1, 1), glm::vec3(0.5, 0.5, 0.5)),
-                  (char*)makeName().c_str(), 10, glm::vec3(1, 0, 0));
+                  (char*)makeName().c_str(), 10);
 
     mWaveEnemies.push_back(enemy);
   }
