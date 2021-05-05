@@ -61,10 +61,6 @@ void Transform::addTranslation(glm::vec3 translation) {
 }
 
 void Transform::setTranslation(glm::vec3 translation) {
-  if (translation.x < -20) {
-    std::cout << "oof < -20" << std::endl;
-  }
-
   mTranslation = translation;
   updateModel();
 }
@@ -81,12 +77,7 @@ void Transform::setScale(glm::vec3 scale) {
 
 void Transform::setModel(glm::mat4 model) { mModel = model; }
 
-glm::vec3 Transform::getTranslation() {
-  if (mTranslation.x < -20) {
-    std::cout << "oof < -20 in get" << std::endl;
-  }
-  return mTranslation;
-}
+glm::vec3 Transform::getTranslation() { return mTranslation; }
 
 glm::quat Transform::getRotation() { return mRotation; }
 

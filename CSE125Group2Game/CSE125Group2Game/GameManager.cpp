@@ -17,12 +17,14 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
                        glm::vec3(0.0f, 1.0f, 0.0));
 
   mLoader = new MeshLoader();
-  mpRenderManager = std::make_unique<RenderManager>(window, *mLoader, mTLoader);
+  mpRenderManager =
+      std::make_unique<RenderManager>(window, *mLoader, mTLoader, mCamera);
   // RenderManager& renderMananger = RenderManager::get();
   // renderMananger.init(mWindow);
   glfwSetWindowUserPointer(mWindow, this);
   mScene =
       SceneLoader::LoadFromFile("../Shared/scene.json", *mLoader, mTLoader);
+  mpRenderManager->setRenderBoundingBoxes(true);
 }
 
 GameManager* GameManager::getManager() {
@@ -69,13 +71,8 @@ void GameManager::Update() {
   CustomClient c;
   c.Init(host, port);
 
-  float lastTime = glfwGetTime();
-
   while (!glfwWindowShouldClose(mWindow)) {
-    float now = glfwGetTime();
-    float delta = now - lastTime;
-    lastTime = now;
-
+    std::cerr << "Frame " << glfwGetTime() << std::endl;
     // 1) Update local states (use key logger to update gameobject)
 
     glfwPollEvents();
@@ -92,16 +89,12 @@ void GameManager::Update() {
       break;
     }
 
-    mpRenderManager->mCamera = mCamera;
     // 3) Call drawAll on scene graph
     mpRenderManager->beginRender();
-    // mCamera->use();
+    mCamera->use();
 
     // draw scene
     mpRenderManager->draw(mScene, *mLoader);
-
-    // TODO: refactor just inside renderer itself imo
-    mpRenderManager->updateTime(delta);
 
     glfwSwapBuffers(mWindow);
   }

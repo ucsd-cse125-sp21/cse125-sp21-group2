@@ -26,7 +26,6 @@ void Enemy::Update() {
                      mTransform->getTranslation());
 
   mTransform->addTranslation(mMoveDirection * mMoveSpeed);
-  std::cout << mTransform->getTranslation().x << std::endl;
 }
 
 GameObject* Enemy::GetNearestPlayer() {

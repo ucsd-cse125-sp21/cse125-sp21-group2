@@ -75,6 +75,7 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 }
 
 void GameLogicServer::update() {
+  std::cerr << "Frame " << rand() << std::endl;
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
   WaveManager::getWaveManager()->update();

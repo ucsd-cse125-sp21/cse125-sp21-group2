@@ -25,7 +25,8 @@
  * @returns True if successful, false otherwise...
  */
 RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader,
-                             TextureLoader& tloader) {
+                             TextureLoader& tloader, Camera* camera)
+    : mpCamera(camera) {
   // tell opengl to use the current window context
   glfwMakeContextCurrent(window);
 
@@ -101,7 +102,7 @@ void RenderManager::draw(const Mesh& mesh, const Material& mat,
     glUniform1fv(6, 1, &mat.mShininess);
   }
   glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(mProjection));
-  mCamera->use();
+  mpCamera->use();
   glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(model));
 
   // render the mesh
@@ -127,6 +128,7 @@ void RenderManager::draw(const SceneGraph& graph, MeshLoader& loader) {
 // TODO: fix scene graph, then this will need to change.
 void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
                          const glm::mat4& prev) {
+  // TODO: PLEASE REFACTOR :((
   if (mRenderBoundingBoxes) {
     auto bb = node.getObject()->getTransform()->getBBox();
 

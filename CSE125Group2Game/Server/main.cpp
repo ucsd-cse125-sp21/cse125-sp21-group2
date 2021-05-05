@@ -44,6 +44,7 @@ int main() {
         netServer->MessageAllClients(msg);
 
         // free(out);
+        std::cerr << "queue size: " << ch.size() << std::endl;
       }
     }
   };

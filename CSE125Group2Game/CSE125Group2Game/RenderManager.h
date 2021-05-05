@@ -19,7 +19,8 @@
  */
 class RenderManager {
  public:
-  RenderManager(GLFWwindow* window, MeshLoader& loader, TextureLoader& tloader);
+  RenderManager(GLFWwindow* window, MeshLoader& loader, TextureLoader& tloader,
+                Camera* camera);
 
   void beginRender();
   void draw(const Mesh& mesh, const Material& mat, const glm::mat4& model);
@@ -37,7 +38,8 @@ class RenderManager {
 
   void updateTime(float delta) { currentTime += delta; };
 
-  Camera* mCamera;
+  // TODO: make render manager own this eventually, or maybe scene graph idk
+  Camera* mpCamera;
 
  private:
   TextureLoader* mTexLoader;

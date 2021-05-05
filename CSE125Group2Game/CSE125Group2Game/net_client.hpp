@@ -44,7 +44,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     this->ClientMessageSend(keysPressed);
 
     if (this->IsConnected()) {
-      if (!this->Incoming().empty()) {
+      while (!this->Incoming().empty()) {
         auto msg = this->Incoming().pop_front().msg;
 
         switch (msg.header.id) {
