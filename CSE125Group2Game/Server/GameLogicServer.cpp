@@ -125,8 +125,11 @@ void GameLogicServer::updateProjectiles() {
   for (int i = 0; i < mWorld.size(); i++) {
     // if (mWorld[i]->getObjectType() == ObjectType::Projectile) {
     if (mWorld[i]->isProjectile()) {
-      if (doesCollide(mWorld[i]) != nullptr) {
+      GameObject* collider = doesCollide(mWorld[i]);
+
+      if (collider != nullptr) {
         mWorld[i]->setHealth(0);
+        collider->setHealth(collider->getHealth() - 5);
         continue;
       }
 

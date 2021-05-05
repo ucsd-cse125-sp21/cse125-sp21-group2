@@ -148,7 +148,7 @@ void GameManager::UpdateObject(GameObject* obj) {
   foundObject = foundNode->getObject();
 
   // Health is 0, delete object
-  if (obj->getHealth() == 0) {
+  if (obj->getHealth() <= 0) {
     std::cerr << "Deleting object: " << ((std::string)obj->getName())
               << std::endl;
     foundNode->getParent()->removeChild(foundNode);
