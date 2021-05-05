@@ -14,8 +14,8 @@ class Enemy : public GameObject {
 
   glm::vec3 mMoveDirection;
 
-  int mTicksPerUpdate = 10;
-  glm::vec3 mMoveSpeed = glm::vec3(0.2);
+  int mTicksPerUpdate = 3;
+  glm::vec3 mMoveSpeed = glm::vec3(0.3);
 
   int mTicksTillUpdate = mTicksPerUpdate;
 };

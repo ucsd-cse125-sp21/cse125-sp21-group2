@@ -158,7 +158,7 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
 
   glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
   if (hsp != 0 || vsp != 0)
-    velocity = glm::vec3(0.2) * glm::normalize(velocity);
+    velocity = glm::vec3(0.4) * glm::normalize(velocity);
 
   std::string clientId = "play000";
   clientId += std::to_string(playerIndex);

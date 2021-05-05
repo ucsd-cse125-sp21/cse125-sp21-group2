@@ -12,7 +12,7 @@ int Enemy::enemysSpawned = 0;
 
 WaveManager::WaveManager() {
   // Spawn one enemy every
-  mSpawnSpeed = 3 * 1000;
+  mSpawnSpeed = 1 * 1000;
 }
 
 WaveManager* WaveManager::getWaveManager() {

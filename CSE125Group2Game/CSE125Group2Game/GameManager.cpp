@@ -130,7 +130,7 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Object does not exist, create it
   if (!foundNode) {
-    std::cout << "creating new  object" << std::endl;
+    // std::cout << "creating new  object" << std::endl;
     foundObject = new GameObject(
         new Transform(obj->getTransform()->getTranslation(),
                       obj->getTransform()->getRotation(),
@@ -149,8 +149,8 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Health is 0, delete object
   if (obj->getHealth() <= 0) {
-    std::cerr << "Deleting object: " << ((std::string)obj->getName())
-              << std::endl;
+    // std::cerr << "Deleting object: " << ((std::string)obj->getName())
+    //        << std::endl;
     foundNode->getParent()->removeChild(foundNode);
     delete foundObject;
     return;

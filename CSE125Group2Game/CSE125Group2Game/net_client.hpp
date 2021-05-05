@@ -1,6 +1,7 @@
 ﻿#include <olc_net.h>
 
 #include <iostream>
+#include <set>
 
 #include "GameObject.h"
 
@@ -44,8 +45,13 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     this->ClientMessageSend(keysPressed);
 
     if (this->IsConnected()) {
+      // std::set<std::string> updatedObjects;
+
       while (!this->Incoming().empty()) {
         auto msg = this->Incoming().pop_front().msg;
+        // auto msg = this->Incoming()
+        //               .pop_back()
+        //               .msg;  // if correctness is wrong, comment this out
 
         switch (msg.header.id) {
           case CustomMsgTypes::ServerAccept: {
@@ -90,9 +96,13 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
             GameObject* obj = GameManager::getManager()->Unmarshal(data);
 
-            // if (obj->isProjectile()) {
-            //  std::cout << "received projectile!!" << std::endl;
+            // Object updated this tick, skip it
+            // if (updatedObjects.find(std::string(obj->getName())) !=
+            //    updatedObjects.end()) {
+            //  continue;
             //}
+
+            // updatedObjects.insert(std::string(obj->getName()));
 
             GameManager::getManager()->UpdateObject(obj);
 
