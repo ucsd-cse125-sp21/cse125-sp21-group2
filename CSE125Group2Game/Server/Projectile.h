@@ -1,12 +1,12 @@
 ﻿#pragma once
-#include "GameObject.h"
+#include "Moveable.h"
 
 #define PROJ_SPAWN_RATE_MS 100
 
-class Projectile : public GameObject {
+class Projectile : public Moveable {
  public:
   static int mProjectilesSpawned;
-  static unsigned long mTickLastSpawn;
+  static unsigned long mTickLastSpawn;  // [MAX_PLAYERS];
 
   Projectile(Transform* transform, char* name, int health,
              glm::vec3 forwardVector, GameObject* parent);

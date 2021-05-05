@@ -4,7 +4,7 @@
 
 Enemy::Enemy(Transform* transform, char* name, int health,
              glm::vec3 fowardVector)
-    : GameObject(transform, name, health, ObjectType::Enemy, fowardVector) {
+    : Moveable(transform, name, health, ObjectType::Enemy, fowardVector) {
   mIsModified = true;
 }
 

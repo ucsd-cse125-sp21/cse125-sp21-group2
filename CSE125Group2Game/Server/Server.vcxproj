@@ -153,6 +153,7 @@
     <ClCompile Include="..\Shared\GameObject.cpp" />
     <ClCompile Include="..\Shared\Transform.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Moveable.cpp" />
     <ClCompile Include="ServerGraphNode.cpp" />
     <ClCompile Include="ServerLoader.cpp" />
     <ClCompile Include="GameLogicServer.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="..\Shared\GameObject.h" />
     <ClInclude Include="..\Shared\PriorityMutex.h" />
     <ClInclude Include="..\Shared\Transform.h" />
+    <ClInclude Include="Moveable.h" />
     <ClInclude Include="NetworkServer.h" />
     <ClInclude Include="GameLogicServer.h" />
     <ClInclude Include="Enemy.h" />

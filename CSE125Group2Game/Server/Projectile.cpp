@@ -6,12 +6,11 @@
 #include "GameLogicServer.h"
 
 int Projectile::mProjectilesSpawned = 0;
-unsigned long Projectile::mTickLastSpawn = 0;
+unsigned long Projectile::mTickLastSpawn = 0;  //[MAX_PLAYERS] = {0, 0, 0, 0};
 
 Projectile::Projectile(Transform* transform, char* name, int health,
                        glm::vec3 forwardVector, GameObject* parent)
-    : GameObject(transform, name, health, ObjectType::Projectile,
-                 forwardVector) {
+    : Moveable(transform, name, health, ObjectType::Projectile, forwardVector) {
   mProjectileNextTick = 0;
   mParent = parent;
 };

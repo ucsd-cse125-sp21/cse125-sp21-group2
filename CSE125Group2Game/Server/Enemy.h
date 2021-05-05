@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "GameObject.h"
+#include "Moveable.h"
 
-class Enemy : public GameObject {
+class Enemy : public Moveable {
  public:
   static int enemysSpawned;
 

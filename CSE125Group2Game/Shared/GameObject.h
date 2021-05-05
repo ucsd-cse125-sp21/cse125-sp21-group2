@@ -3,7 +3,9 @@
 
 #include "Transform.h"
 
-// Todo: create isDefault() method
+// TODO: Create moveable class which deals with rotation (each object has its
+// own pivot)
+
 enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
 
 #define NUM_KEYS 5
@@ -11,6 +13,7 @@ enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
 #define FLOAT_SIZE 4
 #define INT_SIZE sizeof(int)
 #define MESSAGE_SIZE NAME_LEN + (12 * FLOAT_SIZE) + INT_SIZE
+#define MAX_PLAYERS 4
 
 class GameObject {
  public:
