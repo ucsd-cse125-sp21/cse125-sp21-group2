@@ -19,8 +19,8 @@ class ServerGraphNode {
 
   ServerGraphNode* getParent();
 
-  void setName(char* name);
-  char* getName();
+  void setName(const std::string& name);
+  std::string getName();
 
   std::vector<GameObject*> makeWorld(glm::vec3 cPosition, glm::quat cRotation,
                                      glm::vec3 cScale);
@@ -32,5 +32,5 @@ class ServerGraphNode {
   std::vector<ServerGraphNode*> mChildren;
   ServerGraphNode* mParent;
 
-  char mName[NAME_LEN];
+  std::string mName;
 };

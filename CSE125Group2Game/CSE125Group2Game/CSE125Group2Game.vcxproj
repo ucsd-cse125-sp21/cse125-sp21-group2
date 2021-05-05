@@ -168,13 +168,22 @@
     <ClCompile Include="SceneGraphNode.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shared\scene.json" />
-    <None Include="fragment.glsl" />
+    <None Include="color_frag.glsl" />
+    <None Include="normal_frag.glsl" />
+    <None Include="normal_vert.glsl" />
     <None Include="packages.config" />
-    <None Include="vertex.glsl" />
+    <None Include="color_vert.glsl" />
+    <None Include="rainbow_frag.glsl" />
+    <None Include="rainbow_vert.glsl" />
+    <None Include="texture_frag.glsl" />
+    <None Include="texture_vert.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Shared\GameObject.h" />
@@ -191,6 +200,9 @@
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="SceneGraphNode.h" />
     <ClInclude Include="SceneLoader.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

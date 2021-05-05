@@ -3,7 +3,9 @@
 
 #include "Transform.h"
 
-// Todo: create isDefault() method
+// TODO: Create moveable class which deals with rotation (each object has its
+// own pivot)
+
 enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
 
 #define NUM_KEYS 5
@@ -11,6 +13,7 @@ enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
 #define FLOAT_SIZE 4
 #define INT_SIZE sizeof(int)
 #define MESSAGE_SIZE NAME_LEN + (12 * FLOAT_SIZE) + INT_SIZE
+#define MAX_PLAYERS 4
 
 class GameObject {
  public:
@@ -20,32 +23,45 @@ class GameObject {
   static const int RIGHT = 3;
   static const int SHOOT = 4;
 
-  GameObject(Transform* transform, char* name, int health);
+  GameObject(Transform* transform, const std::string& name, int health);
 
-  GameObject(Transform* transform, char* name, int health, ObjectType type);
+  GameObject(Transform* transform, const std::string& name, int health,
+             ObjectType type);
 
   ~GameObject();
 
+  bool isDefault();
+  bool isPlayer();
+  bool isEnemy();
+  bool isProjectile();
+
   void setTransform(Transform* transform);
   void addTranslation(glm::vec3 translation);
-  void setName(char* name);
+  void setName(const std::string& name);
   void setHealth(int health);
-
   Transform* getTransform();
 
-  void virtual Update() {}
+  void virtual update() {}
+  bool virtual shouldNotCollide(GameObject* obj) {
+    return obj->getName() == "root0000" ||
+           (obj->getHealth() <= 0 && !obj->isDefault()) ||
+           obj->getName() == mName;
+  }
 
   // Returns null terminated name
-  char* getName();
+  std::string getName();
   int getHealth();
 
   ObjectType getObjectType();
 
   bool mIsModified = true;
 
+  static std::string makeName(std::string prefix, int count);
+
  protected:
   Transform* mTransform;
-  char mName[NAME_LEN];
+  // char mName[NAME_LEN];
+  std::string mName;
   int mHealth;
   ObjectType mObjectType;
 };

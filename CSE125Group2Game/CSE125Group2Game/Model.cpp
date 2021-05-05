@@ -133,11 +133,10 @@ Model::Model(const std::vector<Vertex>& vertices,
  * file.
  */
 Model::Model(const std::string& filePath, Transform* transform,
-             MeshLoader& loader)
+             MeshLoader& loader, TextureLoader& tloader)
     : mTransform(transform) {
   Assimp::Importer importer;
-  const aiScene* scene = importer.ReadFile(
-      filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+  const aiScene* scene = importer.ReadFile(filePath, 0);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
       !scene->mRootNode) {
@@ -154,6 +153,6 @@ Model::Model(const std::string& filePath, Transform* transform,
     // TODO: right now we just copy for each mesh, even if they use
     //    the same material.
     aiMaterial* aiMat = scene->mMaterials[mesh->mMaterialIndex];
-    mMaterials.push_back(Material(aiMat));
+    mMaterials.push_back(Material(aiMat, tloader));
   }
 }

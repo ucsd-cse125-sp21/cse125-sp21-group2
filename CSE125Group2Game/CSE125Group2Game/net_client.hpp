@@ -1,6 +1,7 @@
 ﻿#include <olc_net.h>
 
 #include <iostream>
+#include <set>
 
 #include "GameObject.h"
 
@@ -25,7 +26,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
               << GetTickCount() << std::endl;*/
 
     int sum = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < NUM_KEYS; i++) {
       sum += keysPressed[i];
       msg << keysPressed[i];
     }
@@ -44,8 +45,13 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     this->ClientMessageSend(keysPressed);
 
     if (this->IsConnected()) {
-      if (!this->Incoming().empty()) {
+      // std::set<std::string> updatedObjects;
+
+      while (!this->Incoming().empty()) {
         auto msg = this->Incoming().pop_front().msg;
+        // auto msg = this->Incoming()
+        //               .pop_back()
+        //               .msg;  // if correctness is wrong, comment this out
 
         switch (msg.header.id) {
           case CustomMsgTypes::ServerAccept: {
@@ -89,6 +95,14 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             }
 
             GameObject* obj = GameManager::getManager()->Unmarshal(data);
+
+            // Object updated this tick, skip it
+            // if (updatedObjects.find(std::string(obj->getName())) !=
+            //    updatedObjects.end()) {
+            //  continue;
+            //}
+
+            // updatedObjects.insert(std::string(obj->getName()));
 
             GameManager::getManager()->UpdateObject(obj);
 

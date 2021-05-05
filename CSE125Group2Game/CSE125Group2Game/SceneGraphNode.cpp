@@ -3,19 +3,11 @@
 // TODO: This interface is kinda weird. It isn't very clear that this ctor also
 // adds the new node into the child list of the parent.
 SceneGraphNode::SceneGraphNode(SceneGraphNode* parent, GameObject* object)
-    : mParent(parent), mObject(object), mModel(NULL) {
-  if (parent != NULL) {
-    parent->addChild(this);
-  }
-}
+    : mParent(parent), mObject(object), mModel(NULL) {}
 
 SceneGraphNode::SceneGraphNode(SceneGraphNode* parent, GameObject* object,
                                Model* model)
-    : mParent(parent), mObject(object), mModel(model) {
-  if (parent != NULL) {
-    parent->addChild(this);
-  }
-}
+    : mParent(parent), mObject(object), mModel(model) {}
 
 void SceneGraphNode::addChild(SceneGraphNode* child) {
   mChildren.push_back(child);

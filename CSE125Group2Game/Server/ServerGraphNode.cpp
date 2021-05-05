@@ -17,7 +17,7 @@ ServerGraphNode* ServerGraphNode::getRoot() {
     root = new ServerGraphNode(
         NULL, new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
                             glm::vec3(1, 1, 1)));
-    root->setName((char*)"root0000");
+    root->setName("root0000");
   }
 
   return root;
@@ -72,5 +72,5 @@ std::vector<GameObject*> ServerGraphNode::makeWorld(glm::vec3 cPosition,
   return result;
 }
 
-void ServerGraphNode::setName(char* name) { memcpy(mName, name, NAME_LEN); }
-char* ServerGraphNode::getName() { return mName; }
+void ServerGraphNode::setName(const std::string& name) { mName = name; }
+std::string ServerGraphNode::getName() { return mName; }

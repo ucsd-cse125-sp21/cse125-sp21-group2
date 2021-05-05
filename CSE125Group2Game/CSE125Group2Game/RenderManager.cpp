@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "Camera.h"
 #include "Model.h"
 #include "Utils.h"
 
@@ -23,7 +24,9 @@
  * @param window The window to use as a render target.
  * @returns True if successful, false otherwise...
  */
-RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader) {
+RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader,
+                             TextureLoader& tloader, Camera* camera)
+    : mpCamera(camera) {
   // tell opengl to use the current window context
   glfwMakeContextCurrent(window);
 
@@ -45,12 +48,22 @@ RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader) {
   glfwGetFramebufferSize(window, &width, &height);
   glViewport(0, 0, width, height);
 
-  mpShaderProgram =
-      std::make_unique<ShaderProgram>("vertex.glsl", "fragment.glsl");
+  mpColorProgram =
+      std::make_unique<ShaderProgram>("color_vert.glsl", "color_frag.glsl");
+  mpNormalProgram =
+      std::make_unique<ShaderProgram>("normal_vert.glsl", "normal_frag.glsl");
+  mpTextureProgram =
+      std::make_unique<ShaderProgram>("texture_vert.glsl", "texture_frag.glsl");
+  mpRainbowProgram =
+      std::make_unique<ShaderProgram>("rainbow_vert.glsl", "rainbow_frag.glsl");
 
   mProjection =
       glm::perspective(glm::radians(FOVY), static_cast<float>(width) / height,
                        NEAR_CLIP, FAR_CLIP);
+
+  mpColorProgram->use();
+  mpTextureProgram->use();
+  mTexLoader = &tloader;
 
   cubeboi = Model::Cube(nullptr, loader);
 }
@@ -62,18 +75,35 @@ void RenderManager::beginRender() {
   glClearColor(0.2f, 0.4f, 0.4f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  mpShaderProgram->use();
+  if (mUseNormalShading) {
+    mpNormalProgram->use();
+  } else {
+    mpTextureProgram->use();
+    // mpColorProgram->use();
+  }
 
   glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(mProjection));
 }
 
-void RenderManager::draw(const Mesh& mesh, const Material& mat) {
+void RenderManager::draw(const Mesh& mesh, const Material& mat,
+                         const glm::mat4& model) {
+  glBindTexture(GL_TEXTURE_2D, 1);
   // set material colors...
-  // TODO: refactor this stuff
-  glUniform3fv(3, 1, glm::value_ptr(mat.mAmbient));
-  glUniform3fv(4, 1, glm::value_ptr(mat.mDiffuse));
-  glUniform3fv(5, 1, glm::value_ptr(mat.mSpecular));
-  glUniform1fv(6, 1, &mat.mShininess);
+  // in this case, we should use the texture shader
+  if (mat.diffuseMap.isValid()) {
+    mpTextureProgram->use();
+    mTexLoader->use(mat.diffuseMap);
+  } else {
+    mpColorProgram->use();
+    // glUniform1f(7, currentTime);
+    glUniform3fv(3, 1, glm::value_ptr(mat.mAmbient));
+    glUniform3fv(4, 1, glm::value_ptr(mat.mDiffuse));
+    glUniform3fv(5, 1, glm::value_ptr(mat.mSpecular));
+    glUniform1fv(6, 1, &mat.mShininess);
+  }
+  glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(mProjection));
+  mpCamera->use();
+  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(model));
 
   // render the mesh
   glBindVertexArray(mesh.vao());
@@ -81,26 +111,29 @@ void RenderManager::draw(const Mesh& mesh, const Material& mat) {
   glDrawElements(GL_TRIANGLES, mesh.indexCount(), GL_UNSIGNED_INT, nullptr);
 }
 
-void RenderManager::draw(const Model& model) {
-  glUniformMatrix4fv(0, 1, GL_FALSE,
-                     glm::value_ptr(model.transformConst().getModel()));
+void RenderManager::draw(const Model& model) { draw(model, glm::mat4(1.0f)); }
+
+void RenderManager::draw(const Model& model, const glm::mat4& transform) {
   for (int i = 0; i < model.meshes().size(); i++) {
-    draw(model.meshes()[i], model.materials()[i]);
+    draw(model.meshes()[i], model.materials()[i], transform);
   }
 }
 
 void RenderManager::draw(const SceneGraph& graph, MeshLoader& loader) {
   auto root = graph.getRoot();
-  draw(*root, loader);
+  draw(*root, loader, glm::mat4(1));
 }
 
 // TODO: fix scene graph, then this will need to change.
-void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader) {
+void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
+                         const glm::mat4& prev) {
+  glm::mat4 currTransform = prev * node.getObject()->getTransform()->getModel();
+  // TODO: PLEASE REFACTOR :((
   if (mRenderBoundingBoxes) {
     auto bb = node.getObject()->getTransform()->getBBox();
 
     glm::mat4 model =
-        node.getObject()->getTransform()->getModel() *
+        currTransform *
         glm::scale(glm::mat4(1), 2.0f * glm::vec3(bb.x, bb.y, bb.z));
 
     glm::vec4 god[8];
@@ -138,25 +171,27 @@ void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader) {
     }
 
     glm::vec3 scale = max - min;
-    glm::vec3 trans = node.getObject()->getTransform()->getTranslation();
+    glm::vec3 trans = glm::vec3(model * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     glm::mat4 mememodel =
         glm::scale(glm::translate(glm::mat4(1.0f), trans), scale);
 
     glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mememodel));
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    draw(cubeboi->meshes()[0], Material(glm::vec3(0.0f, 1.0f, 0.0f),
-                                        glm::vec3(0.0f), glm::vec3(0.0f), 0));
+    draw(cubeboi->meshes()[0],
+         Material(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f),
+                  0),
+         mememodel);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   }
 
   auto model = node.getModel();
   if (model) {
-    draw(*model);
+    draw(*model, currTransform);
   }
 
   for (auto child : node.getChildren()) {
-    draw(*child, loader);
+    draw(*child, loader, currTransform);
   }
 }
 
@@ -179,4 +214,8 @@ void RenderManager::setViewportSize(int width, int height) {
 
 void RenderManager::setRenderBoundingBoxes(bool shouldRender) {
   mRenderBoundingBoxes = shouldRender;
+}
+
+void RenderManager::setNormalShading(bool useNormalShading) {
+  mUseNormalShading = useNormalShading;
 }

@@ -17,11 +17,12 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
                        glm::vec3(0.0f, 1.0f, 0.0));
 
   mLoader = new MeshLoader();
-  mpRenderManager = std::make_unique<RenderManager>(window, *mLoader);
+  mpRenderManager =
+      std::make_unique<RenderManager>(window, *mLoader, mTLoader, mCamera);
   // RenderManager& renderMananger = RenderManager::get();
   // renderMananger.init(mWindow);
   glfwSetWindowUserPointer(mWindow, this);
-  mScene = SceneLoader::LoadFromFile("../Shared/scene.json", *mLoader);
+  mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
   mpRenderManager->setRenderBoundingBoxes(true);
 }
 
@@ -120,17 +121,17 @@ void GameManager::AddPlayer(int clientId) {
   // playerTransform, *mLoader);
   Model* model = Model::Cube(playerTransform, *mLoader);
 
-  SceneGraphNode* playerNode =
-      new SceneGraphNode(mScene.getRoot(), playerObject, model);
+  mScene.addChild(playerObject, model);
 }
 
 void GameManager::UpdateObject(GameObject* obj) {
-  SceneGraphNode* foundNode = findNode(obj, mScene.getRoot());
+  // SceneGraphNode* foundNode = findNode(obj, mScene.getRoot());
+  SceneGraphNode* foundNode = mScene.getByName(obj->getName());
   GameObject* foundObject;
 
   // Object does not exist, create it
   if (!foundNode) {
-    std::cout << "creating new enemy" << std::endl;
+    // std::cout << "creating new  object" << std::endl;
     foundObject =
         new GameObject(new Transform(obj->getTransform()->getTranslation(),
                                      obj->getTransform()->getRotation(),
@@ -139,20 +140,18 @@ void GameManager::UpdateObject(GameObject* obj) {
 
     // TODO: if else for model based on enum (constructor adds itself as child
     // of parent)
-    foundNode =
-        new SceneGraphNode(mScene.getRoot(), foundObject,
-                           Model::Cube(foundObject->getTransform(), *mLoader));
+    foundNode = mScene.addChild(
+        foundObject, Model::Cube(foundObject->getTransform(), *mLoader));
   }
 
   // Update object
   foundObject = foundNode->getObject();
 
   // Health is 0, delete object
-  if (obj->getHealth() == 0) {
-    std::cerr << "Deleting object: " << ((std::string)obj->getName())
-              << std::endl;
-    foundNode->getParent()->removeChild(foundNode);
-    delete foundObject;
+  if (obj->getHealth() <= 0) {
+    // std::cerr << "Deleting object: " << ((std::string)obj->getName())
+    //        << std::endl;
+    mScene.removeChild(foundNode);
     return;
   }
 
@@ -169,7 +168,7 @@ void GameManager::UpdateObject(GameObject* obj) {
 }
 
 SceneGraphNode* GameManager::findNode(GameObject* obj, SceneGraphNode* node) {
-  if (!strncmp(obj->getName(), node->getObject()->getName(), NAME_LEN)) {
+  if (obj->getName() == node->getObject()->getName()) {
     return node;
   }
 
@@ -191,7 +190,8 @@ GameObject* GameManager::Unmarshal(char* data) {
 
   char* tmpInfo = data;
 
-  char name[NAME_LEN];
+  // NAME_LEN + 1 so we ensure it is null terminated
+  char name[NAME_LEN + 1] = {0};
   memcpy(name, tmpInfo, NAME_LEN);  // Copy name into data
   tmpInfo += NAME_LEN;
 
@@ -236,6 +236,7 @@ GameObject* GameManager::Unmarshal(char* data) {
       glm::vec3(xPos, yPos, zPos), glm::vec3(xRot, yRot, zRot),
       glm::vec3(xScale, yScale, zScale), glm::vec3(xbb, ybb, zbb));
 
+  // TODO: should we add forward vector on client?
   GameObject* obj = new GameObject(transform, name, health);
 
   return obj;

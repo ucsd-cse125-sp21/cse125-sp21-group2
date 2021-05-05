@@ -11,13 +11,20 @@ class SceneLoader;
 class SceneGraph {
  public:
   SceneGraph();
+
+  static SceneGraph FromFile(const std::string& fileName, MeshLoader& loader,
+                             TextureLoader& tloader);
+
   SceneGraphNode* getRoot() const;
   SceneGraphNode* getByName(const std::string& name) const;
 
- private:
-  // HACK: Gross but makes things easy for now
-  friend SceneLoader;
+  SceneGraphNode* addChild(GameObject* obj, Model* model);
+  SceneGraphNode* addChild(GameObject* obj, Model* model,
+                           SceneGraphNode* parent);
 
+  void removeChild(SceneGraphNode* node);
+
+ private:
   std::unique_ptr<SceneGraphNode> mpRoot;
   // This only gets populated by SceneLoader rn.... we can fix that by changing
   // SceneGraphNode but w/e

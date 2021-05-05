@@ -2,6 +2,9 @@
 
 #include <glad/glad.h>
 
+#include <iostream>
+#include <ostream>
+
 static inline glm::vec3 vec3_cast(aiVector3D& vec) {
   return glm::vec3(vec.x, vec.y, vec.z);
 }
@@ -55,14 +58,19 @@ MeshLoader::GLMesh::GLMesh(const std::vector<Vertex>& vertices,
 
   // configure the vao with vertex attributes
   // position
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 2 * sizeof(glm::vec3),
-                        nullptr);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                        (void*)offsetof(Vertex, mPosition));
   glEnableVertexAttribArray(0);
 
   // normal
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 2 * sizeof(glm::vec3),
-                        (void*)sizeof(glm::vec3));
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                        (void*)offsetof(Vertex, mNormal));
   glEnableVertexAttribArray(1);
+
+  // texture
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                        (void*)offsetof(Vertex, mUv));
+  glEnableVertexAttribArray(2);
 
   glGenBuffers(1, &mIbo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIbo);
@@ -124,13 +132,24 @@ Mesh MeshLoader::loadMesh(const aiMesh* mesh) {
   std::vector<Vertex> vertices;
   vertices.reserve(mesh->mNumVertices);
   for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+    glm::vec2 uv = mesh->mTextureCoords[0] != nullptr
+                       ? glm::vec2(mesh->mTextureCoords[0][i].x,
+                                   mesh->mTextureCoords[0][i].y)
+                       : glm::vec2(0.0f);
+
     vertices.emplace_back(vec3_cast(mesh->mVertices[i]),
-                          vec3_cast(mesh->mNormals[i]));
+                          vec3_cast(mesh->mNormals[i]), uv);
   }
 
   // get indices out .... must do because they are in ptrs...
+  std::cerr << mesh->mNumFaces << std::endl;
   std::vector<glm::uvec3> indices;
   for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+    // TODO: some faces aren't complete for some reason (i.e. lines) .... just
+    // add this guard
+    if (mesh->mFaces[i].mNumIndices != 3) {
+      continue;
+    }
     indices.emplace_back(mesh->mFaces[i].mIndices[0],
                          mesh->mFaces[i].mIndices[1],
                          mesh->mFaces[i].mIndices[2]);

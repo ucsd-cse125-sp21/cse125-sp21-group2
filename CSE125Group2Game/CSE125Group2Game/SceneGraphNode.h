@@ -4,30 +4,29 @@
 #include "Model.h"
 #include "Transform.h"
 
+class SceneGraph;
+
 // TODO: I wont be picky, but really each node doesn't need to have a game
 // object, i.e. some transition nodes (i.e. root) can just be a transform
 class SceneGraphNode {
+  friend SceneGraph;
+
  public:
-  SceneGraphNode(SceneGraphNode* parent, GameObject* object);
-
-  SceneGraphNode(SceneGraphNode* parent, GameObject* object, Model* mesh);
-
   // static SceneGraphNode* getRoot();
 
-  void addChild(SceneGraphNode* child);
-
-  void removeChild(SceneGraphNode* child);
-
   GameObject* getObject() const;
-
   Model* getModel() const;
-
   std::vector<SceneGraphNode*> getChildren() const;
-
   SceneGraphNode* getParent();
 
+  // TODO: no transforms in graph sadge
+
  private:
-  // static SceneGraphNode* root;
+  SceneGraphNode(SceneGraphNode* parent, GameObject* object);
+  SceneGraphNode(SceneGraphNode* parent, GameObject* object, Model* mesh);
+
+  void addChild(SceneGraphNode* child);
+  void removeChild(SceneGraphNode* child);
 
   GameObject* mObject;
   Model* mModel;

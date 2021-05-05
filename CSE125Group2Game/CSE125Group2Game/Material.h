@@ -3,11 +3,16 @@
 
 #include <glm/vec3.hpp>
 
+#include "TextureLoader.h"
+
 struct Material {
   glm::vec3 mAmbient;
   glm::vec3 mDiffuse;
   glm::vec3 mSpecular;
   float mShininess;
+
+  // TODO: make optional?
+  Texture diffuseMap;
 
   Material()
       : mAmbient(glm::vec3(1.0f, 0.0f, 0.0f)),
@@ -20,5 +25,5 @@ struct Material {
         mDiffuse(diffuse),
         mSpecular(specular),
         mShininess(shininess) {}
-  Material(aiMaterial* other);
+  Material(aiMaterial* other, TextureLoader& tloader);
 };

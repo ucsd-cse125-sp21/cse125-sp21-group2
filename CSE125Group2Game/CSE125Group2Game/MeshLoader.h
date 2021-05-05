@@ -1,6 +1,7 @@
 #pragma once
 #include <assimp/mesh.h>
 
+#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <unordered_map>
 #include <vector>
@@ -8,10 +9,13 @@
 struct Vertex {
   glm::vec3 mPosition;
   glm::vec3 mNormal;
+  glm::vec2 mUv;
 
-  Vertex() : mPosition(0.0f), mNormal(0.0f) {}
+  Vertex() : mPosition(0.0f), mNormal(0.0f), mUv(0.0f) {}
   Vertex(glm::vec3 position, glm::vec3 normal)
-      : mPosition(position), mNormal(normal) {}
+      : mPosition(position), mNormal(normal), mUv(0.0f) {}
+  Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 uv)
+      : mPosition(position), mNormal(normal), mUv(uv) {}
 };
 
 class MeshLoader;
