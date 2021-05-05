@@ -126,7 +126,7 @@ void GameLogicServer::updateProjectiles() {
   for (int i = 0; i < mWorld.size(); i++) {
     // if (mWorld[i]->getObjectType() == ObjectType::Projectile) {
     if (mWorld[i]->isProjectile()) {
-      GameObject* collider = doesCollide(mWorld[i]);
+      GameObject* collider = getCollidingObject(mWorld[i]);
 
       if (collider != nullptr) {
         mWorld[i]->setHealth(0);
@@ -151,25 +151,14 @@ void GameLogicServer::updatePlayers() {
 }
 
 void GameLogicServer::handlePlayerCollision(int playerIndex) {
-  int vsp = mKeyPresses[playerIndex][GameObject::FORWARD] -
-            mKeyPresses[playerIndex][GameObject::BACKWARD];
+  setPlayerVelocity(playerIndex);
 
-  int hsp = mKeyPresses[playerIndex][GameObject::RIGHT] -
-            mKeyPresses[playerIndex][GameObject::LEFT];
-
-  glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
-  if (hsp != 0 || vsp != 0)
-    velocity = glm::vec3(0.4) * glm::normalize(velocity);
-
-  std::string clientId = "play000";
-  clientId += std::to_string(playerIndex);
-
-  GameObject* player = players[playerIndex];
+  Player* player = players[playerIndex];
 
   // Collision detection
-  player->addTranslation(velocity);
+  player->addTranslation(player->getVelocity());
 
-  GameObject* collidedObj = doesCollide(player);
+  GameObject* collidedObj = getCollidingObject(player);
   if (!collidedObj) {
     return;
   }
@@ -179,24 +168,25 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
   std::cout << "Collision with: " << name << std::endl;
 
   if (collidedObj->isEnemy()) {
-    // Set enemy health to 0
     collidedObj->setHealth(0);
   } else if (collidedObj->isDefault()) {
-    // Collision with scene object
-    // Remove velocity if object collides
-    player->addTranslation(-velocity);
-
-    // Step player towards collision boundary
-    while (!doesCollide(player)) {
-      player->addTranslation(glm::vec3(0.1, 0.1, 0.1) * velocity);
-    }
-
-    // Move player 0.1 units away from collision
-    player->addTranslation(glm::vec3(-0.1, -0.1, -0.1) * velocity);
+    movePlayerToBoundary(player);
   }
 }
 
-GameObject* GameLogicServer::doesCollide(GameObject* obj) {
+void GameLogicServer::movePlayerToBoundary(Player* player) {
+  player->addTranslation(-player->getVelocity());
+
+  // Step player towards collision boundary
+  while (!getCollidingObject(player)) {
+    player->addTranslation(glm::vec3(0.1, 0.1, 0.1) * player->getVelocity());
+  }
+
+  // Move player 0.1 units away from collision
+  player->addTranslation(glm::vec3(-0.1, -0.1, -0.1) * player->getVelocity());
+}
+
+GameObject* GameLogicServer::getCollidingObject(GameObject* obj) {
   // get 8 points of A in world space
   std::vector<glm::vec3> A = getCorners(obj);
 
@@ -466,4 +456,26 @@ void GameLogicServer::printKeyPresses() {
     std::cout << "right: " << mKeyPresses[i][GameObject::RIGHT];
     std::cout << "shoot: " << mKeyPresses[i][GameObject::SHOOT];
   }
+}
+
+void GameLogicServer::setPlayerVelocity(int playerId) {
+  int vsp = getPlayerVerticalVelocity(playerId);
+  int hsp = getPlayerHorizontalVelocity(playerId);
+
+  glm::vec3 velocity(hsp, vsp, 0);
+
+  if (hsp != 0 || vsp != 0) {
+    velocity = glm::vec3(0.4) * glm::normalize(velocity);
+  }
+
+  players[playerId]->setVelocity(velocity);
+}
+
+int GameLogicServer::getPlayerVerticalVelocity(int playerId) {
+  return mKeyPresses[playerId][GameObject::FORWARD] -
+         mKeyPresses[playerId][GameObject::BACKWARD];
+}
+int GameLogicServer::getPlayerHorizontalVelocity(int playerId) {
+  return mKeyPresses[playerId][GameObject::RIGHT] -
+         mKeyPresses[playerId][GameObject::LEFT];
 }

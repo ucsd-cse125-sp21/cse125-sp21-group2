@@ -60,6 +60,7 @@ class GameLogicServer {
   std::vector<char*> mTestBuffer;
 
   Player* players[MAX_PLAYERS];
+  GameObject* getCollidingObject(GameObject* obj);
 
  private:
   void resetKeyPresses();
@@ -69,12 +70,14 @@ class GameLogicServer {
   void handlePlayerCollision(int playerIndex);
   void updateEnemies();
   void updateProjectiles();
-  GameObject* doesCollide(GameObject* obj);
   std::vector<glm::vec3> getCorners(GameObject* obj);
   std::vector<float> getMinMax(GameObject* obj);
   void deleteObject(int worldIndex);
   void printKeyPresses();
-
+  int getPlayerVerticalVelocity(int playerId);
+  int getPlayerHorizontalVelocity(int playerId);
+  void movePlayerToBoundary(Player* player);
+  void setPlayerVelocity(int playerId);
   std::vector<GameObject*> mWorld;
   ServerLoader mScene;
   uint16_t mTick_ms;

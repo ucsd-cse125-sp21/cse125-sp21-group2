@@ -10,8 +10,17 @@ class Player : public Moveable {
 
   void setId(int id);
 
+  int getVsp();
+  int getHsp();
+
+  void setVelocity(glm::vec3 velocity);
+  glm::vec3 getVelocity();
+
  private:
   glm::vec3 mMoveSpeed = glm::vec3(0.3);
+  glm::vec3 mVelocity;
+  // int mVsp;
+  // int mHsp;
 
   int mPlayerId;
 };
