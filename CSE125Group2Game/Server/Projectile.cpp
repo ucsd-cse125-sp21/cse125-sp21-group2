@@ -1,12 +1,13 @@
-#include "Projectile.h"
+﻿#include "Projectile.h"
 
 #include "GameLogicServer.h"
 int Projectile::mProjectilesSpawned = 0;
 Projectile::Projectile(Transform* transform, char* name, int health,
-                       glm::vec3 forwardVector)
+                       glm::vec3 forwardVector, GameObject* parent)
     : GameObject(transform, name, health, ObjectType::Projectile,
                  forwardVector) {
   mProjectileNextTick = 0;
+  mParent = parent;
 };
 
 void Projectile::calculatePath() {
@@ -18,13 +19,13 @@ void Projectile::calculatePath() {
   }
 };
 
-void Projectile::spawnProjectile(glm::vec3 translation,
-                                 glm::vec3 forwardVector) {
+void Projectile::spawnProjectile(GameObject* parent) {
   // create projectile
   GameObject* projectile = new Projectile(
-      new Transform(translation, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
-                    glm::vec3(0.5, 0.5, 0.5)),
-      (char*)makeName().c_str(), 15, forwardVector);
+      new Transform(parent->getTransform()->getTranslation(),
+                    glm::vec3(0, 0, 0), glm::vec3(0.1, 0.1, 0.1),
+                    glm::vec3(0.05, 0.05, 0.05)),
+      (char*)makeName().c_str(), 15, parent->getForwardVector(), parent);
   // calculate path
   ((Projectile*)projectile)->calculatePath();
   // add to game world
@@ -40,14 +41,19 @@ std::string Projectile::makeName() {
   return GameObject::makeName("proj", mProjectilesSpawned++);
 }
 
-void Projectile::Update() {
+void Projectile::update() {
   mIsModified = true;
 
   // projectile is dead
   if (mProjectileNextTick >= mProjectileMaxTicks) {
-    // setHealth(0); - TODO add back in
+    setHealth(0);
     return;
   }
 
   mTransform->setTranslation(mPath[mProjectileNextTick++]);
+}
+
+bool Projectile::shouldNotCollide(GameObject* obj) {
+  return GameObject::shouldNotCollide(obj) ||  // Call super method
+         (obj == mParent);
 }

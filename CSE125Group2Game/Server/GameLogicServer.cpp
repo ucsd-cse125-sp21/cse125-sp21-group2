@@ -105,7 +105,7 @@ void GameLogicServer::updateEnemies() {
   for (int i = 0; i < mWorld.size(); i++) {
     if (mWorld[i]->isEnemy()) {
       // call enemy update
-      mWorld[i]->Update();
+      mWorld[i]->update();
     }
   }
 }
@@ -115,18 +115,23 @@ void GameLogicServer::updateProjectiles() {
     if (players[i] == NULL) {
       continue;
     }
+
     if (mKeyPresses[i][GameObject::SHOOT]) {
       // std::cout << "Player " << i << " wants to spawn a projectile!!";
-      Projectile::spawnProjectile(players[i]->getTransform()->getTranslation(),
-                                  players[i]->getForwardVector());
+      Projectile::spawnProjectile(players[i]);
     }
   }
 
   for (int i = 0; i < mWorld.size(); i++) {
     // if (mWorld[i]->getObjectType() == ObjectType::Projectile) {
     if (mWorld[i]->isProjectile()) {
+      if (doesCollide(mWorld[i]) != nullptr) {
+        mWorld[i]->setHealth(0);
+        continue;
+      }
+
       // call enemy update
-      mWorld[i]->Update();
+      mWorld[i]->update();
     }
   }
 }
@@ -195,9 +200,7 @@ GameObject* GameLogicServer::doesCollide(GameObject* obj) {
   // anything
   for (int i = 0; i < mWorld.size(); i++) {
     // If this object is the root, or has 0 health, or is itself, do not collide
-    if (!strncmp(mWorld[i]->getName(), "root0000", NAME_LEN) ||
-        (mWorld[i]->getHealth() <= 0 && !mWorld[i]->isDefault()) ||
-        !strncmp(mWorld[i]->getName(), obj->getName(), NAME_LEN)) {
+    if (obj->shouldNotCollide(mWorld[i])) {
       continue;
     }
 

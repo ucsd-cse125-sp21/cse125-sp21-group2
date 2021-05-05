@@ -1,15 +1,16 @@
-#pragma once
+﻿#pragma once
 #include "GameObject.h"
 
 class Projectile : public GameObject {
  public:
   static int mProjectilesSpawned;
   Projectile(Transform* transform, char* name, int health,
-             glm::vec3 forwardVector);
+             glm::vec3 forwardVector, GameObject* parent);
 
-  static void spawnProjectile(glm::vec3 translation, glm::vec3 forwardVector);
+  static void spawnProjectile(GameObject* parent);
 
-  void Update();
+  void update();
+  bool shouldNotCollide(GameObject* obj);
 
   std::vector<glm::vec3> getPath();
 
@@ -20,6 +21,8 @@ class Projectile : public GameObject {
   std::vector<glm::vec3> mPath;  // pre compute path on creation and just check
                                  // for collisions as we go ahead
   int mProjectileMaxTicks =
-      3;  // how many ticks a projectile should last for unless it collides
+      100;  // how many ticks a projectile should last for unless it collides
   int mProjectileNextTick;
+
+  GameObject* mParent;
 };

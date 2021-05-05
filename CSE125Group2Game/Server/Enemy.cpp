@@ -8,7 +8,7 @@ Enemy::Enemy(Transform* transform, char* name, int health,
   mIsModified = true;
 }
 
-void Enemy::Update() {
+void Enemy::update() {
   if (--mTicksTillUpdate > 0) {
     mIsModified = false;
     return;

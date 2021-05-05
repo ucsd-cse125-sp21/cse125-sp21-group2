@@ -42,7 +42,12 @@ class GameObject {
 
   Transform* getTransform();
 
-  void virtual Update() {}
+  void virtual update() {}
+  bool virtual shouldNotCollide(GameObject* obj) {
+    return !strncmp(obj->getName(), "root0000", NAME_LEN) ||
+           (obj->getHealth() <= 0 && !obj->isDefault()) ||
+           !strncmp(obj->getName(), mName, NAME_LEN);
+  }
 
   // Returns null terminated name
   char* getName();

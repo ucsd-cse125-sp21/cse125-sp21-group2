@@ -7,7 +7,7 @@ class Enemy : public GameObject {
 
   Enemy(Transform* transform, char* name, int health, glm::vec3 forwardVector);
 
-  void Update();
+  void update();
 
  private:
   GameObject* GetNearestPlayer();
