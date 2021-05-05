@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <unordered_map>
+
 #include "Moveable.h"
 
 #define PROJ_SPAWN_RATE_MS 100
@@ -6,7 +8,10 @@
 class Projectile : public Moveable {
  public:
   static int mProjectilesSpawned;
-  static unsigned long mTickLastSpawn;  // [MAX_PLAYERS];
+  static std::unordered_map<std::string, unsigned long> mTickLastSpawn;
+  // todo: might wanna change to hashmap to map obj name to
+  // last tick because players and enemies can have
+  // overlapping IDs
 
   Projectile(Transform* transform, std::string name, int health,
              GameObject* parent);

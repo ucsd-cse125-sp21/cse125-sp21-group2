@@ -6,7 +6,9 @@
 #include "GameLogicServer.h"
 
 int Projectile::mProjectilesSpawned = 0;
-unsigned long Projectile::mTickLastSpawn = 0;  //[MAX_PLAYERS] = {0, 0, 0, 0};
+std::unordered_map<std::string, unsigned long>
+    Projectile::mTickLastSpawn;  // todo: might wanna change to hashmap to map
+                                 // obj name to
 
 Projectile::Projectile(Transform* transform, std::string name, int health,
                        GameObject* parent)
@@ -25,11 +27,13 @@ void Projectile::calculatePath() {
 };
 
 void Projectile::spawnProjectile(GameObject* parent) {
-  if (GetTickCount() - Projectile::mTickLastSpawn < PROJ_SPAWN_RATE_MS) {
+  if (GetTickCount() - Projectile::mTickLastSpawn[parent->getName()] <
+      PROJ_SPAWN_RATE_MS) {
     return;
   }
 
-  Projectile::mTickLastSpawn = GetTickCount();  // update last spawn time
+  Projectile::mTickLastSpawn[parent->getName()] =
+      GetTickCount();  // update last spawn time
 
   // create projectile
   GameObject* projectile =
