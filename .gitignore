@@ -370,4 +370,4 @@ doc
 build
 
 # Include asset files
-!**/*/Assets/*.obj
+!**/*/Assets/**/*.obj
