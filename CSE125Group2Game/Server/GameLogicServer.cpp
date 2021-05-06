@@ -414,6 +414,8 @@ void GameLogicServer::deleteObject(int worldIndex) {
   // Remove from WaveManager if this is an enemy
   if (tmpObj->isEnemy()) {
     WaveManager::getWaveManager()->removeEnemy((Enemy*)tmpObj);
+  } else if (tmpObj->isPlayer()) {
+    players[((Player*)tmpObj)->getId()] = NULL;
   }
 
   mWorld.erase(mWorld.begin() + worldIndex);

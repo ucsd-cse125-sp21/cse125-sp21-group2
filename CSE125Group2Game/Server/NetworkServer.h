@@ -102,6 +102,9 @@ bool NetworkServer::OnClientConnect(
 void NetworkServer::OnClientDisconnect(
     shared_ptr<connection<CustomMsgTypes>> client) {
   cout << "Removing client [" << client->GetID() << "]\n";
+  GameLogicServer::getLogicServer()
+      ->players[serverToLogicID->find(client->GetID())->second]
+      ->setHealth(0);
 }
 
 // Called when a message arrives
