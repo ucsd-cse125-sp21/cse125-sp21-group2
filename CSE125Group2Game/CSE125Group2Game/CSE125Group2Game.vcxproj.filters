@@ -112,12 +112,15 @@
     <None Include="rainbow_frag.glsl">
       <Filter>Source Files\render\shaders</Filter>
     </None>
+    <None Include="bump_frag.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="bump_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderManager.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
@@ -166,6 +169,9 @@
       <Filter>Header Files\render</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderProgram.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,7 +12,9 @@ ServerLoader::ServerLoader(std::string fileName) {
   std::ifstream file(fileName);
 
   if (!file) {
-    throw std::exception(("Failed to open Server file!" + fileName).c_str());
+    std::cerr << "Failed to open server scene file! " << fileName << std::endl;
+    std::cin.get();
+    exit(1);
   }
 
   // Create json and populate it from file

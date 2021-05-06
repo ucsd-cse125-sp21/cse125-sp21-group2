@@ -3,6 +3,7 @@
 #include "Utils.h"
 
 Material::Material(aiMaterial* other, TextureLoader& tloader) {
+  aiReturn res;
   aiColor3D color;
   other->Get(AI_MATKEY_COLOR_AMBIENT, color);
   mAmbient = glm::vec3(color.r, color.g, color.b);
@@ -17,7 +18,15 @@ Material::Material(aiMaterial* other, TextureLoader& tloader) {
 
   // we have a diffuse texture!
   if (numTextures > 0) {
-    other->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texName);
-    diffuseMap = tloader.loadTexture(ASSET(texName.C_Str()));
+    // HACK: just assume any mat with texture map also has bump map possibly
+    res = other->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texName);
+    if (res == aiReturn_SUCCESS) {
+      diffuseMap = tloader.loadTexture(ASSET(texName.C_Str()));
+    }
+
+    res = other->Get(AI_MATKEY_TEXTURE(aiTextureType_HEIGHT, 0), texName);
+    if (res == aiReturn_SUCCESS) {
+      normalMap = tloader.loadTexture(ASSET(texName.C_Str()));
+    }
   }
 }

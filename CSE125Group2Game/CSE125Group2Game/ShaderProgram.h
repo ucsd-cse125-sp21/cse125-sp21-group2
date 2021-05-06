@@ -14,6 +14,8 @@ class ShaderProgram {
 
   void use();
 
+  unsigned int getID() const { return mId; };
+
  private:
   unsigned int mId;
 };

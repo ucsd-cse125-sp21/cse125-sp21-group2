@@ -35,8 +35,10 @@ ShaderProgram::ShaderProgram(const std::string& vertexShaderPath,
   glGetShaderiv(vertId, GL_COMPILE_STATUS, &success);
   if (!success) {
     glGetShaderInfoLog(vertId, 512, NULL, infoLog);
-    std::cerr << "Shader Compilation Failed\n" << infoLog << std::endl;
-    CRASH("Vertex shader compilation failed!");
+    std::cerr << "Vertex Shader \"" << vertexShaderPath
+              << "\" Compilation Failed\n"
+              << infoLog << std::endl;
+    CRASH("Vertex shader " + vertexShaderPath + " compilation failed!");
   }
 
   // read the fragment shader from file
@@ -54,8 +56,10 @@ ShaderProgram::ShaderProgram(const std::string& vertexShaderPath,
   glGetShaderiv(fragId, GL_COMPILE_STATUS, &success);
   if (!success) {
     glGetShaderInfoLog(fragId, 512, NULL, infoLog);
-    std::cerr << "Shader Compilation Failed\n" << infoLog << std::endl;
-    CRASH("Fragment shader compilation failed!");
+    std::cerr << "Fragment Shader \"" << fragmentShaderPath
+              << "\" Compilation Failed\n"
+              << infoLog << std::endl;
+    CRASH("Fragment shader " + fragmentShaderPath + " compilation failed!");
   }
 
   // link the shader program
