@@ -481,6 +481,10 @@ char* GameLogicServer::marshalInfo(GameObject* obj) {
   memcpy(tmpInfo, &(bb.z), FLOAT_SIZE);
   tmpInfo += FLOAT_SIZE;
 
+  ObjectType type = obj->getObjectType();
+  memcpy(tmpInfo, &(type), TYPE_SIZE);
+  tmpInfo += TYPE_SIZE;
+
   return info;
 }
 
