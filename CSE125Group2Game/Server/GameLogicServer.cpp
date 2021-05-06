@@ -138,7 +138,7 @@ void GameLogicServer::updateTowers() {
                 // Take Damage when enemy collide with tower
                 // TODO: make damage dynamic
                 mWorld[i]->setHealth(mWorld[i]->getHealth() - 5);
-                std::cout << "Tower Health:" << mWorld[i]->getHealth() << std::endl;
+                std::cout << "Tower Health:" << mWorld[i]->getHealth() << ",collided with "<< collider->getName() << std::endl;
                 continue;
             }
             // call tower update
@@ -166,7 +166,7 @@ void GameLogicServer::updateProjectiles() {
 
       if (collider != nullptr) {
         mWorld[i]->setHealth(0);
-        collider->setHealth(collider->getHealth() - 5);
+        collider->setHealth(collider->getHealth() - 0.01);
         continue;
       }
 
