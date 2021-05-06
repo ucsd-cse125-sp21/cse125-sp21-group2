@@ -33,6 +33,40 @@
       "bb_height": 5,
       "bb_width": 5,
       "obj_file": "tree.obj"
+    },
+    {
+      "name": "planet",
+      "parent_name": "root",
+      "xPos": 0,
+      "yPos": 0,
+      "zPos": 5,
+      "xRot": 0,
+      "yRot": 0,
+      "zRot": 0,
+      "xScale": 0.2,
+      "yScale": 0.2,
+      "zScale": 0.2,
+      "bb_length": 1,
+      "bb_height": 1,
+      "bb_width": 1,
+      "obj_file": "models/planet/planet.obj"
+    },
+    {
+      "name": "ship",
+      "parent_name": "root",
+      "xPos": -5,
+      "yPos": 0,
+      "zPos": 5,
+      "xRot": 90,
+      "yRot": 0,
+      "zRot": 0,
+      "xScale": 0.5,
+      "yScale": 0.5,
+      "zScale": 0.5,
+      "bb_length": 1,
+      "bb_height": 1,
+      "bb_width": 1,
+      "obj_file": "models/enemy/mainEnemyShip/enemyship.obj"
     }
   ]
 }

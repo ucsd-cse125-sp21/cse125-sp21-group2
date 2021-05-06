@@ -56,6 +56,8 @@ RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader,
       std::make_unique<ShaderProgram>("texture_vert.glsl", "texture_frag.glsl");
   mpRainbowProgram =
       std::make_unique<ShaderProgram>("rainbow_vert.glsl", "rainbow_frag.glsl");
+  mpBumpProgram =
+      std::make_unique<ShaderProgram>("bump_vert.glsl", "bump_frag.glsl");
 
   mProjection =
       glm::perspective(glm::radians(FOVY), static_cast<float>(width) / height,
@@ -88,12 +90,38 @@ void RenderManager::beginRender() {
 }
 
 void RenderManager::draw(const Mesh& mesh, const Material& mat,
-                         const glm::mat4& model, const glm::mat4& view) {
+                         const glm::mat4& model, const glm::mat4& view,
+                         const glm::vec3& viewPos) {
   // set material colors...
   // in this case, we should use the texture shader
-  if (mat.diffuseMap.isValid()) {
-    mpTextureProgram->use();
+  // TODO: refactor this mess
+  if (mat.normalMap.isValid()) {
+    mpBumpProgram->use();
+    glUniform1i(glGetUniformLocation(mpBumpProgram->getID(), "diffuseMap"), 0);
+    glActiveTexture(GL_TEXTURE0);
     mTexLoader->use(mat.diffuseMap);
+    // TODO: this stuff can be refactored out side of render loop probably
+    glUniform1i(glGetUniformLocation(mpBumpProgram->getID(), "normalMap"), 1);
+    glActiveTexture(GL_TEXTURE1);
+    mTexLoader->use(mat.normalMap);
+
+    glUniform3fv(3, 1, glm::value_ptr(mat.mAmbient));
+    glUniform3fv(4, 1, glm::value_ptr(mat.mDiffuse));
+    glUniform3fv(5, 1, glm::value_ptr(mat.mSpecular));
+    glUniform1fv(6, 1, &mat.mShininess);
+    glUniform3fv(8, 1, glm::value_ptr(viewPos));
+  } else if (mat.diffuseMap.isValid()) {
+    mpTextureProgram->use();
+    glUniform1i(glGetUniformLocation(mpTextureProgram->getID(), "diffuseMap"),
+                0);
+    glActiveTexture(GL_TEXTURE0);
+    mTexLoader->use(mat.diffuseMap);
+
+    glUniform3fv(3, 1, glm::value_ptr(mat.mAmbient));
+    glUniform3fv(4, 1, glm::value_ptr(mat.mDiffuse));
+    glUniform3fv(5, 1, glm::value_ptr(mat.mSpecular));
+    glUniform1fv(6, 1, &mat.mShininess);
+    glUniform3fv(8, 1, glm::value_ptr(viewPos));
   } else if (mat.isRainbow) {
     mpRainbowProgram->use();
     glUniform1f(7, currentTime);
@@ -103,6 +131,7 @@ void RenderManager::draw(const Mesh& mesh, const Material& mat,
     glUniform3fv(4, 1, glm::value_ptr(mat.mDiffuse));
     glUniform3fv(5, 1, glm::value_ptr(mat.mSpecular));
     glUniform1fv(6, 1, &mat.mShininess);
+    glUniform3fv(8, 1, glm::value_ptr(viewPos));
   }
   glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(mProjection));
   glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(view));
@@ -119,15 +148,15 @@ void RenderManager::draw(const Mesh& mesh, const Material& mat,
 }*/
 
 void RenderManager::draw(const Model& model, const glm::mat4& transform,
-                         const glm::mat4& view) {
+                         const glm::mat4& view, const glm::vec3& viewPos) {
   for (int i = 0; i < model.meshes().size(); i++) {
-    draw(model.meshes()[i], model.materials()[i], transform, view);
+    draw(model.meshes()[i], model.materials()[i], transform, view, viewPos);
   }
 }
 
 void RenderManager::draw(const SceneGraph& graph, MeshLoader& loader) {
   SceneGraphNode* root = graph.getRoot();
-  auto viewOption = graph.getViewMatrix();
+  auto viewOption = graph.getCameraMatrix();
 
   // what should default behavior be? i.e. if there is no camera, what do we do?
   // id matrix? idk
@@ -139,13 +168,16 @@ void RenderManager::draw(const SceneGraph& graph, MeshLoader& loader) {
         "make it easy to debug for now");*/
   }
 
-  auto view = viewOption.value_or(glm::mat4(1.0f));
-  draw(*root, loader, glm::mat4(1), view);
+  auto cameraMatrix = viewOption.value_or(glm::mat4(1.0f));
+  glm::vec3 viewPos = cameraMatrix * glm::vec4(0, 0, 0, 1);
+  auto view = glm::inverse(cameraMatrix);
+  draw(*root, loader, glm::mat4(1), view, viewPos);
 }
 
 // TODO: fix scene graph, then this will need to change.
 void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
-                         const glm::mat4& prev, const glm::mat4& view) {
+                         const glm::mat4& prev, const glm::mat4& view,
+                         const glm::vec3& viewPos) {
   glm::mat4 currTransform = prev * node.getObject()->getTransform()->getModel();
   // TODO: PLEASE REFACTOR :((
   if (mRenderBoundingBoxes) {
@@ -200,17 +232,17 @@ void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
     draw(cubeboi->meshes()[0],
          Material(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f),
                   0),
-         mememodel, view);
+         mememodel, view, viewPos);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   }
 
   auto model = node.getModel();
   if (model) {
-    draw(*model, currTransform, view);
+    draw(*model, currTransform, view, viewPos);
   }
 
   for (auto child : node.getChildren()) {
-    draw(*child, loader, currTransform, view);
+    draw(*child, loader, currTransform, view, viewPos);
   }
 }
 

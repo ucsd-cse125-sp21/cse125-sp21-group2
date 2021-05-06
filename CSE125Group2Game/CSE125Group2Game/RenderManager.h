@@ -24,13 +24,14 @@ class RenderManager {
 
   void beginRender();
   void draw(const Mesh& mesh, const Material& mat, const glm::mat4& model,
-            const glm::mat4& view);
+            const glm::mat4& view, const glm::vec3& viewPos);
   void draw(const Model& model, const glm::mat4& view);
   void draw(const Model& model, const glm::mat4& transform,
-            const glm::mat4& view);
+            const glm::mat4& view, const glm::vec3& viewPos);
   void draw(const SceneGraph& graph, MeshLoader& loader);
   void draw(const SceneGraphNode& node, MeshLoader& loader,
-            const glm::mat4& prev, const glm::mat4& view);
+            const glm::mat4& prev, const glm::mat4& view,
+            const glm::vec3& viewPos);
 
   void setViewportSize(int width, int height);
 
@@ -55,6 +56,7 @@ class RenderManager {
   std::unique_ptr<ShaderProgram> mpNormalProgram;
   std::unique_ptr<ShaderProgram> mpTextureProgram;
   std::unique_ptr<ShaderProgram> mpRainbowProgram;
+  std::unique_ptr<ShaderProgram> mpBumpProgram;
 
   bool mUseNormalShading = false;
 

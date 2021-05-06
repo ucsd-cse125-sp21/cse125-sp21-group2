@@ -9,13 +9,16 @@
 struct Vertex {
   glm::vec3 mPosition;
   glm::vec3 mNormal;
-  glm::vec2 mUv;
+  glm::vec2 mUv = glm::vec2(0.0f);       // optional
+  glm::vec3 mTangent = glm::vec3(0.0f);  // optional
 
   Vertex() : mPosition(0.0f), mNormal(0.0f), mUv(0.0f) {}
   Vertex(glm::vec3 position, glm::vec3 normal)
       : mPosition(position), mNormal(normal), mUv(0.0f) {}
   Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 uv)
       : mPosition(position), mNormal(normal), mUv(uv) {}
+  Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 uv, glm::vec3 tangent)
+      : mPosition(position), mNormal(normal), mUv(uv), mTangent(tangent) {}
 };
 
 class MeshLoader;
