@@ -159,6 +159,7 @@
     <ClCompile Include="GameLogicServer.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Tower.cpp" />
     <ClCompile Include="WaveManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +174,7 @@
     <ClInclude Include="ServerGraphNode.h" />
     <ClInclude Include="ServerLoader.h" />
     <ClInclude Include="server_helper.h" />
+    <ClInclude Include="Tower.h" />
     <ClInclude Include="WaveManager.h" />
   </ItemGroup>
   <ItemGroup>
