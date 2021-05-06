@@ -24,7 +24,7 @@ class GameManager {
 
   static GameManager* getManager();
 
-  GameObject* Unmarshal(char* data);
+  GameObject* unmarshalInfo(char* data);
 
   void AddPlayer(int clientId);
 

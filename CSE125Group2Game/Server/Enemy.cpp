@@ -2,7 +2,7 @@
 
 #include "GameLogicServer.h"
 
-Enemy::Enemy(Transform* transform, char* name, int health)
+Enemy::Enemy(Transform* transform, std::string name, int health)
     : Moveable(transform, name, health, ObjectType::Enemy) {
   mIsModified = true;
 }
@@ -70,4 +70,14 @@ GameObject* Enemy::GetNearestPlayer() {
   }
 
   return mWorld[worldIndex];
+}
+
+std::string Enemy::makeName() {
+  if (enemysSpawned >= 10000) {
+    enemysSpawned = 0;
+  }
+
+  std::string name = GameObject::makeName("enem", enemysSpawned);
+  enemysSpawned++;
+  return name;
 }

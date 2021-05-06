@@ -21,8 +21,8 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   glfwSetWindowUserPointer(mWindow, this);
   mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
 
-  mScene.getByName("tree1")->getModel()->mMaterials[0].isRainbow = true;
-  mScene.getByName("tree1")->getModel()->mMaterials[1].isRainbow = true;
+  // mScene.getByName("tree1")->getModel()->mMaterials[0].isRainbow = true;
+  // mScene.getByName("tree1")->getModel()->mMaterials[1].isRainbow = true;
 
   mpRenderManager->setRenderBoundingBoxes(true);
 }
@@ -108,18 +108,20 @@ void GameManager::AddPlayer(int clientId) {
 
   mPlayerTransform = playerTransform;
 
-  std::string clientName = "play000";
-  clientName += std::to_string(clientId);
+  // std::string clientName = "play000";
+  // clientName += std::to_string(clientId);
+
+  std::string clientName = GameObject::makeName("play", clientId);
 
   GameObject* playerObject =
       new GameObject(playerTransform, (char*)clientName.c_str(), 10);
 
   // TODO: make camera a child of the player object in the scene graph
 
-  // Model* model =
-  // new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
-  // playerTransform, *mLoader);
-  Model* model = Model::Cube(playerTransform, *mLoader);
+  Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+                           playerTransform, *mLoader, mTLoader);
+  // mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
+  // Model* model = Model::Cube(playerTransform, *mLoader);
 
   SceneGraphNode* playerNode = mScene.addChild(playerObject, model);
 
@@ -137,17 +139,24 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Object does not exist, create it
   if (!foundNode) {
+    Transform* transform = new Transform(obj->getTransform()->getTranslation(),
+                                         obj->getTransform()->getRotation(),
+                                         obj->getTransform()->getScale());
     // std::cout << "creating new  object" << std::endl;
-    foundObject =
-        new GameObject(new Transform(obj->getTransform()->getTranslation(),
-                                     obj->getTransform()->getRotation(),
-                                     obj->getTransform()->getScale()),
-                       obj->getName(), obj->getHealth());
+    foundObject = new GameObject(transform, obj->getName(), obj->getHealth(),
+                                 obj->getObjectType());
 
     // TODO: if else for model based on enum (constructor adds itself as child
     // of parent)
-    foundNode = mScene.addChild(
-        foundObject, Model::Cube(foundObject->getTransform(), *mLoader));
+
+    Model* model = nullptr;
+    if (obj->isTower()) {
+      model = new Model(ASSET("models/towers/stonehenge/stonehenge.obj"),
+                        transform, *mLoader, mTLoader);
+    } else {
+      model = Model::Cube(foundObject->getTransform(), *mLoader);
+    }
+    foundNode = mScene.addChild(foundObject, model);
   }
 
   // Update object
@@ -166,7 +175,7 @@ void GameManager::UpdateObject(GameObject* obj) {
       obj->getTransform()->getTranslation());
 
   foundObject->getTransform()->setRotation(obj->getTransform()->getRotation());
-
+  // TODO ^^^ comment back in
   foundObject->getTransform()->setScale(obj->getTransform()->getScale());
 
   foundObject->setHealth(obj->getHealth());
@@ -188,7 +197,7 @@ SceneGraphNode* GameManager::findNode(GameObject* obj, SceneGraphNode* node) {
 
   return NULL;
 }
-GameObject* GameManager::Unmarshal(char* data) {
+GameObject* GameManager::unmarshalInfo(char* data) {
   // 1) 8 byte char[] name
   // 32 bit (4 byte) floats
   // 2) Transform: 3 floats for location, 3 for rotation, 3 for scale
@@ -210,12 +219,14 @@ GameObject* GameManager::Unmarshal(char* data) {
   tmpInfo += FLOAT_SIZE;
 
   // TODO: In unmarshling, euler angles -> quat
-  GLfloat xRot, yRot, zRot;
+  GLfloat xRot, yRot, zRot, wRot;
   memcpy(&xRot, tmpInfo, FLOAT_SIZE);
   tmpInfo += FLOAT_SIZE;
   memcpy(&yRot, tmpInfo, FLOAT_SIZE);
   tmpInfo += FLOAT_SIZE;
   memcpy(&zRot, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&wRot, tmpInfo, FLOAT_SIZE);
   tmpInfo += FLOAT_SIZE;
 
   GLfloat xScale, yScale, zScale;
@@ -238,12 +249,16 @@ GameObject* GameManager::Unmarshal(char* data) {
   memcpy(&zbb, tmpInfo, FLOAT_SIZE);
   tmpInfo += FLOAT_SIZE;
 
+  ObjectType type;
+  memcpy(&type, tmpInfo, TYPE_SIZE);
+  tmpInfo += TYPE_SIZE;
+
   Transform* transform = new Transform(
-      glm::vec3(xPos, yPos, zPos), glm::vec3(xRot, yRot, zRot),
+      glm::vec3(xPos, yPos, zPos), glm::quat(wRot, xRot, yRot, zRot),
       glm::vec3(xScale, yScale, zScale), glm::vec3(xbb, ybb, zbb));
 
   // TODO: should we add forward vector on client?
-  GameObject* obj = new GameObject(transform, name, health);
+  GameObject* obj = new GameObject(transform, name, health, type);
 
   return obj;
 }
