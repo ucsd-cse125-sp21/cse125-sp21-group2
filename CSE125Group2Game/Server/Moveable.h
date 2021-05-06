@@ -3,10 +3,10 @@
 
 class Moveable : public GameObject {
  public:
-  Moveable(Transform* transform, char* name, int health)
+  Moveable(Transform* transform, std::string name, int health)
       : GameObject(transform, name, health) {}
 
-  Moveable(Transform* transform, char* name, int health, ObjectType type)
+  Moveable(Transform* transform, std::string name, int health, ObjectType type)
       : GameObject(transform, name, health, type) {}
 
   void moveForward();

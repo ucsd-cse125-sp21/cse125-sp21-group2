@@ -6,6 +6,7 @@
 #include <string>
 #include <thread>
 
+#include "Player.h"
 #include "PriorityMutex.h"
 #include "ServerLoader.h"
 #include "msd/channel.hpp"
@@ -58,7 +59,8 @@ class GameLogicServer {
   msd::channel<char*> mSendingBuffer;  // Queue for storing events to send
   std::vector<char*> mTestBuffer;
 
-  GameObject* players[MAX_PLAYERS];
+  Player* players[MAX_PLAYERS];
+  GameObject* getCollidingObject(GameObject* obj);
 
  private:
   void resetKeyPresses();
@@ -69,12 +71,14 @@ class GameLogicServer {
   void updateEnemies();
   void updateTowers();
   void updateProjectiles();
-  GameObject* doesCollide(GameObject* obj);
   std::vector<glm::vec3> getCorners(GameObject* obj);
   std::vector<float> getMinMax(GameObject* obj);
   void deleteObject(int worldIndex);
   void printKeyPresses();
-
+  int getPlayerVerticalVelocity(int playerId);
+  int getPlayerHorizontalVelocity(int playerId);
+  void movePlayerToBoundary(Player* player);
+  void setPlayerVelocity(int playerId);
   std::vector<GameObject*> mWorld;
   ServerLoader mScene;
   uint16_t mTick_ms;

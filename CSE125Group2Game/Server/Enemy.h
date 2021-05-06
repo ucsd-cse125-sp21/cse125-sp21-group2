@@ -5,9 +5,11 @@ class Enemy : public Moveable {
  public:
   static int enemysSpawned;
 
-  Enemy(Transform* transform, char* name, int health);
+  Enemy(Transform* transform, std::string name, int health);
 
   void update();
+
+  static std::string makeName();
 
  private:
   GameObject* GetNearestPlayer();

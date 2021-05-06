@@ -6,9 +6,11 @@
 #include "GameLogicServer.h"
 
 int Projectile::mProjectilesSpawned = 0;
-unsigned long Projectile::mTickLastSpawn = 0;  //[MAX_PLAYERS] = {0, 0, 0, 0};
+std::unordered_map<std::string, unsigned long>
+    Projectile::mTickLastSpawn;  // todo: might wanna change to hashmap to map
+                                 // obj name to
 
-Projectile::Projectile(Transform* transform, char* name, int health,
+Projectile::Projectile(Transform* transform, std::string name, int health,
                        GameObject* parent)
     : Moveable(transform, name, health, ObjectType::Projectile) {
   mProjectileNextTick = 0;
@@ -25,18 +27,20 @@ void Projectile::calculatePath() {
 };
 
 void Projectile::spawnProjectile(GameObject* parent) {
-  if (GetTickCount() - Projectile::mTickLastSpawn < PROJ_SPAWN_RATE_MS) {
+  if (GetTickCount() - Projectile::mTickLastSpawn[parent->getName()] <
+      PROJ_SPAWN_RATE_MS) {
     return;
   }
 
-  Projectile::mTickLastSpawn = GetTickCount();  // update last spawn time
+  Projectile::mTickLastSpawn[parent->getName()] =
+      GetTickCount();  // update last spawn time
 
   // create projectile
   GameObject* projectile =
       new Projectile(new Transform(parent->getTransform()->getTranslation(),
                                    glm::vec3(0, 0, 0), glm::vec3(0.1, 0.1, 0.1),
                                    glm::vec3(0.05, 0.05, 0.05)),
-                     (char*)makeName().c_str(), 15, parent);
+                     Projectile::makeName(), 15, parent);
   // calculate path
   ((Projectile*)projectile)->calculatePath();
   // add to game world
@@ -49,7 +53,13 @@ void Projectile::spawnProjectile(GameObject* parent) {
 std::vector<glm::vec3> Projectile::getPath() { return mPath; }
 
 std::string Projectile::makeName() {
-  return GameObject::makeName("proj", mProjectilesSpawned++);
+  if (mProjectilesSpawned >= 10000) {
+    mProjectilesSpawned = 0;
+  }
+
+  std::string name = GameObject::makeName("proj", mProjectilesSpawned);
+  mProjectilesSpawned++;
+  return name;
 }
 
 void Projectile::update() {

@@ -108,18 +108,20 @@ void GameManager::AddPlayer(int clientId) {
 
   mPlayerTransform = playerTransform;
 
-  std::string clientName = "play000";
-  clientName += std::to_string(clientId);
+  // std::string clientName = "play000";
+  // clientName += std::to_string(clientId);
+
+  std::string clientName = GameObject::makeName("play", clientId);
 
   GameObject* playerObject =
       new GameObject(playerTransform, (char*)clientName.c_str(), 10);
 
   // TODO: make camera a child of the player object in the scene graph
 
-  // Model* model =
-  // new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
-  // playerTransform, *mLoader);
-  Model* model = Model::Cube(playerTransform, *mLoader);
+  Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+                           playerTransform, *mLoader, mTLoader);
+  // mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
+  // Model* model = Model::Cube(playerTransform, *mLoader);
 
   SceneGraphNode* playerNode = mScene.addChild(playerObject, model);
 
@@ -143,6 +145,11 @@ void GameManager::UpdateObject(GameObject* obj) {
                                      obj->getTransform()->getRotation(),
                                      obj->getTransform()->getScale()),
                        obj->getName(), obj->getHealth());
+    // TODO ^^^^ FIX IT
+    // foundObject = new GameObject(
+    //    new Transform(obj->getTransform()->getTranslation(), glm::vec3(0),
+    //                  obj->getTransform()->getScale()),
+    //    obj->getName(), obj->getHealth());
 
     // TODO: if else for model based on enum (constructor adds itself as child
     // of parent)
@@ -166,7 +173,7 @@ void GameManager::UpdateObject(GameObject* obj) {
       obj->getTransform()->getTranslation());
 
   foundObject->getTransform()->setRotation(obj->getTransform()->getRotation());
-
+  // TODO ^^^ comment back in
   foundObject->getTransform()->setScale(obj->getTransform()->getScale());
 
   foundObject->setHealth(obj->getHealth());
@@ -210,12 +217,14 @@ GameObject* GameManager::Unmarshal(char* data) {
   tmpInfo += FLOAT_SIZE;
 
   // TODO: In unmarshling, euler angles -> quat
-  GLfloat xRot, yRot, zRot;
+  GLfloat xRot, yRot, zRot, wRot;
   memcpy(&xRot, tmpInfo, FLOAT_SIZE);
   tmpInfo += FLOAT_SIZE;
   memcpy(&yRot, tmpInfo, FLOAT_SIZE);
   tmpInfo += FLOAT_SIZE;
   memcpy(&zRot, tmpInfo, FLOAT_SIZE);
+  tmpInfo += FLOAT_SIZE;
+  memcpy(&wRot, tmpInfo, FLOAT_SIZE);
   tmpInfo += FLOAT_SIZE;
 
   GLfloat xScale, yScale, zScale;
@@ -239,7 +248,7 @@ GameObject* GameManager::Unmarshal(char* data) {
   tmpInfo += FLOAT_SIZE;
 
   Transform* transform = new Transform(
-      glm::vec3(xPos, yPos, zPos), glm::vec3(xRot, yRot, zRot),
+      glm::vec3(xPos, yPos, zPos), glm::quat(wRot, xRot, yRot, zRot),
       glm::vec3(xScale, yScale, zScale), glm::vec3(xbb, ybb, zbb));
 
   // TODO: should we add forward vector on client?

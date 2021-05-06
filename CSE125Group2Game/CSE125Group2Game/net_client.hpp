@@ -104,6 +104,14 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
             // updatedObjects.insert(std::string(obj->getName()));
 
+            if (obj->getName() == "play0000") {
+              glm::vec3 angle =
+                  glm::eulerAngles(obj->getTransform()->getRotation());
+
+              std::cout << glm::degrees(angle.x) << " " << glm::degrees(angle.y)
+                        << " " << glm::degrees(angle.z) << std::endl;
+            }
+
             GameManager::getManager()->UpdateObject(obj);
 
             free(data);
