@@ -33,8 +33,10 @@ GameObject* Enemy::GetNearestPlayer() {
   GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
   float minDist = FLT_MAX;
-  int playerIndex = 0;
+  int worldIndex = 0;
+  /*
 
+ 
   for (int i = 0; i < MAX_PLAYERS; i++) {
     if (logicServer->players[i] == NULL) {
       continue;
@@ -49,7 +51,23 @@ GameObject* Enemy::GetNearestPlayer() {
       minDist = distance;
       playerIndex = i;
     }
+  } */
+
+  auto mWorld = logicServer->getWorld();
+
+  for (int i = 0; i < mWorld.size(); i++) {
+      if (mWorld[i]->isPlayer() || mWorld[i]->isTower()) {
+          if (mWorld[i] == NULL) {
+              continue;
+          }
+          glm::vec pos = mWorld[i]->getTransform()->getTranslation();
+          float distance = glm::length(pos - mTransform->getTranslation());
+          if (distance < minDist) {
+              minDist = distance;
+              worldIndex = i;
+          }
+      }
   }
 
-  return logicServer->players[playerIndex];
+  return mWorld[worldIndex];
 }

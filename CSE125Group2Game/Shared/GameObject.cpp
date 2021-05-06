@@ -60,6 +60,7 @@ std::string GameObject::makeName(std::string prefix, int count) {
 bool GameObject::isDefault() { return mObjectType == ObjectType::Default; }
 bool GameObject::isPlayer() { return mObjectType == ObjectType::Player; }
 bool GameObject::isEnemy() { return mObjectType == ObjectType::Enemy; }
+bool GameObject::isTower() { return mObjectType == ObjectType::Tower; }
 bool GameObject::isProjectile() {
   return mObjectType == ObjectType::Projectile;
 }
