@@ -127,9 +127,9 @@ void GameManager::AddPlayer(int clientId) {
 
   // attach the camera to the player
   Camera& camera = mScene.addCamera(playerNode);
-  camera.setPosition(glm::vec3(0, 0, 10.0f));
-  camera.setFacing(glm::vec3(0, 0, -1.0f));
-  camera.setUp(glm::vec3(0.0f, 1.0f, 0.0f));
+  camera.setPosition(glm::vec3(0, 10.0f, 0));
+  camera.setFacing(glm::vec3(0, 0, 0));
+  camera.setUp(glm::vec3(0.0f, 0, -1.0f));
 }
 
 void GameManager::UpdateObject(GameObject* obj) {

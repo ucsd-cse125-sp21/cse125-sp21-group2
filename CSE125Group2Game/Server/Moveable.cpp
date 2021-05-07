@@ -19,15 +19,12 @@ void Moveable::moveRight() {
 }
 
 void Moveable::move(glm::vec3 angle) {
-  if (glm::length(angle) == 0) {
-    return;
-  }
-  std::cout << "pivot rotation : " << mPivot->getRotation().x << " "
+  /*std::cout << "pivot rotation : " << mPivot->getRotation().x << " "
             << mPivot->getRotation().y << " " << mPivot->getRotation().z
             << std::endl;
 
   std::cout << "angle: " << angle.x << " " << angle.y << " " << angle.z
-            << std::endl;
+            << std::endl;*/
 
   mPivot->addRotation(angle);
 
@@ -45,32 +42,31 @@ void Moveable::move(glm::vec3 angle) {
   //          << " " << mPivot->getModel()[3][2] << " "
   //          << mPivot->getModel()[3][3] << std::endl;
 
-  glm::mat4 currModel = mTransform->getModel();
+  // glm::mat4 currModel = mTransform->getModel();
 
   // glm::mat4 newModel = currModel * mPivot->getModel();
-  // glm::mat4 currModel = glm::mat4(
-  //    glm::vec4(1, 0, 0, 0), glm::vec4(0, 1, 0, 0), glm::vec4(0, 0, 1, 0),
-  //    glm::vec4(mTransform->getTranslation().x,
-  //    mTransform->getTranslation().y,
-  //              mTransform->getTranslation().z, 1));
+  glm::mat4 currModel = glm::mat4(
+      glm::vec4(1, 0, 0, 0), glm::vec4(0, 1, 0, 0), glm::vec4(0, 0, 1, 0),
+      glm::vec4(mTransform->getTranslation().x, mTransform->getTranslation().y,
+                mTransform->getTranslation().z, 1));
   // glm::mat4 newModel = mPivot->getModel() * glm::inverse(currModel);
   // glm::mat4 newModel =
   //    glm::transpose(mPivot->getModel()) * glm::transpose(currModel);
   // glm::mat4 newModel = mPivot->getModel() * glm::transpose(currModel);
   glm::mat4 newModel = glm::transpose(mPivot->getModel()) * currModel;
 
-  std::cout << "old: " << mTransform->getTranslation().x << " "
+  /*std::cout << "old: " << mTransform->getTranslation().x << " "
             << mTransform->getTranslation().y << " "
             << mTransform->getTranslation().z << std::endl;
 
   std::cout << "new model " << newModel[3][0] << " " << newModel[3][1] << " "
-            << newModel[3][2] << std::endl;
+            << newModel[3][2] << std::endl;*/
   glm::vec3 newPos(newModel * glm::vec4(0, 0, 0, 1));
   // glm::vec3 newPos(glm::vec4(0, 0, 0, 1) * newModel);
 
-  std::cout << "new: " << mTransform->getTranslation().x << " "
+  /*std::cout << "new: " << mTransform->getTranslation().x << " "
             << mTransform->getTranslation().y << " "
-            << mTransform->getTranslation().z << std::endl;
+            << mTransform->getTranslation().z << std::endl;*/
 
   mTransform->setTranslation(newPos);
 }

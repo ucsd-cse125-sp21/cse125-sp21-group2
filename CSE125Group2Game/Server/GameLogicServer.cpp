@@ -510,15 +510,15 @@ void GameLogicServer::updatePlayerPosition(int playerId) {
   int vsp = getVerticalInput(playerId);
   int hsp = getHorizontalInput(playerId);
 
-  glm::vec3 velocity(hsp, vsp, 0);
+  glm::vec3 velocity(vsp, hsp, 0);
 
   if (hsp != 0 || vsp != 0) {
+    std::cout << vsp << std::endl;
     velocity = players[playerId]->getRotationSpeed() * glm::normalize(velocity);
+    players[playerId]->move(velocity);
   }
 
   // players[playerId]->setVelocity(velocity);
-
-  players[playerId]->move(velocity);
 }
 
 int GameLogicServer::getVerticalInput(int playerId) {
