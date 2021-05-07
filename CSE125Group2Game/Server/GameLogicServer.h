@@ -75,10 +75,10 @@ class GameLogicServer {
   std::vector<float> getMinMax(GameObject* obj);
   void deleteObject(int worldIndex);
   void printKeyPresses();
-  int getPlayerVerticalVelocity(int playerId);
-  int getPlayerHorizontalVelocity(int playerId);
+  int getVerticalInput(int playerId);
+  int getHorizontalInput(int playerId);
   void movePlayerToBoundary(Player* player);
-  void setPlayerVelocity(int playerId);
+  void updatePlayerPosition(int playerId);
   std::vector<GameObject*> mWorld;
   ServerLoader mScene;
   uint16_t mTick_ms;

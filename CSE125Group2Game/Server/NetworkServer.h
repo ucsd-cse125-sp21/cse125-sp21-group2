@@ -80,7 +80,7 @@ bool NetworkServer::OnClientConnect(
   GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
   Transform* transform =
-      new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1),
+      new Transform(glm::vec3(0, 13, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1),
                     glm::vec3(0.5, 0.5, 0.5));
   // transform->addRotation(glm::vec3(0, 270, 0));
 

@@ -21,9 +21,11 @@ class Moveable : public GameObject {
 
   glm::vec3 getWorldPositionFromPivot(glm::vec3 modelPos);
 
- private:
+  glm::vec3 getRotationSpeed();
+
+ protected:
   // Can rotate at 5 degrees per tick
-  glm::vec3 rotationSpeed = glm::vec3(5);
+  glm::vec3 mRotationSpeed = glm::vec3(0.5);
 
   Transform* mPivot = new Transform(glm::vec3(0), glm::vec3(0), glm::vec3(1));
 };

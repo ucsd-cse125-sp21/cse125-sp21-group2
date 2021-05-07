@@ -186,12 +186,12 @@ void GameLogicServer::updatePlayers() {
 }
 
 void GameLogicServer::handlePlayerCollision(int playerIndex) {
-  setPlayerVelocity(playerIndex);
+  updatePlayerPosition(playerIndex);
 
   Player* player = players[playerIndex];
 
   // Collision detection
-  player->addTranslation(player->getVelocity());
+  // player->/*addTranslation*/ (player->getVelocity());
 
   GameObject* collidedObj = getCollidingObject(player);
   if (!collidedObj) {
@@ -205,7 +205,7 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
   if (collidedObj->isEnemy()) {
     collidedObj->setHealth(0);
   } else if (collidedObj->isDefault()) {
-    movePlayerToBoundary(player);
+    // movePlayerToBoundary(player);
   }
 }
 
@@ -506,24 +506,26 @@ void GameLogicServer::printKeyPresses() {
   }
 }
 
-void GameLogicServer::setPlayerVelocity(int playerId) {
-  int vsp = getPlayerVerticalVelocity(playerId);
-  int hsp = getPlayerHorizontalVelocity(playerId);
+void GameLogicServer::updatePlayerPosition(int playerId) {
+  int vsp = getVerticalInput(playerId);
+  int hsp = getHorizontalInput(playerId);
 
   glm::vec3 velocity(hsp, vsp, 0);
 
   if (hsp != 0 || vsp != 0) {
-    velocity = glm::vec3(0.4) * glm::normalize(velocity);
+    velocity = players[playerId]->getRotationSpeed() * glm::normalize(velocity);
   }
 
-  players[playerId]->setVelocity(velocity);
+  // players[playerId]->setVelocity(velocity);
+
+  players[playerId]->move(velocity);
 }
 
-int GameLogicServer::getPlayerVerticalVelocity(int playerId) {
+int GameLogicServer::getVerticalInput(int playerId) {
   return mKeyPresses[playerId][GameObject::FORWARD] -
          mKeyPresses[playerId][GameObject::BACKWARD];
 }
-int GameLogicServer::getPlayerHorizontalVelocity(int playerId) {
+int GameLogicServer::getHorizontalInput(int playerId) {
   return mKeyPresses[playerId][GameObject::RIGHT] -
          mKeyPresses[playerId][GameObject::LEFT];
 }
