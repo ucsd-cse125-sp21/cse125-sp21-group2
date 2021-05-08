@@ -141,8 +141,12 @@ void GameManager::UpdateObject(GameObject* obj) {
   if (!foundNode) {
     Transform* transform = new Transform(obj->getTransform()->getTranslation(),
                                          obj->getTransform()->getRotation(),
-                                         obj->getTransform()->getScale());
+                                         obj->getTransform()->getScale(),
+                                         obj->getTransform()->getBBox());
+
+    transform->setModel(obj->getTransform()->getModel());
     // std::cout << "creating new  object" << std::endl;
+
     foundObject = new GameObject(transform, obj->getName(), obj->getHealth(),
                                  obj->getObjectType());
 
@@ -171,12 +175,15 @@ void GameManager::UpdateObject(GameObject* obj) {
   }
 
   // Set found objects position, rotation, scale, and health to passed in obj
-  foundObject->getTransform()->setTranslation(
-      obj->getTransform()->getTranslation());
+  // foundObject->getTransform()->setTranslation(
+  //    obj->getTransform()->getTranslation());
 
-  foundObject->getTransform()->setRotation(obj->getTransform()->getRotation());
-  // TODO ^^^ comment back in
-  foundObject->getTransform()->setScale(obj->getTransform()->getScale());
+  // foundObject->getTransform()->setRotation(obj->getTransform()->getRotation());
+  //// TODO ^^^ comment back in
+  // foundObject->getTransform()->setScale(obj->getTransform()->getScale());
+  // foundObject->getTransform()->setScale(obj->getTransform()->getScale());
+
+  foundObject->getTransform()->setModel(obj->getTransform()->getModel());
 
   foundObject->setHealth(obj->getHealth());
   return;
@@ -210,32 +217,41 @@ GameObject* GameManager::unmarshalInfo(char* data) {
   memcpy(name, tmpInfo, NAME_LEN);  // Copy name into data
   tmpInfo += NAME_LEN;
 
-  GLfloat xPos, yPos, zPos;
-  memcpy(&xPos, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&yPos, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&zPos, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
+  // GLfloat xPos, yPos, zPos;
+  // memcpy(&xPos, tmpInfo, FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(&yPos, tmpInfo, FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(&zPos, tmpInfo, FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
 
-  // TODO: In unmarshling, euler angles -> quat
-  GLfloat xRot, yRot, zRot, wRot;
-  memcpy(&xRot, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&yRot, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&zRot, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&wRot, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
+  //// TODO: In unmarshling, euler angles -> quat
+  // GLfloat xRot, yRot, zRot, wRot;
+  // memcpy(&xRot, tmpInfo, FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(&yRot, tmpInfo, FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(&zRot, tmpInfo, FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(&wRot, tmpInfo, FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
 
-  GLfloat xScale, yScale, zScale;
-  memcpy(&xScale, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&yScale, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&zScale, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
+  // GLfloat xScale, yScale, zScale;
+  // memcpy(&xScale, tmpInfo, FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(&yScale, tmpInfo, FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(&zScale, tmpInfo, FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+
+  glm::mat4 model;
+
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      memcpy(&(model[j][i]), tmpInfo, FLOAT_SIZE);
+      tmpInfo += FLOAT_SIZE;
+    }
+  }
 
   int health;
   memcpy(&health, tmpInfo, INT_SIZE);
@@ -253,10 +269,11 @@ GameObject* GameManager::unmarshalInfo(char* data) {
   memcpy(&type, tmpInfo, TYPE_SIZE);
   tmpInfo += TYPE_SIZE;
 
-  Transform* transform = new Transform(
-      glm::vec3(xPos, yPos, zPos), glm::quat(wRot, xRot, yRot, zRot),
-      glm::vec3(xScale, yScale, zScale), glm::vec3(xbb, ybb, zbb));
+  // TODO maybe we should send over actual values in addition to the matrix
+  Transform* transform = new Transform(glm::vec3(0), glm::vec3(0), glm::vec3(0),
+                                       glm::vec3(xbb, ybb, zbb));
 
+  transform->setModel(model);
   // TODO: should we add forward vector on client?
   GameObject* obj = new GameObject(transform, name, health, type);
 

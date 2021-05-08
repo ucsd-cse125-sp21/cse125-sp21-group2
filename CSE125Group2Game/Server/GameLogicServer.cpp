@@ -439,37 +439,52 @@ char* GameLogicServer::marshalInfo(GameObject* obj) {
 
   tmpInfo += NAME_LEN;
 
-  glm::vec3 pos = obj->getTransform()->getTranslation();
-  memcpy(tmpInfo, &(pos.x), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(pos.y), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(pos.z), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
+  // glm::vec3 pos = obj->getTransform()->getTranslation();
+  // memcpy(tmpInfo, &(pos.x), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(tmpInfo, &(pos.y), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(tmpInfo, &(pos.z), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
 
-  // TODO: In unmarshling, euler angles -> quat
-  // glm::vec3 rot = glm::eulerAngles(obj->getTransform()->getRotation());
-  // std::cout << "in server " << rot.x << " " << rot.y << " " << rot.z
-  //          << std::endl;
+  //// TODO: In unmarshling, euler angles -> quat
+  //// glm::vec3 rot = glm::eulerAngles(obj->getTransform()->getRotation());
+  //// std::cout << "in server " << rot.x << " " << rot.y << " " << rot.z
+  ////          << std::endl;
 
-  glm::quat rot = obj->getTransform()->getRotation();
+  // glm::quat rot = obj->getTransform()->getRotation();
 
-  memcpy(tmpInfo, &(rot.x), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(rot.y), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(rot.z), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(rot.w), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
+  // memcpy(tmpInfo, &(rot.x), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(tmpInfo, &(rot.y), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(tmpInfo, &(rot.z), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(tmpInfo, &(rot.w), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
 
-  glm::vec3 scale = obj->getTransform()->getScale();
-  memcpy(tmpInfo, &(scale.x), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(scale.y), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(scale.z), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
+  // glm::vec3 scale = obj->getTransform()->getScale();
+  // memcpy(tmpInfo, &(scale.x), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(tmpInfo, &(scale.y), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(tmpInfo, &(scale.z), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+
+  glm::mat4 model = obj->getTransform()->getModel();
+  // memcpy(tmpInfo, &(scale.x), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(tmpInfo, &(scale.y), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+  // memcpy(tmpInfo, &(scale.z), FLOAT_SIZE);
+  // tmpInfo += FLOAT_SIZE;
+
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      memcpy(tmpInfo, &(model[j][i]), FLOAT_SIZE);
+      tmpInfo += FLOAT_SIZE;
+    }
+  }
 
   int health = obj->getHealth();
   memcpy(tmpInfo, &(health), INT_SIZE);
