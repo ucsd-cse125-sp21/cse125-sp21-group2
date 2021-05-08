@@ -87,7 +87,7 @@ GameLogicServer* GameLogicServer::getLogicServer() {
     } else {
       tower_count = std::stoi(str_tower);
     }
-    Tower::spawn(tower_count);
+    // Tower::spawn(tower_count);
     std::cout << "Spawning " << tower_count << " towers." << std::endl;
   }
   return mLogicServer;

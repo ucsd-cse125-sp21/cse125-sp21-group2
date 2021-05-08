@@ -42,18 +42,19 @@ void Moveable::move(glm::vec3 angle) {
   //          << " " << mPivot->getModel()[3][2] << " "
   //          << mPivot->getModel()[3][3] << std::endl;
 
-  // glm::mat4 currModel = mTransform->getModel();
+  // Childs model
+  glm::mat4 currModel = mModelTransform->getModel();
 
   // glm::mat4 newModel = currModel * mPivot->getModel();
-  glm::mat4 currModel = glm::mat4(
+  /*glm::mat4 currModel = glm::mat4(
       glm::vec4(1, 0, 0, 0), glm::vec4(0, 1, 0, 0), glm::vec4(0, 0, 1, 0),
       glm::vec4(mTransform->getTranslation().x, mTransform->getTranslation().y,
-                mTransform->getTranslation().z, 1));
+                mTransform->getTranslation().z, 1));*/
   // glm::mat4 newModel = mPivot->getModel() * glm::inverse(currModel);
   // glm::mat4 newModel =
   //    glm::transpose(mPivot->getModel()) * glm::transpose(currModel);
   // glm::mat4 newModel = mPivot->getModel() * glm::transpose(currModel);
-  glm::mat4 newModel = glm::transpose(mPivot->getModel()) * currModel;
+  glm::mat4 newModel = mPivot->getModel() * currModel;
 
   /*std::cout << "old: " << mTransform->getTranslation().x << " "
             << mTransform->getTranslation().y << " "
@@ -68,6 +69,7 @@ void Moveable::move(glm::vec3 angle) {
             << mTransform->getTranslation().y << " "
             << mTransform->getTranslation().z << std::endl;*/
 
+  // Need a model cord transform, and a world cord transform which is in mWorld
   mTransform->setTranslation(newPos);
 }
 

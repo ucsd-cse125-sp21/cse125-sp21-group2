@@ -71,6 +71,13 @@ void GameManager::Update() {
   CustomClient c;
   c.Init(host, port);
 
+  GameObject* cube2Obj = new GameObject(
+      new Transform(glm::vec3(0, 3, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)),
+      "cube2", 10);
+  SceneGraphNode* cube2 =
+      mScene.addChild(cube2Obj, Model::Cube(cube2Obj->getTransform(), *mLoader),
+                      mScene.getByName("cube1"));
+
   while (!glfwWindowShouldClose(mWindow)) {
     // 1) Update local states (use key logger to update gameobject)
 
@@ -82,6 +89,9 @@ void GameManager::Update() {
     keysPressed[GameObject::BACKWARD] = glfwGetKey(mWindow, BACKWARD_KEY);
     keysPressed[GameObject::RIGHT] = glfwGetKey(mWindow, RIGHT_KEY);
     keysPressed[GameObject::SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
+
+    mScene.getByName("cube1")->getObject()->getTransform()->addRotation(
+        glm::vec3(0, 0, 1));
 
     // 2) Call client update
     if (c.Update(keysPressed)) {
