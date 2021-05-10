@@ -46,8 +46,12 @@ void Moveable::move(glm::vec3 angle) {
 
   // Need a model cord transform, and a world cord transform which is in mWorld
 
-  mTransform->setModel(mPivot->getModel());
-  // mTransform->setTranslation(newPos);
+  glm::mat4 finalModel = mPivot->getModel();
+  finalModel[3][0] = newPos.x;
+  finalModel[3][1] = newPos.y;
+  finalModel[3][2] = newPos.z;
+
+  mTransform->setModel(finalModel);
 }
 
 // glm::vec3 Moveable ::getWorldPositionFromPivot(glm::vec3 modelPos) {
