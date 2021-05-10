@@ -525,7 +525,7 @@ void GameLogicServer::updatePlayerPosition(int playerId) {
   int vsp = getVerticalInput(playerId);
   int hsp = getHorizontalInput(playerId);
 
-  glm::vec3 velocity(vsp, 0, hsp);
+  glm::vec3 velocity(vsp, hsp, 0);
 
   if (hsp != 0 || vsp != 0) {
     std::cout << vsp << std::endl;

@@ -23,6 +23,8 @@ class Moveable : public GameObject {
 
   glm::vec3 getRotationSpeed();
 
+  glm::mat3 rotate(const float degrees, const glm::vec3& axis);
+
  protected:
   // Can rotate at 5 degrees per tick
   glm::vec3 mRotationSpeed = glm::vec3(-10);
@@ -30,5 +32,11 @@ class Moveable : public GameObject {
   Transform* mPivot = new Transform(glm::vec3(0), glm::vec3(0), glm::vec3(1));
 
   Transform* mModelTransform =
-      new Transform(glm::vec3(0, 13, 0), glm::vec3(0), glm::vec3(1));
+      new Transform(glm::vec3(0, 26, 0), glm::vec3(0), glm::vec3(1));
+
+  // TODO: pick good values
+  Transform* forwardTransform =
+      new Transform(glm::vec3(0, 26, -.1), glm::vec3(0), glm::vec3(1));
+
+  glm::vec3 forwardVec = glm::vec3(0, 0, -1);
 };
