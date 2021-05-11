@@ -1,5 +1,6 @@
 ﻿#include "Moveable.h"
 
+#include <glm/gtx/euler_angles.hpp>
 #include <iostream>
 
 void Moveable::moveForward() {
@@ -18,15 +19,7 @@ void Moveable::moveRight() {
   mPivot->addRotation(glm::vec3(0, 0, -mRotationSpeed.z));
 }
 
-#include <glm/gtx/euler_angles.hpp>
-
 void Moveable::move(glm::vec3 angle) {
-  /*std::cout << "pivot rotation : " << mPivot->getRotation().x << " "
-            << mPivot->getRotation().y << " " << mPivot->getRotation().z
-            << std::endl;
-
-  std::cout << "angle: " << angle.x << " " << angle.y << " " << angle.z
-            << std::endl;*/
   mPivot->setModel(mPivot->getModel() * glm::eulerAngleXYZ(angle.x / 100,
                                                            angle.y / 100,
                                                            angle.z / 100));
@@ -51,6 +44,10 @@ void Moveable::move(glm::vec3 angle) {
   finalModel[3][1] = newPos.y;
   finalModel[3][2] = newPos.z;
 
+  // Hack to fix component translation
+  mTransform->setTranslation(newPos);
+
+  // DO NOT REMOVE
   mTransform->setModel(finalModel);
 }
 
