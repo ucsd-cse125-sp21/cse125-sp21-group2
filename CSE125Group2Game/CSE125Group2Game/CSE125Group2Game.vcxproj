@@ -175,6 +175,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shared\scene.json" />
+    <None Include="bump_frag.glsl" />
+    <None Include="bump_vert.glsl" />
     <None Include="color_frag.glsl" />
     <None Include="normal_frag.glsl" />
     <None Include="normal_vert.glsl" />
@@ -194,12 +196,12 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Material.h" />
-    <ClInclude Include="Mesh.h" />
     <ClInclude Include="net_client.hpp" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="SceneGraphNode.h" />
     <ClInclude Include="SceneLoader.h" />
+    <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />
