@@ -79,14 +79,8 @@ bool NetworkServer::OnClientConnect(
 
   GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
-  Transform* transform =
-      new Transform(glm::vec3(0, 26, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1),
-                    glm::vec3(0.5, 0.5, 0.5));
-  // transform->addRotation(glm::vec3(0, 270, 0));
-
-  // Assign incoming player a unique ID
-  // string clientId = "play000";
-  // clientId += to_string(numPlayers);
+  Transform* transform = new Transform(glm::vec3(0, RADIUS, 0), glm::vec3(0),
+                                       glm::vec3(.25), glm::vec3(0.5 * .5));
 
   Player* newPlayer =
       new Player(transform, Player::makeName(numPlayers), 10, numPlayers);

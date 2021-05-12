@@ -4,10 +4,24 @@
 class Moveable : public GameObject {
  public:
   Moveable(Transform* transform, std::string name, int health)
-      : GameObject(transform, name, health) {}
+      : GameObject(transform, name, health) {
+    mPivot = new Transform(glm::vec3(0), transform->getRotation(),
+                           transform->getScale());
+
+    mModelTransform =
+        new Transform(transform->getTranslation() / transform->getScale(),
+                      glm::vec3(0), glm::vec3(1));
+  }
 
   Moveable(Transform* transform, std::string name, int health, ObjectType type)
-      : GameObject(transform, name, health, type) {}
+      : GameObject(transform, name, health, type) {
+    mPivot = new Transform(glm::vec3(0), transform->getRotation(),
+                           transform->getScale());
+
+    mModelTransform =
+        new Transform(transform->getTranslation() / transform->getScale(),
+                      glm::vec3(0), glm::vec3(1));
+  }
 
   void moveForward();
 
@@ -29,14 +43,7 @@ class Moveable : public GameObject {
   // Can rotate at 5 degrees per tick
   glm::vec3 mRotationSpeed = glm::vec3(-10);
 
-  Transform* mPivot = new Transform(glm::vec3(0), glm::vec3(0), glm::vec3(1));
+  Transform* mPivot;
 
-  Transform* mModelTransform =
-      new Transform(glm::vec3(0, 26, 0), glm::vec3(0), glm::vec3(1));
-
-  // TODO: pick good values
-  Transform* forwardTransform =
-      new Transform(glm::vec3(0, 26, -.1), glm::vec3(0), glm::vec3(1));
-
-  glm::vec3 forwardVec = glm::vec3(0, 0, -1);
+  Transform* mModelTransform;
 };

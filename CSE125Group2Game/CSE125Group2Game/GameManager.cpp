@@ -167,6 +167,9 @@ void GameManager::UpdateObject(GameObject* obj) {
     if (obj->isTower()) {
       model = new Model(ASSET("models/towers/stonehenge/stonehenge.obj"),
                         transform, *mLoader, mTLoader);
+    } else if (obj->isEnemy()) {
+      model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+                        transform, *mLoader, mTLoader);
     } else {
       model = Model::Cube(foundObject->getTransform(), *mLoader);
     }

@@ -528,7 +528,6 @@ void GameLogicServer::updatePlayerPosition(int playerId) {
   glm::vec3 velocity(vsp, hsp, 0);
 
   if (hsp != 0 || vsp != 0) {
-    std::cout << vsp << std::endl;
     velocity = players[playerId]->getRotationSpeed() * glm::normalize(velocity);
     players[playerId]->move(velocity);
   }
