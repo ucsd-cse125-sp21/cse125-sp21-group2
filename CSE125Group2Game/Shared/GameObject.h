@@ -16,6 +16,8 @@ enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile, Tower };
 #define MESSAGE_SIZE NAME_LEN + (19 * FLOAT_SIZE) + INT_SIZE + TYPE_SIZE
 #define MAX_PLAYERS 4
 
+#define RADIUS 30
+
 class GameObject {
  public:
   static const int FORWARD = 0;

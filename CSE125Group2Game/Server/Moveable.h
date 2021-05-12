@@ -5,22 +5,22 @@ class Moveable : public GameObject {
  public:
   Moveable(Transform* transform, std::string name, int health)
       : GameObject(transform, name, health) {
-    mPivot =
-        new Transform(glm::vec3(0), transform->getRotation(), glm::vec3(1));
+    mPivot = new Transform(glm::vec3(0), transform->getRotation(),
+                           transform->getScale());
 
     mModelTransform =
-        new Transform(transform->getTranslation(), glm::vec3(0), glm::vec3(1));
+        new Transform(transform->getTranslation() / transform->getScale(),
+                      glm::vec3(0), glm::vec3(1));
   }
 
   Moveable(Transform* transform, std::string name, int health, ObjectType type)
       : GameObject(transform, name, health, type) {
-    // TODO: Change 26 to radius
-
-    mPivot =
-        new Transform(glm::vec3(0), transform->getRotation(), glm::vec3(1));
+    mPivot = new Transform(glm::vec3(0), transform->getRotation(),
+                           transform->getScale());
 
     mModelTransform =
-        new Transform(transform->getTranslation(), glm::vec3(0), glm::vec3(1));
+        new Transform(transform->getTranslation() / transform->getScale(),
+                      glm::vec3(0), glm::vec3(1));
   }
 
   void moveForward();

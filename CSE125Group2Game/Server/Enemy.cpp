@@ -57,8 +57,6 @@ void Enemy::update() {
     float distance =
         glm::length(newPos - nearestPlayer->getTransform()->getTranslation());
 
-    std::cout << "Distance: " << distance << std::endl;
-
     if (distance < minDistance) {
       minDistance = distance;
       bestAngle = glm::radians(i);
@@ -69,16 +67,7 @@ void Enemy::update() {
     mTransform->setModel(currentActualModel);
   }
 
-  std::cout << bestAngle << std::endl;
-
   move(glm::vec3(0, bestAngle * 100, 4));
-
-  /*mMoveDirection =
-      glm::normalize(nearestPlayer->getTransform()->getTranslation() -
-                     mTransform->getTranslation());*/
-
-  // mTransform->addTranslation(mMoveDirection * mMoveSpeed);
-  // std::cout << mTransform->getTranslation().x << std::endl;
 }
 
 GameObject* Enemy::GetNearestPlayer() {

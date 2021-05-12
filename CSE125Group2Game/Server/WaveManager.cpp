@@ -38,9 +38,10 @@ void WaveManager::update() {
 void WaveManager::startWave() {
   // TODO????: random enemy spawns would be dope
   for (int i = 0; i < mMaxWaveSize; i++) {
-    Enemy* enemy = new Enemy(new Transform(glm::vec3(0, -26, 0), glm::vec3(0),
-                                           glm::vec3(1), glm::vec3(0.5)),
-                             Enemy::makeName(), 10);
+    Enemy* enemy =
+        new Enemy(new Transform(glm::vec3(0, -RADIUS, 0), glm::vec3(0),
+                                glm::vec3(.25), glm::vec3(0.5)),
+                  Enemy::makeName(), 10);
 
     mWaveEnemies.push_back(enemy);
   }
