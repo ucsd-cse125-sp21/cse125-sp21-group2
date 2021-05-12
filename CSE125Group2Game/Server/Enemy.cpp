@@ -31,46 +31,53 @@ void Enemy::update() {
   // 4) call move() to rotate on the y axis the rotation from 3
   // 5) call move() to rotate forward on the x axis speed degrees per tick
 
-  float step = 22.5;
+  /*glm::vec3 A = glm::normalize(nearestPlayer->getTransform()->getTranslation()
+  - mTransform->getTranslation());
 
-  glm::mat4 currentModel = mTransform->getModel();
+  const glm::mat4 inverted = glm::inverse(mTransform->getModel());
+  const glm::vec3 forward = normalize(glm::vec3(inverted[2]));
+
+  float rotationAngle = glm::acos(glm::dot(A, forward));
+
+  move(glm::vec3(4, glm::degrees(rotationAngle) * 100, 0));
+  return;*/
+
+  glm::mat4 currentPivotModel = mPivot->getModel();
+  glm::mat4 currentActualModel = mTransform->getModel();
   glm::vec3 currentPos = mTransform->getTranslation();
 
-  float minLength = FLT_MAX;
-  float angle;
-  // optimization, if dot is negative only try obtuse angles
-  for (float i = 0; i < 360; i += step) {
-    // std::cout << minLength << " " << i << std::endl;
+  float minDistance = FLT_MAX;
+  float bestAngle;
 
-    // move towards
-    glm::mat4 tmpPivotModel =
-        mPivot->getModel() * glm::eulerAngleXYZ(.1f, glm::radians(i), 0.0f);
-    glm::mat4 newModel = tmpPivotModel * mModelTransform->getModel();
-    glm::vec3 newPos(newModel * glm::vec4(0, 0, 0, 1));
+  for (float i = 0; i < 360; i += 22.5) {
+    move(glm::vec3(0, glm::radians(i) * 100, 4));
 
-    // get length
-    float towardsLength =
-        glm::length(nearestPlayer->getTransform()->getTranslation() - newPos);
-    std::cout << "Towards" << towardsLength << std::endl;
-    std::cout << "Current min" << minLength << std::endl;
+    glm::vec3 newPos = mTransform->getTranslation();
 
-    if (towardsLength < minLength) {
-      minLength = towardsLength;
-      angle = glm::radians(i);
+    float distance =
+        glm::length(newPos - nearestPlayer->getTransform()->getTranslation());
+
+    std::cout << "Distance: " << distance << std::endl;
+
+    if (distance < minDistance) {
+      minDistance = distance;
+      bestAngle = glm::radians(i);
     }
+
+    mPivot->setModel(currentPivotModel);
+    mTransform->setTranslation(currentPos);
+    mTransform->setModel(currentActualModel);
   }
 
-  move(glm::vec3(0.1f, angle, 0));
+  std::cout << bestAngle << std::endl;
 
-  /*std::cout << mTransform->getTranslation().x << " "
-            << mTransform->getTranslation().y << " "
-            << mTransform->getTranslation().z << std::endl;*/
+  move(glm::vec3(0, bestAngle * 100, 4));
 
   /*mMoveDirection =
       glm::normalize(nearestPlayer->getTransform()->getTranslation() -
-                     mTransform->getTranslation());
+                     mTransform->getTranslation());*/
 
-  mTransform->addTranslation(mMoveDirection * mMoveSpeed);*/
+  // mTransform->addTranslation(mMoveDirection * mMoveSpeed);
   // std::cout << mTransform->getTranslation().x << std::endl;
 }
 
@@ -79,24 +86,6 @@ GameObject* Enemy::GetNearestPlayer() {
 
   float minDist = FLT_MAX;
   int worldIndex = 0;
-  /*
-
-
-  for (int i = 0; i < MAX_PLAYERS; i++) {
-    if (logicServer->players[i] == NULL) {
-      continue;
-    }
-
-    glm::vec3 playerPos =
-        logicServer->players[i]->getTransform()->getTranslation();
-
-    float distance = glm::length(playerPos - mTransform->getTranslation());
-
-    if (distance < minDist) {
-      minDist = distance;
-      playerIndex = i;
-    }
-  } */
 
   auto mWorld = logicServer->getWorld();
 
