@@ -7,6 +7,9 @@ class Moveable : public GameObject {
       : GameObject(transform, name, health) {
     mPivot =
         new Transform(glm::vec3(0), transform->getRotation(), glm::vec3(1));
+
+    mModelTransform =
+        new Transform(transform->getTranslation(), glm::vec3(0), glm::vec3(1));
   }
 
   Moveable(Transform* transform, std::string name, int health, ObjectType type)
@@ -15,6 +18,9 @@ class Moveable : public GameObject {
 
     mPivot =
         new Transform(glm::vec3(0), transform->getRotation(), glm::vec3(1));
+
+    mModelTransform =
+        new Transform(transform->getTranslation(), glm::vec3(0), glm::vec3(1));
   }
 
   void moveForward();
@@ -39,6 +45,5 @@ class Moveable : public GameObject {
 
   Transform* mPivot;
 
-  Transform* mModelTransform =
-      new Transform(glm::vec3(0, 26, 0), glm::vec3(0), glm::vec3(1));
+  Transform* mModelTransform;
 };
