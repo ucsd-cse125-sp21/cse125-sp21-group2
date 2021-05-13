@@ -6,6 +6,7 @@
 #include <string>
 #include <thread>
 
+#include "Player.h"
 #include "PriorityMutex.h"
 #include "ServerLoader.h"
 #include "msd/channel.hpp"
@@ -18,17 +19,6 @@
   mtx.lock(true);  // acquire 'priority lock'
   std::unique_lock<decltype(mtx)> lk(mtx, std::adopt_lock);
   lk.unlock();*/
-
-// struct Vertices {
-//  glm::vec3 bottomLeftBack;
-//  glm::vec3 bottomRightBack;
-//  glm::vec3 topLeftBack;
-//  glm::vec3 topRightBack;
-//  glm::vec3 bottomLeftFront;
-//  glm::vec3 bottomRightFront;
-//  glm::vec3 topLeftFront;
-//  glm::vec3 topRightFront;
-//};
 
 #define MIN_X 0
 #define MIN_Y 1
@@ -58,7 +48,8 @@ class GameLogicServer {
   msd::channel<char*> mSendingBuffer;  // Queue for storing events to send
   std::vector<char*> mTestBuffer;
 
-  GameObject* players[MAX_PLAYERS];
+  Player* players[MAX_PLAYERS];
+  GameObject* getCollidingObject(GameObject* obj);
 
  private:
   void resetKeyPresses();
@@ -67,13 +58,16 @@ class GameLogicServer {
   void updatePlayers();
   void handlePlayerCollision(int playerIndex);
   void updateEnemies();
+  void updateTowers();
   void updateProjectiles();
-  GameObject* doesCollide(GameObject* obj);
   std::vector<glm::vec3> getCorners(GameObject* obj);
   std::vector<float> getMinMax(GameObject* obj);
   void deleteObject(int worldIndex);
   void printKeyPresses();
-
+  int getVerticalInput(int playerId);
+  int getHorizontalInput(int playerId);
+  void movePlayerToBoundary(Player* player);
+  void updatePlayerPosition(int playerId);
   std::vector<GameObject*> mWorld;
   ServerLoader mScene;
   uint16_t mTick_ms;

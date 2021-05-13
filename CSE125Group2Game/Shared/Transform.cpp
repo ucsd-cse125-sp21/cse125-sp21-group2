@@ -79,6 +79,10 @@ void Transform::setModel(glm::mat4 model) { mModel = model; }
 
 glm::vec3 Transform::getTranslation() { return mTranslation; }
 
+glm::vec3 Transform::getModelTranslation() {
+  return glm::vec3(mModel[3][0], mModel[3][1], mModel[3][2]);
+}
+
 glm::quat Transform::getRotation() { return mRotation; }
 
 glm::vec3 Transform::getScale() { return mScale; }

@@ -8,6 +8,7 @@
 #include "SceneGraphNode.h"
 #include "SceneLoader.h"
 #include "Transform.h"
+#include "Sound.h"
 
 class GameManager {
  public:
@@ -24,7 +25,7 @@ class GameManager {
 
   static GameManager* getManager();
 
-  GameObject* Unmarshal(char* data);
+  GameObject* unmarshalInfo(char* data);
 
   void AddPlayer(int clientId);
 
@@ -54,4 +55,6 @@ class GameManager {
   int mClientId;
 
   static GameManager* mManager;
+
+  Sound* mSound;
 };

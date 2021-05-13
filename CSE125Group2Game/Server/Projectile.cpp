@@ -6,68 +6,71 @@
 #include "GameLogicServer.h"
 
 int Projectile::mProjectilesSpawned = 0;
-unsigned long Projectile::mTickLastSpawn = 0;  //[MAX_PLAYERS] = {0, 0, 0, 0};
+std::unordered_map<std::string, unsigned long>
+    Projectile::mTickLastSpawn;  // todo: might wanna change to hashmap to map
+                                 // obj name to
 
-Projectile::Projectile(Transform* transform, char* name, int health,
+Projectile::Projectile(Transform* transform, std::string name, int health,
                        GameObject* parent)
     : Moveable(transform, name, health, ObjectType::Projectile) {
   mProjectileNextTick = 0;
   mParent = parent;
 };
 
-void Projectile::calculatePath() {
-  // TODO: maybe make more complex idk
-  mPath.push_back(mTransform->getTranslation());
-
-  for (int i = 1; i < mProjectileMaxTicks; i++) {
-    mPath.push_back(mPath[mPath.size() - 1] + glm::vec3(1, 0, 0));
-  }
-};
-
 void Projectile::spawnProjectile(GameObject* parent) {
-  if (GetTickCount() - Projectile::mTickLastSpawn < PROJ_SPAWN_RATE_MS) {
+  if (GetTickCount() - Projectile::mTickLastSpawn[parent->getName()] <
+      PROJ_SPAWN_RATE_MS) {
     return;
   }
 
-  Projectile::mTickLastSpawn = GetTickCount();  // update last spawn time
+  Projectile::mTickLastSpawn[parent->getName()] =
+      GetTickCount();  // update last spawn time
+
+  glm::vec3 spawnPos = parent->getTransform()->getModelTranslation();
 
   // create projectile
-  GameObject* projectile =
-      new Projectile(new Transform(parent->getTransform()->getTranslation(),
-                                   glm::vec3(0, 0, 0), glm::vec3(0.1, 0.1, 0.1),
-                                   glm::vec3(0.05, 0.05, 0.05)),
-                     (char*)makeName().c_str(), 15, parent);
-  // calculate path
-  ((Projectile*)projectile)->calculatePath();
+  Projectile* projectile = new Projectile(
+      new Transform(spawnPos, glm::vec3(0), glm::vec3(.5), glm::vec3(0.25)),
+      Projectile::makeName(), 15, parent);
+
+  // Update projectiles model/pivot
+  projectile->mPivot->setModel(((Player*)parent)->mPivot->getModel());
+  projectile->mModelTransform->setModel(
+      ((Player*)parent)->mModelTransform->getModel() *
+      glm::scale(glm::mat4(1), glm::vec3(.5)));
+
   // add to game world
   GameLogicServer::getLogicServer()->addGameObject(projectile);
 
   // std::cout << "Projecile spawned!";
 }
 
-// TODO: add method update every tick or whatever
-std::vector<glm::vec3> Projectile::getPath() { return mPath; }
-
 std::string Projectile::makeName() {
-  return GameObject::makeName("proj", mProjectilesSpawned++);
+  if (mProjectilesSpawned >= 10000) {
+    mProjectilesSpawned = 0;
+  }
+
+  std::string name = GameObject::makeName("proj", mProjectilesSpawned);
+  mProjectilesSpawned++;
+  return name;
 }
 
 void Projectile::update() {
   mIsModified = true;
 
   // projectile is dead
-  if (mProjectileNextTick >= mProjectileMaxTicks) {
+  if (++mProjectileNextTick >= mProjectileMaxTicks) {
     setHealth(0);
     return;
   }
 
-  mTransform->setTranslation(mPath[mProjectileNextTick++]);
+  move(glm::vec3(-0.02, 0, 0));
 }
 
 bool Projectile::shouldNotCollide(GameObject* obj) {
-  return GameObject::shouldNotCollide(obj) ||  // Call super method
-         obj->getName() == mParent->getName() || obj->isProjectile() ||
-         obj->isPlayer();
   // TODO: Perhaps would be worth making more complex... enemies with
   // projectiles???? interesting question
+  return GameObject::shouldNotCollide(obj) ||  // Call super method
+         obj->getName() == mParent->getName() || obj->isProjectile() ||
+         obj->isPlayer() || obj->isTower() || obj->isDefault();
 }

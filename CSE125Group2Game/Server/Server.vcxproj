@@ -154,11 +154,13 @@
     <ClCompile Include="..\Shared\Transform.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Moveable.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="ServerGraphNode.cpp" />
     <ClCompile Include="ServerLoader.cpp" />
     <ClCompile Include="GameLogicServer.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Tower.cpp" />
     <ClCompile Include="WaveManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -169,10 +171,12 @@
     <ClInclude Include="NetworkServer.h" />
     <ClInclude Include="GameLogicServer.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="ServerGraphNode.h" />
     <ClInclude Include="ServerLoader.h" />
     <ClInclude Include="server_helper.h" />
+    <ClInclude Include="Tower.h" />
     <ClInclude Include="WaveManager.h" />
   </ItemGroup>
   <ItemGroup>
