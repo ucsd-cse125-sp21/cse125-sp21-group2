@@ -29,15 +29,15 @@ void Projectile::spawnProjectile(GameObject* parent) {
   glm::vec3 spawnPos = parent->getTransform()->getModelTranslation();
 
   // create projectile
-  Projectile* projectile =
-      new Projectile(new Transform(spawnPos, glm::vec3(0), glm::vec3(0.001),
-                                   glm::vec3(0.0005)),
-                     Projectile::makeName(), 15, parent);
+  Projectile* projectile = new Projectile(
+      new Transform(spawnPos, glm::vec3(0), glm::vec3(.5), glm::vec3(0.25)),
+      Projectile::makeName(), 15, parent);
 
   // Update projectiles model/pivot
   projectile->mPivot->setModel(((Player*)parent)->mPivot->getModel());
   projectile->mModelTransform->setModel(
-      ((Player*)parent)->mModelTransform->getModel());
+      ((Player*)parent)->mModelTransform->getModel() *
+      glm::scale(glm::mat4(1), glm::vec3(.5)));
 
   // add to game world
   GameLogicServer::getLogicServer()->addGameObject(projectile);
@@ -65,6 +65,10 @@ void Projectile::update() {
   }
 
   move(glm::vec3(-2, 0, 0));
+
+  std::cout << mTransform->getTranslation().x << " "
+            << mTransform->getTranslation().y << " "
+            << mTransform->getTranslation().z << std::endl;
 }
 
 bool Projectile::shouldNotCollide(GameObject* obj) {
