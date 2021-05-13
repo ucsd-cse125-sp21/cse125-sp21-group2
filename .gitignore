@@ -367,7 +367,9 @@ Docs
 doc
 
 # build folders...
-build
+# build
+
+config.txt
 
 # Include asset files
 !**/*/Assets/**/*.obj
