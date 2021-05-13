@@ -192,15 +192,6 @@ void GameManager::UpdateObject(GameObject* obj) {
     return;
   }
 
-  // Set found objects position, rotation, scale, and health to passed in obj
-  // foundObject->getTransform()->setTranslation(
-  //    obj->getTransform()->getTranslation());
-
-  // foundObject->getTransform()->setRotation(obj->getTransform()->getRotation());
-  //// TODO ^^^ comment back in
-  // foundObject->getTransform()->setScale(obj->getTransform()->getScale());
-  // foundObject->getTransform()->setScale(obj->getTransform()->getScale());
-
   foundObject->getTransform()->setModel(obj->getTransform()->getModel());
 
   foundObject->setHealth(obj->getHealth());
@@ -234,33 +225,6 @@ GameObject* GameManager::unmarshalInfo(char* data) {
   char name[NAME_LEN + 1] = {0};
   memcpy(name, tmpInfo, NAME_LEN);  // Copy name into data
   tmpInfo += NAME_LEN;
-
-  // GLfloat xPos, yPos, zPos;
-  // memcpy(&xPos, tmpInfo, FLOAT_SIZE);
-  // tmpInfo += FLOAT_SIZE;
-  // memcpy(&yPos, tmpInfo, FLOAT_SIZE);
-  // tmpInfo += FLOAT_SIZE;
-  // memcpy(&zPos, tmpInfo, FLOAT_SIZE);
-  // tmpInfo += FLOAT_SIZE;
-
-  //// TODO: In unmarshling, euler angles -> quat
-  // GLfloat xRot, yRot, zRot, wRot;
-  // memcpy(&xRot, tmpInfo, FLOAT_SIZE);
-  // tmpInfo += FLOAT_SIZE;
-  // memcpy(&yRot, tmpInfo, FLOAT_SIZE);
-  // tmpInfo += FLOAT_SIZE;
-  // memcpy(&zRot, tmpInfo, FLOAT_SIZE);
-  // tmpInfo += FLOAT_SIZE;
-  // memcpy(&wRot, tmpInfo, FLOAT_SIZE);
-  // tmpInfo += FLOAT_SIZE;
-
-  // GLfloat xScale, yScale, zScale;
-  // memcpy(&xScale, tmpInfo, FLOAT_SIZE);
-  // tmpInfo += FLOAT_SIZE;
-  // memcpy(&yScale, tmpInfo, FLOAT_SIZE);
-  // tmpInfo += FLOAT_SIZE;
-  // memcpy(&zScale, tmpInfo, FLOAT_SIZE);
-  // tmpInfo += FLOAT_SIZE;
 
   glm::mat4 model;
 
