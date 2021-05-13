@@ -369,7 +369,6 @@ doc
 # build folders...
 # build
 
-config.txt
 
 # Include asset files
 !**/*/Assets/**/*.obj
