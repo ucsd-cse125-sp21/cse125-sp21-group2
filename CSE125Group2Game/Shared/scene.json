@@ -1,7 +1,7 @@
 ﻿{
   "scene": [
     {
-      "name": "tree1",
+      "name": "planet",
       "parent_name": "root",
       "xPos": 0,
       "yPos": 0,
@@ -16,6 +16,23 @@
       "bb_height": 5,
       "bb_width": 5,
       "obj_file": "models/planet/planet.obj"
+    },
+    {
+      "name": "bearl1",
+      "parent_name": "root",
+      "xPos": -1.112959384918213,
+      "yPos": 20.923466682434082,
+      "zPos": 1.41459184885025024,
+      "xRot": 0.002629730151966214,
+      "yRot": 0,
+      "zRot": 0,
+      "xScale": 0.3169567584991455,
+      "yScale": 0.3169567584991455,
+      "zScale": 0.3169567584991455,
+      "bb_length": 5,
+      "bb_height": 5,
+      "bb_width": 5,
+      "obj_file": "models/towers/bearl/bearl.obj"
     }
   ]
 }
