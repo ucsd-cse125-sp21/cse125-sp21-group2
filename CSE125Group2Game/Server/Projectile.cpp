@@ -17,15 +17,6 @@ Projectile::Projectile(Transform* transform, std::string name, int health,
   mParent = parent;
 };
 
-void Projectile::calculatePath() {
-  // TODO: maybe make more complex idk
-  mPath.push_back(mTransform->getTranslation());
-
-  for (int i = 1; i < mProjectileMaxTicks; i++) {
-    mPath.push_back(mPath[mPath.size() - 1] + glm::vec3(1, 0, 0));
-  }
-};
-
 void Projectile::spawnProjectile(GameObject* parent) {
   if (GetTickCount() - Projectile::mTickLastSpawn[parent->getName()] <
       PROJ_SPAWN_RATE_MS) {
@@ -35,22 +26,24 @@ void Projectile::spawnProjectile(GameObject* parent) {
   Projectile::mTickLastSpawn[parent->getName()] =
       GetTickCount();  // update last spawn time
 
+  glm::vec3 spawnPos = parent->getTransform()->getModelTranslation();
+
   // create projectile
-  GameObject* projectile =
-      new Projectile(new Transform(parent->getTransform()->getTranslation(),
-                                   glm::vec3(0, 0, 0), glm::vec3(0.1, 0.1, 0.1),
-                                   glm::vec3(0.05, 0.05, 0.05)),
+  Projectile* projectile =
+      new Projectile(new Transform(spawnPos, glm::vec3(0), glm::vec3(0.001),
+                                   glm::vec3(0.0005)),
                      Projectile::makeName(), 15, parent);
-  // calculate path
-  ((Projectile*)projectile)->calculatePath();
+
+  // Update projectiles model/pivot
+  projectile->mPivot->setModel(((Player*)parent)->mPivot->getModel());
+  projectile->mModelTransform->setModel(
+      ((Player*)parent)->mModelTransform->getModel());
+
   // add to game world
   GameLogicServer::getLogicServer()->addGameObject(projectile);
 
   // std::cout << "Projecile spawned!";
 }
-
-// TODO: add method update every tick or whatever
-std::vector<glm::vec3> Projectile::getPath() { return mPath; }
 
 std::string Projectile::makeName() {
   if (mProjectilesSpawned >= 10000) {
@@ -66,18 +59,18 @@ void Projectile::update() {
   mIsModified = true;
 
   // projectile is dead
-  if (mProjectileNextTick >= mProjectileMaxTicks) {
+  if (++mProjectileNextTick >= mProjectileMaxTicks) {
     setHealth(0);
     return;
   }
 
-  mTransform->setTranslation(mPath[mProjectileNextTick++]);
+  move(glm::vec3(-2, 0, 0));
 }
 
 bool Projectile::shouldNotCollide(GameObject* obj) {
-  return GameObject::shouldNotCollide(obj) ||  // Call super method
-         obj->getName() == mParent->getName() || obj->isProjectile() ||
-         obj->isPlayer() || obj->isTower();
   // TODO: Perhaps would be worth making more complex... enemies with
   // projectiles???? interesting question
+  return GameObject::shouldNotCollide(obj) ||  // Call super method
+         obj->getName() == mParent->getName() || obj->isProjectile() ||
+         obj->isPlayer() || obj->isTower() || obj->isDefault();
 }

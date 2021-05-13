@@ -159,11 +159,11 @@ void GameLogicServer::updateProjectiles() {
   }
 
   for (int i = 0; i < mWorld.size(); i++) {
-    // if (mWorld[i]->getObjectType() == ObjectType::Projectile) {
     if (mWorld[i]->isProjectile()) {
       GameObject* collider = getCollidingObject(mWorld[i]);
 
       if (collider != nullptr) {
+        std::cout << "ENEMY DOWN!!!" << std::endl;
         mWorld[i]->setHealth(0);
         collider->setHealth(collider->getHealth() - 0.1);
         continue;

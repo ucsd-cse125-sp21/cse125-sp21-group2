@@ -11,7 +11,7 @@
 #include "Model.h"
 #include "Utils.h"
 
-#define FOVY 110.0f
+#define FOVY 100.0f
 #define NEAR_CLIP 0.1f
 #define FAR_CLIP 100.0f
 

@@ -20,17 +20,6 @@
   std::unique_lock<decltype(mtx)> lk(mtx, std::adopt_lock);
   lk.unlock();*/
 
-// struct Vertices {
-//  glm::vec3 bottomLeftBack;
-//  glm::vec3 bottomRightBack;
-//  glm::vec3 topLeftBack;
-//  glm::vec3 topRightBack;
-//  glm::vec3 bottomLeftFront;
-//  glm::vec3 bottomRightFront;
-//  glm::vec3 topLeftFront;
-//  glm::vec3 topRightFront;
-//};
-
 #define MIN_X 0
 #define MIN_Y 1
 #define MIN_Z 2

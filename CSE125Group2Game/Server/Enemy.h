@@ -15,9 +15,9 @@ class Enemy : public Moveable {
   GameObject* GetNearestPlayer();
 
   glm::vec3 mMoveDirection;
+  float rotationSpeed = 2;
 
   int mTicksPerUpdate = 3;
-  glm::vec3 mMoveSpeed = glm::vec3(0.3);
 
   int mTicksTillUpdate = mTicksPerUpdate;
 };

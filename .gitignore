@@ -366,8 +366,8 @@ FodyWeavers.xsd
 Docs
 doc
 
-# build folders...
-# build
+# build folders... 
+build
 
 
 # Include asset files
