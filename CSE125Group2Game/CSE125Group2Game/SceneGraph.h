@@ -29,7 +29,7 @@ class SceneGraph {
 
   void removeChild(SceneGraphNode* node);
 
-  std::optional<glm::mat4> getViewMatrix() const;
+  std::optional<glm::mat4> getCameraMatrix() const;
 
  private:
   std::unique_ptr<SceneGraphNode> mpRoot;

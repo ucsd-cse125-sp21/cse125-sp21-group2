@@ -8,20 +8,25 @@ out vec4 FragColor;
 
 uniform sampler2D diffuseMap;
 
+layout(location = 3) uniform vec3 ambient;
+layout(location = 4) uniform vec3 diffuse;
+layout(location = 5) uniform vec3 specular;
+layout(location = 6) uniform float shininess = 32;
+
 // constants (for now ....)
-uniform vec3 lightColor = vec3(0.75f, 0.75f, 0.75f);
+uniform vec3 lightColor = vec3(0.6f, 0.6f, 0.6f);
 uniform vec3 lightPos = vec3(0.0, 0.0, 0.0f);
-uniform vec3 viewPos = vec3(0.0, 0.0, 10.0f);
+layout(location = 8) uniform vec3 viewPos = vec3(0.0, 0.0, 10.0f);
 
 void main() {
   vec3 nnormal = normalize(normal);
 
   // ambient component
-  /*float ambientStrength = 0.1f;
+  float ambientStrength = 0.1f;
   vec3 ambient = ambientStrength * ambient;
 
   // diffuse component
-  vec3 lightVec = normalize(lightPos - fragPos);
+  vec3 lightVec = -normalize(lightPos - fragPos);
   vec3 diffuse = max(dot(nnormal, lightVec), 0.0) * diffuse;
 
   // specular component
@@ -31,14 +36,12 @@ void main() {
 
   // float specStrength = pow(max(dot(viewVec, reflectVec), 0.0), shininess);
   float specStrength = pow(max(dot(nnormal, halfwayVec), 0.0), shininess);
-  vec3 specular = specStrength * specular;*/
+  vec3 specular = specStrength * specular;
 
-  /* */
-
-  // diffuse component
-  vec3 lightVec = -normalize(lightPos - fragPos);
-  vec3 diffuse =
+  // diffuse texture
+  vec3 diffuseMap =
       max(dot(nnormal, lightVec), 0.0) * vec3(texture(diffuseMap, uvu));
 
-  FragColor = vec4(lightColor * (diffuse), 1.0f);
+  FragColor =
+      vec4(lightColor * (diffuse + specular + ambient + diffuseMap), 1.0f);
 }

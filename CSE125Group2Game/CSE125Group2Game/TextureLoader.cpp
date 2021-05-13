@@ -40,16 +40,12 @@ TextureLoader::GLTexture::GLTexture(unsigned char* data, int width,
   error = glGetError();
 }
 
+// TODO:
 TextureLoader::GLTexture::~GLTexture() { /*glDeleteTextures(1, &mId);*/
 }
 
 void TextureLoader::GLTexture::use() const {
-  bool test = glIsTexture(mId);
-  glBindVertexArray(0);
-  glActiveTexture(GL_TEXTURE0);
-  GLenum error = glGetError();
   glBindTexture(GL_TEXTURE_2D, mId);
-  error = glGetError();
 }
 
 Texture TextureLoader::loadTexture(const std::string& filePath) {

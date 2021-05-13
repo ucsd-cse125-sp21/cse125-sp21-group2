@@ -14,6 +14,8 @@ struct Material {
   // TODO: make optional?
   Texture diffuseMap;
 
+  Texture normalMap;
+
   bool isRainbow = false;
 
   Material()

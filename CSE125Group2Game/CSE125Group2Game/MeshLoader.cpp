@@ -72,6 +72,11 @@ MeshLoader::GLMesh::GLMesh(const std::vector<Vertex>& vertices,
                         (void*)offsetof(Vertex, mUv));
   glEnableVertexAttribArray(2);
 
+  // tangent
+  glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                        (void*)offsetof(Vertex, mTangent));
+  glEnableVertexAttribArray(3);
+
   glGenBuffers(1, &mIbo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIbo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(glm::uvec3),
@@ -132,13 +137,19 @@ Mesh MeshLoader::loadMesh(const aiMesh* mesh) {
   std::vector<Vertex> vertices;
   vertices.reserve(mesh->mNumVertices);
   for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+    // if there are texture coordinates, then load them!
     glm::vec2 uv = mesh->mTextureCoords[0] != nullptr
                        ? glm::vec2(mesh->mTextureCoords[0][i].x,
                                    mesh->mTextureCoords[0][i].y)
                        : glm::vec2(0.0f);
 
+    // if there are tangents, then load them too!
+    glm::vec3 tangent = mesh->HasTangentsAndBitangents()
+                            ? vec3_cast(mesh->mTangents[i])
+                            : glm::vec3(0.0f);
+
     vertices.emplace_back(vec3_cast(mesh->mVertices[i]),
-                          vec3_cast(mesh->mNormals[i]), uv);
+                          vec3_cast(mesh->mNormals[i]), uv, tangent);
   }
 
   // get indices out .... must do because they are in ptrs...

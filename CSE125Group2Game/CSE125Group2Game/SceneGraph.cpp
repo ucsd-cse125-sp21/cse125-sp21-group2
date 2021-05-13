@@ -211,7 +211,7 @@ Camera& SceneGraph::addCamera(SceneGraphNode* node) {
   return mCamera;
 }
 
-std::optional<glm::mat4> SceneGraph::getViewMatrix() const {
+std::optional<glm::mat4> SceneGraph::getCameraMatrix() const {
   if (!cameraNode) {
     // return none, there is no camera attached to the scene.
     return std::optional<glm::mat4>();
@@ -233,5 +233,5 @@ std::optional<glm::mat4> SceneGraph::getViewMatrix() const {
         currentNode->getObject()->getTransform()->getModel() * matAccumulator;
   }
 
-  return std::optional<glm::mat4>(std::move(glm::inverse(matAccumulator)));
+  return std::optional<glm::mat4>(std::move(matAccumulator));
 }
