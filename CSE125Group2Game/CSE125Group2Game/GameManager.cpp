@@ -25,6 +25,8 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   // mScene.getByName("tree1")->getModel()->mMaterials[1].isRainbow = true;
 
   mpRenderManager->setRenderBoundingBoxes(true);
+
+  mSound = new Sound();
 }
 
 GameManager* GameManager::getManager() {
@@ -98,7 +100,10 @@ void GameManager::Update() {
       break;
     }
 
-    // 3) Call drawAll on scene graph
+    // 3) Update sound listener position
+    mSound->setListenerPosition(mPlayerTransform);
+
+    // 4) Call drawAll on scene graph
     mpRenderManager->beginRender();
 
     // draw scene
@@ -289,6 +294,8 @@ GameObject* GameManager::unmarshalInfo(char* data) {
   transform->setModel(model);
   // TODO: should we add forward vector on client?
   GameObject* obj = new GameObject(transform, name, health, type);
+
+  mSound->playAccordingToGameObject(obj);
 
   return obj;
 }
