@@ -119,8 +119,9 @@ void GameManager::AddPlayer(int clientId) {
       new GameObject(playerTransform, (char*)clientName.c_str(), 10);
 
   // TODO: make camera a child of the player object in the scene graph
-
-  Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+  //"models/enemy/mainEnemyShip/enemyShip.obj"
+  //"models/usership/geisel/geisel.obj"
+  Model* model = new Model(ASSET("models/usership/geisel/geisel.obj"),
                            playerTransform, *mLoader, mTLoader);
   // mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
   // Model* model = Model::Cube(playerTransform, *mLoader);
@@ -129,7 +130,7 @@ void GameManager::AddPlayer(int clientId) {
 
   // attach the camera to the player
   Camera& camera = mScene.addCamera(playerNode);
-  camera.setPosition(glm::vec3(0, 10.0f, 0));
+  camera.setPosition(glm::vec3(0, 20.0f, 0));
   camera.setFacing(glm::vec3(0, 0, 0));
   camera.setUp(glm::vec3(0.0f, 0, -1.0f));
 }
@@ -159,9 +160,12 @@ void GameManager::UpdateObject(GameObject* obj) {
     if (obj->isTower()) {
       model = new Model(ASSET("models/towers/stonehenge/stonehenge.obj"),
                         transform, *mLoader, mTLoader);
-    } else if (false && obj->isEnemy()) {
+    } else if (obj->isEnemy()) {
       model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
                         transform, *mLoader, mTLoader);
+    } else if (obj->isPlayer()) {
+      model = new Model(ASSET("models/usership/geisel/geisel.obj"), transform,
+                        *mLoader, mTLoader);
     } else {
       model = Model::Cube(foundObject->getTransform(), *mLoader);
     }
