@@ -25,18 +25,17 @@ void Enemy::update() {
 
   glm::mat4 currentPivotModel = mPivot->getModel();
   glm::mat4 currentActualModel = mTransform->getModel();
-  glm::vec3 currentPos = mTransform->getTranslation();
 
   float minDistance = FLT_MAX;
   float bestAngle;
 
   for (float i = 0; i < 360; i += 22.5) {
-    move(glm::vec3(0, glm::radians(i) * 100, rotationSpeed));
+    move(glm::vec3(0, glm::radians(i), rotationSpeed));
 
-    glm::vec3 newPos = mTransform->getTranslation();
+    glm::vec3 newPos = mTransform->getModelTranslation();
 
-    float distance =
-        glm::length(newPos - nearestPlayer->getTransform()->getTranslation());
+    float distance = glm::length(
+        newPos - nearestPlayer->getTransform()->getModelTranslation());
 
     if (distance < minDistance) {
       minDistance = distance;
@@ -44,11 +43,10 @@ void Enemy::update() {
     }
 
     mPivot->setModel(currentPivotModel);
-    mTransform->setTranslation(currentPos);
     mTransform->setModel(currentActualModel);
   }
 
-  move(glm::vec3(0, bestAngle * 100, rotationSpeed));
+  move(glm::vec3(0, bestAngle, rotationSpeed));
 }
 
 GameObject* Enemy::GetNearestPlayer() {

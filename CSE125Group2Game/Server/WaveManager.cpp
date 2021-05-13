@@ -12,7 +12,7 @@ int Enemy::enemysSpawned = 0;
 
 WaveManager::WaveManager() {
   // Spawn one enemy every
-  mSpawnSpeed = 1.0f * 1000;
+  mSpawnSpeed = 0.1f * 1000;
 }
 
 WaveManager* WaveManager::getWaveManager() {
@@ -39,8 +39,9 @@ void WaveManager::startWave() {
   // TODO????: random enemy spawns would be dope
   for (int i = 0; i < mMaxWaveSize; i++) {
     Enemy* enemy =
-        new Enemy(new Transform(glm::vec3(0, -RADIUS, 0), glm::vec3(0),
-                                glm::vec3(.25), glm::vec3(0.5)),
+        new Enemy(new Transform(glm::vec3(0, RADIUS, 0),
+                                glm::vec3(rand() % 360, 0, rand() % 360),
+                                glm::vec3(.5), glm::vec3(0.25)),
                   Enemy::makeName(), 10);
 
     mWaveEnemies.push_back(enemy);

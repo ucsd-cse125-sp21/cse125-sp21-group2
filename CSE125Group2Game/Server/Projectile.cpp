@@ -64,11 +64,7 @@ void Projectile::update() {
     return;
   }
 
-  move(glm::vec3(-2, 0, 0));
-
-  std::cout << mTransform->getTranslation().x << " "
-            << mTransform->getTranslation().y << " "
-            << mTransform->getTranslation().z << std::endl;
+  move(glm::vec3(-0.02, 0, 0));
 }
 
 bool Projectile::shouldNotCollide(GameObject* obj) {

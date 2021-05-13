@@ -1,4 +1,4 @@
-//#include "Player.h"
+﻿//#include "Player.h"
 
 #include "GameLogicServer.h"
 
@@ -22,3 +22,5 @@ void Player::setVelocity(glm::vec3 velocity) { mVelocity = velocity; }
 std::string Player::makeName(int id) {
   return GameObject::makeName("play", id);
 }
+
+glm::vec3 Player::getRotationSpeed() { return mRotationSpeed; }

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Moveable.h"
 #include "Projectile.h"
 class Player : public Moveable {
@@ -19,11 +19,12 @@ class Player : public Moveable {
 
   static std::string makeName(int id);
 
+  glm::vec3 getRotationSpeed();
+
  private:
-  glm::vec3 mMoveSpeed = glm::vec3(0.3);
+  glm::vec3 mRotationSpeed = glm::vec3(-0.04, -0.08, 0);
+
   glm::vec3 mVelocity;
-  // int mVsp;
-  // int mHsp;
 
   int mPlayerId;
 };
