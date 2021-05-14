@@ -11,6 +11,8 @@ class Enemy : public Moveable {
 
   static std::string makeName();
 
+  static Enemy* spawnEnemy();
+
  private:
   GameObject* GetNearestPlayer();
 

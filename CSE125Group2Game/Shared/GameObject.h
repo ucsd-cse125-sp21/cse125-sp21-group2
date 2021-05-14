@@ -38,6 +38,7 @@ class GameObject {
   bool isEnemy();
   bool isTower();
   bool isProjectile();
+  bool isDead();
 
   void setTransform(Transform* transform);
   void addTranslation(glm::vec3 translation);
@@ -47,7 +48,7 @@ class GameObject {
 
   void virtual update() {}
   bool virtual shouldNotCollide(GameObject* obj) {
-    return obj->getName() == "root0000" || obj->getHealth() <= 0 ||
+    return obj->getName() == "root0000" || obj->isDead() ||
            obj->getObjectType() == getObjectType() || obj->isDefault();
   }
 

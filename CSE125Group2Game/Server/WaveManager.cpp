@@ -31,18 +31,20 @@ void WaveManager::update() {
 
   // Only spawn enemy once every mSpawnSpeed (3 seconds)
   if (!fullWaveSpawned() && GetTickCount() - mTimeOfLastSpawn > mSpawnSpeed) {
-    spawnEnemy();
+    spawnEnemyInWave();
   }
 }
 
 void WaveManager::startWave() {
   for (int i = 0; i < mMaxWaveSize; i++) {
-    Enemy* enemy =
-        new Enemy(new Transform(glm::vec3(0, RADIUS, 0),
-                                glm::vec3(rand() % 360, 0, rand() % 360),
-                                glm::vec3(.5), glm::vec3(3)),
-                  Enemy::makeName(), 10);
-    enemy->move(glm::vec3(0));  // hack to fix world position
+    // Enemy* enemy =
+    //    new Enemy(new Transform(glm::vec3(0, RADIUS, 0),
+    //                            glm::vec3(rand() % 360, 0, rand() % 360),
+    //                            glm::vec3(.5), glm::vec3(3)),
+    //              Enemy::makeName(), 10);
+    // enemy->move(glm::vec3(0));  // hack to fix world position
+
+    Enemy* enemy = Enemy::spawnEnemy();
 
     mWaveEnemies.push_back(enemy);
   }
@@ -51,7 +53,7 @@ void WaveManager::startWave() {
   mEnemiesSpawnedInWave = 0;
 }
 
-void WaveManager::spawnEnemy() {
+void WaveManager::spawnEnemyInWave() {
   // Start the logic for the enemy
   GameLogicServer::getLogicServer()->addGameObject(
       mWaveEnemies[mNextEnemyIndex]);

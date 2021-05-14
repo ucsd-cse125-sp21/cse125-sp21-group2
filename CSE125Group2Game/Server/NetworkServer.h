@@ -10,6 +10,8 @@
 #include "olc_net.h"
 #include "server_helper.h"
 
+#define SERVER_CONFIG_ERROR \
+  "server couldn't read config file using default values\n"
 using namespace olc::net;
 using namespace std;
 
@@ -50,7 +52,7 @@ NetworkServer* NetworkServer::GetNetworkServer() {
     string str_port = server_read_config_file(config_field, CONFIG_FILE);
 
     if (str_port.compare(string()) == 0) {
-      cout << "server couldn't read config file, using default port\n";
+      cout << SERVER_CONFIG_ERROR;
     } else {
       int temp_int(stoi(str_port));
       if (temp_int <= static_cast<int>(UINT16_MAX) && temp_int >= 0) {
@@ -79,11 +81,13 @@ bool NetworkServer::OnClientConnect(
 
   GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
-  Transform* transform = new Transform(glm::vec3(0, RADIUS, 0), glm::vec3(0),
-                                       glm::vec3(.5), glm::vec3(3.5));
+  // Transform* transform = new Transform(glm::vec3(0, RADIUS, 0), glm::vec3(0),
+  //                                     glm::vec3(.5), glm::vec3(3.5));
 
-  Player* newPlayer =
-      new Player(transform, Player::makeName(numPlayers), 10, numPlayers);
+  // Player* newPlayer = new Player(transform, Player::makeName(numPlayers),
+  //                               DEFAULT_HEALTH, numPlayers);
+
+  Player* newPlayer = Player::spawnPlayer(numPlayers);
   logicServer->addGameObject(newPlayer);
 
   logicServer->players[numPlayers] = newPlayer;
@@ -91,7 +95,6 @@ bool NetworkServer::OnClientConnect(
   return true;
 }
 
-// TODO: remove player from world on disconnect
 // Called when a client appears to have disconnected
 void NetworkServer::OnClientDisconnect(
     shared_ptr<connection<CustomMsgTypes>> client) {

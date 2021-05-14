@@ -15,8 +15,7 @@ ServerGraphNode* ServerGraphNode::getRoot() {
   if (!root) {
     // Create a root node at (0,0,0) with no rotation and 1x scale
     root = new ServerGraphNode(
-        NULL, new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
-                            glm::vec3(1, 1, 1)));
+        NULL, new Transform(glm::vec3(0), glm::vec3(0), glm::vec3(1)));
     root->setName("root0000");
   }
 
