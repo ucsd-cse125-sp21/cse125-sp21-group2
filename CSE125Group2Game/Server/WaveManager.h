@@ -17,7 +17,7 @@ class WaveManager {
   void startWave();
   bool fullWaveSpawned();
   bool isWaveComplete();
-  void spawnEnemy();
+  void spawnEnemyInWave();
   std::string makeName();
   static WaveManager* mWaveManager;
 

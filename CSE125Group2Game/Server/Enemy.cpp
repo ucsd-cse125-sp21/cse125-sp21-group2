@@ -4,6 +4,8 @@
 
 #include "GameLogicServer.h"
 
+#define STEP 22.5
+#define MAX_ANGLE 360
 Enemy::Enemy(Transform* transform, std::string name, int health)
     : Moveable(transform, name, health, ObjectType::Enemy) {
   mIsModified = true;
@@ -31,7 +33,7 @@ void Enemy::update() {
   float minDistance = FLT_MAX;
   float bestAngle;
 
-  for (float i = 0; i < 360; i += 22.5) {
+  for (float i = 0; i < MAX_ANGLE; i += STEP) {
     move(glm::vec3(0, glm::radians(i), rotationSpeed));
 
     glm::vec3 newPos = mTransform->getModelTranslation();
@@ -89,4 +91,15 @@ std::string Enemy::makeName() {
   std::string name = GameObject::makeName("enem", enemysSpawned);
   enemysSpawned++;
   return name;
+}
+
+Enemy* Enemy::spawnEnemy() {
+  Enemy* enemy = new Enemy(
+      new Transform(glm::vec3(0, RADIUS, 0),
+                    glm::vec3(rand() % MAX_ANGLE, 0, rand() % MAX_ANGLE),
+                    glm::vec3(.5), glm::vec3(3)),
+      Enemy::makeName(), DEFAULT_HEALTH);
+  enemy->move(glm::vec3(0));  // hack to fix world position
+
+  return enemy;
 }

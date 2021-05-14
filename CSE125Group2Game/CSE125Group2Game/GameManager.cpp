@@ -3,10 +3,11 @@
 #include "Utils.h"
 #include "client_helper.h"
 
+#define SCENE_JSON "../Shared/scene.json"
+#define CLIENT_CONFIG_ERROR \
+  "client couldn't read config file, using default values"
 // Predefinitions to make compiler happy
 GameManager* GameManager::mManager;
-void key_callback(GLFWwindow* window, int key, int scancode, int action,
-                  int mods);
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   GameManager::getManager()->ResizeCallback(width, height);
@@ -18,7 +19,7 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
       std::make_unique<RenderManager>(window, *mLoader, mTLoader, mCamera);
 
   glfwSetWindowUserPointer(mWindow, this);
-  mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
+  mScene = SceneGraph::FromFile(SCENE_JSON, *mLoader, mTLoader);
 
   mpRenderManager->setRenderBoundingBoxes(true);
 
@@ -58,8 +59,7 @@ void GameManager::Update() {
   std::string filename = CONFIG_FILE;
 
   if (!read_client_config(host, port, filename)) {
-    std::cout
-        << "client couldn't read config file, using default host and port";
+    std::cout << CLIENT_CONFIG_ERROR;
   }
 
   std::cout << "host: " << host << "port: " << port << "\n";

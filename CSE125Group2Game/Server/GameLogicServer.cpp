@@ -9,6 +9,11 @@
 #include "WaveManager.h"
 #define DEFAULT_TOWER_COUNT 2
 
+#define SERVER_CONFIG_ERROR \
+  "server couldn't read config file using default values\n"
+#define SCENE_JSON "../Shared/scene.json"
+#define CONFIG_TXT "../config.txt"
+
 GameLogicServer* GameLogicServer::mLogicServer;
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
@@ -60,15 +65,15 @@ GameLogicServer* GameLogicServer::getLogicServer() {
   if (!mLogicServer) {
     uint16_t tick = 33;
     std::string config_tick("tick");
-    ServerLoader scene("../Shared/scene.json");
+    ServerLoader scene(SCENE_JSON);
 
     std::vector<GameObject*> world = ServerGraphNode::getRoot()->makeWorld(
         glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
 
-    std::string str_tick = server_read_config2(config_tick, "../config.txt");
+    std::string str_tick = server_read_config2(config_tick, CONFIG_TXT);
 
     if (str_tick.compare(std::string()) == 0) {
-      std::cout << "server couldn't read config file, using default tick\n";
+      std::cout << SERVER_CONFIG_ERROR;
     } else {
       int temp_int(std::stoi(str_tick));
       if (temp_int <= static_cast<int>(UINT16_MAX) && temp_int >= 0) {
@@ -79,11 +84,10 @@ GameLogicServer* GameLogicServer::getLogicServer() {
     mLogicServer = new GameLogicServer(world, scene, tick);
     int tower_count;
     std::string config_tower("tower_count");
-    std::string str_tower = server_read_config2(config_tower, "../config.txt");
+    std::string str_tower = server_read_config2(config_tower, CONFIG_TXT);
     if (str_tower.compare(std::string()) == 0) {
       tower_count = DEFAULT_TOWER_COUNT;
-      std::cout << "server couldn't find tower config, use default tower count."
-                << std::endl;
+      std::cout << SERVER_CONFIG_ERROR << std::endl;
     } else {
       tower_count = std::stoi(str_tower);
     }
@@ -205,7 +209,7 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
 
   if (collidedObj->isEnemy()) {
     collidedObj->setHealth(0);
-    player->setHealth(player->getHealth() - 2);
+    player->setHealth(player->getHealth() - PLAYER_DAMAGE);
   } else if (collidedObj->isDefault()) {
     // movePlayerToBoundary(player);
   }
@@ -216,11 +220,11 @@ void GameLogicServer::movePlayerToBoundary(Player* player) {
 
   // Step player towards collision boundary
   while (!getCollidingObject(player)) {
-    player->addTranslation(glm::vec3(0.1, 0.1, 0.1) * player->getVelocity());
+    player->addTranslation(glm::vec3(0.1) * player->getVelocity());
   }
 
   // Move player 0.1 units away from collision
-  player->addTranslation(glm::vec3(-0.1, -0.1, -0.1) * player->getVelocity());
+  player->addTranslation(glm::vec3(-0.1) * player->getVelocity());
 }
 
 GameObject* GameLogicServer::getCollidingObject(GameObject* obj) {
