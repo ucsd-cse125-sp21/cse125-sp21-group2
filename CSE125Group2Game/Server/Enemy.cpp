@@ -61,7 +61,8 @@ GameObject* Enemy::GetNearestPlayer() {
 
   for (int i = 0; i < mWorld.size(); i++) {
     if (mWorld[i]->isPlayer() || mWorld[i]->isTower()) {
-      if (mWorld[i]->getHealth() <= 0) {
+      // if (mWorld[i]->getHealth() <= 0) {
+      if (mWorld[i]->isDead()) {
         continue;
       }
       glm::vec pos = mWorld[i]->getTransform()->getTranslation();

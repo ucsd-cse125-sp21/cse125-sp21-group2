@@ -172,7 +172,8 @@ void GameLogicServer::updatePlayers() {
 
     players[i]->update();
 
-    if (players[i]->getHealth() <= 0) {
+    // if (players[i]->getHealth() <= 0) {
+    if (players[i]->isDead()) {
       continue;
     }
 
@@ -395,7 +396,8 @@ void GameLogicServer::sendInfo() {
       mTestBuffer.push_back(data);
 
       // If the enemy has health 0, remove it from the world
-      if (mWorld[i]->getHealth() <= 0 && !mWorld[i]->isPlayer()) {
+      // if (mWorld[i]->getHealth() <= 0 && !mWorld[i]->isPlayer()) {
+      if (mWorld[i]->isDead() && !mWorld[i]->isPlayer()) {
         deleteObject(i);
       }
     }

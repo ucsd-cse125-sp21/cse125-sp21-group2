@@ -144,7 +144,7 @@ void GameManager::UpdateObject(GameObject* obj) {
   foundObject = foundNode->getObject();
 
   // Health is 0, delete object
-  if (obj->getHealth() <= 0) {
+  if (obj->isDead()) {
     // Don't render the player if they die
     if (foundObject->isPlayer()) {
       foundObject->mShouldRender = false;

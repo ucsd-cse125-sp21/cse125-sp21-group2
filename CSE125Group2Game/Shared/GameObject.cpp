@@ -63,3 +63,5 @@ bool GameObject::isTower() { return mObjectType == ObjectType::Tower; }
 bool GameObject::isProjectile() {
   return mObjectType == ObjectType::Projectile;
 }
+
+bool GameObject::isDead() { return mHealth <= 0; }
