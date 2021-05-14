@@ -145,10 +145,18 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Health is 0, delete object
   if (obj->getHealth() <= 0) {
+    // Don't render the player if they die
+    if (foundObject->isPlayer()) {
+      foundObject->mShouldRender = false;
+      return;
+    }
+
     // std::cerr << "Deleting object: " << ((std::string)obj->getName())
     //        << std::endl;
     mScene.removeChild(foundNode);
     return;
+  } else {
+    foundObject->mShouldRender = true;
   }
 
   // Update sound listener position on player update
@@ -158,7 +166,6 @@ void GameManager::UpdateObject(GameObject* obj) {
   }
 
   foundObject->getTransform()->setModel(obj->getTransform()->getModel());
-  foundObject->setHealth(obj->getHealth());
 }
 
 GameObject* GameManager::unmarshalInfo(char* data) {

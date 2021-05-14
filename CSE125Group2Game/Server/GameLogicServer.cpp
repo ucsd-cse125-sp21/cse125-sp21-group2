@@ -148,17 +148,6 @@ void GameLogicServer::updateTowers() {
 }
 
 void GameLogicServer::updateProjectiles() {
-  for (int i = 0; i < MAX_PLAYERS; i++) {
-    if (players[i] == NULL) {
-      continue;
-    }
-
-    if (mKeyPresses[i][GameObject::SHOOT]) {
-      // std::cout << "Player " << i << " wants to spawn a projectile!!";
-      Projectile::spawnProjectile(players[i]);
-    }
-  }
-
   for (int i = 0; i < mWorld.size(); i++) {
     if (mWorld[i]->isProjectile()) {
       GameObject* collider = getCollidingObject(mWorld[i]);
@@ -179,6 +168,17 @@ void GameLogicServer::updatePlayers() {
   for (int i = 0; i < MAX_PLAYERS; i++) {
     if (players[i] == NULL) {
       continue;
+    }
+
+    players[i]->update();
+
+    if (players[i]->getHealth() <= 0) {
+      continue;
+    }
+
+    if (mKeyPresses[i][GameObject::SHOOT]) {
+      // std::cout << "Player " << i << " wants to spawn a projectile!!";
+      Projectile::spawnProjectile(players[i]);
     }
 
     handlePlayerCollision(i);
@@ -204,6 +204,7 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
 
   if (collidedObj->isEnemy()) {
     collidedObj->setHealth(0);
+    player->setHealth(player->getHealth() - 2);
   } else if (collidedObj->isDefault()) {
     // movePlayerToBoundary(player);
   }
@@ -394,7 +395,7 @@ void GameLogicServer::sendInfo() {
       mTestBuffer.push_back(data);
 
       // If the enemy has health 0, remove it from the world
-      if (mWorld[i]->getHealth() <= 0) {
+      if (mWorld[i]->getHealth() <= 0 && !mWorld[i]->isPlayer()) {
         deleteObject(i);
       }
     }

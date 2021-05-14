@@ -58,6 +58,7 @@ class GameObject {
   ObjectType getObjectType();
 
   bool mIsModified = true;
+  bool mShouldRender = true;
 
   static std::string makeName(std::string prefix, int count);
 

@@ -42,6 +42,7 @@ void WaveManager::startWave() {
                                 glm::vec3(rand() % 360, 0, rand() % 360),
                                 glm::vec3(.5), glm::vec3(3)),
                   Enemy::makeName(), 10);
+    enemy->move(glm::vec3(0));  // hack to fix world position
 
     mWaveEnemies.push_back(enemy);
   }

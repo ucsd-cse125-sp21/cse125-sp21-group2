@@ -20,6 +20,8 @@ void Enemy::update() {
 
   GameObject* nearestPlayer = GetNearestPlayer();
   if (!nearestPlayer) {
+    // Spin to "seek" out new player
+    move(glm::vec3(0, rotationSpeed * 4, 0));
     return;
   }
 
@@ -53,13 +55,13 @@ GameObject* Enemy::GetNearestPlayer() {
   GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
   float minDist = FLT_MAX;
-  int worldIndex = 0;
+  int worldIndex = -1;
 
   auto mWorld = logicServer->getWorld();
 
   for (int i = 0; i < mWorld.size(); i++) {
     if (mWorld[i]->isPlayer() || mWorld[i]->isTower()) {
-      if (mWorld[i] == NULL) {
+      if (mWorld[i]->getHealth() <= 0) {
         continue;
       }
       glm::vec pos = mWorld[i]->getTransform()->getTranslation();
@@ -69,6 +71,10 @@ GameObject* Enemy::GetNearestPlayer() {
         worldIndex = i;
       }
     }
+  }
+
+  if (worldIndex < 0) {
+    return nullptr;
   }
 
   return mWorld[worldIndex];

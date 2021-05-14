@@ -11,9 +11,6 @@ class Player : public Moveable {
 
   void setId(int id);
 
-  int getVsp();
-  int getHsp();
-
   void setVelocity(glm::vec3 velocity);
   glm::vec3 getVelocity();
 
@@ -27,4 +24,7 @@ class Player : public Moveable {
   glm::vec3 mVelocity;
 
   int mPlayerId;
+
+  unsigned long mRespawnTimeMS = 5000;
+  unsigned long mTimeToSpawn;
 };
