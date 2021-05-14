@@ -64,7 +64,7 @@ void Projectile::update() {
     return;
   }
 
-  move(glm::vec3(-0.02, 0, 0));
+  move(glm::vec3(rotationSpeed, 0, 0));
 }
 
 bool Projectile::shouldNotCollide(GameObject* obj) {

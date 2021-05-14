@@ -62,7 +62,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             int clientId;
             msg >> clientId;
 
-            GameManager::getManager()->AddPlayer(clientId);
+            GameManager::getManager()->mClientId = clientId;
 
           } break;
 

@@ -136,7 +136,8 @@ void GameLogicServer::updateTowers() {
         // Take Damage when enemy collide with tower
         // TODO: make damage dynamic
         mWorld[i]->setHealth(mWorld[i]->getHealth() - 0);
-        // std::cout << "Tower Health:" << mWorld[i]->getHealth()
+        // std::cout << "Tower Health:"
+        // << mWorld[i]->getHealth()
         //          << ",collided with " << collider->getName() << std::endl;
         continue;
       }
@@ -165,7 +166,7 @@ void GameLogicServer::updateProjectiles() {
       if (collider != nullptr) {
         std::cout << "ENEMY DOWN!!!" << std::endl;
         mWorld[i]->setHealth(0);
-        collider->setHealth(collider->getHealth() - 0.1);
+        collider->setHealth(collider->getHealth() - PROJ_DAMAGE);
         continue;
       }
 
@@ -385,13 +386,6 @@ void GameLogicServer::sendInfo() {
     // Only send info for moving objects
     if (mWorld[i]->isPlayer() || mWorld[i]->isEnemy() ||
         mWorld[i]->isProjectile() || mWorld[i]->isTower()) {
-      // if (mWorld[i]->isProjectile()) {
-      //  std::cout << "sending projectile!!!" << std::endl;
-      //  if (!mWorld[i]->mIsModified) {
-      //    std::cout << "hmmm projectile NOT modified???" << std::endl;
-      //    continue;
-      //  }
-      //}
       if (!mWorld[i]->mIsModified) {
         continue;
       }
@@ -401,7 +395,7 @@ void GameLogicServer::sendInfo() {
       mTestBuffer.push_back(data);
 
       // If the enemy has health 0, remove it from the world
-      if (mWorld[i]->getHealth() == 0) {
+      if (mWorld[i]->getHealth() <= 0) {
         deleteObject(i);
       }
     }

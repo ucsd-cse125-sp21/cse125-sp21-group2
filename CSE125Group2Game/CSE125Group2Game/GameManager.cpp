@@ -102,39 +102,6 @@ void GameManager::Update() {
   glfwTerminate();
 }
 
-void GameManager::AddPlayer(int clientId) {
-  // Create player and set it as first layer (child of root)
-  Transform* playerTransform =
-      new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1),
-                    glm::vec3(0.5f, 0.5f, 0.5f));
-
-  mPlayerTransform = playerTransform;
-
-  // std::string clientName = "play000";
-  // clientName += std::to_string(clientId);
-
-  std::string clientName = GameObject::makeName("play", clientId);
-
-  GameObject* playerObject =
-      new GameObject(playerTransform, (char*)clientName.c_str(), 10);
-
-  // TODO: make camera a child of the player object in the scene graph
-  //"models/enemy/mainEnemyShip/enemyShip.obj"
-  //"models/usership/geisel/geisel.obj"
-  Model* model = new Model(ASSET("models/usership/geisel/geisel.obj"),
-                           playerTransform, *mLoader, mTLoader);
-  // mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
-  // Model* model = Model::Cube(playerTransform, *mLoader);
-
-  SceneGraphNode* playerNode = mScene.addChild(playerObject, model);
-
-  // attach the camera to the player
-  Camera& camera = mScene.addCamera(playerNode);
-  camera.setPosition(glm::vec3(0, 20.0f, 0));
-  camera.setFacing(glm::vec3(0, 0, 0));
-  camera.setUp(glm::vec3(0.0f, 0, -1.0f));
-}
-
 void GameManager::UpdateObject(GameObject* obj) {
   // SceneGraphNode* foundNode = findNode(obj, mScene.getRoot());
   SceneGraphNode* foundNode = mScene.getByName(obj->getName());
@@ -153,19 +120,29 @@ void GameManager::UpdateObject(GameObject* obj) {
     foundObject = new GameObject(transform, obj->getName(), obj->getHealth(),
                                  obj->getObjectType());
 
-    // TODO: if else for model based on enum (constructor adds itself as child
-    // of parent)
-
     Model* model = nullptr;
     if (obj->isTower()) {
       model = new Model(ASSET("models/towers/stonehenge/stonehenge.obj"),
                         transform, *mLoader, mTLoader);
     } else if (obj->isEnemy()) {
-      model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
-                        transform, *mLoader, mTLoader);
-    } else if (obj->isPlayer()) {
       model = new Model(ASSET("models/usership/geisel/geisel.obj"), transform,
                         *mLoader, mTLoader);
+    } else if (obj->isPlayer()) {
+      model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+                        transform, *mLoader, mTLoader);
+
+      // If this is the first time a player connects, add it!
+      if (obj->getName() == GameObject::makeName("play", mClientId)) {
+        mPlayerTransform = foundObject->getTransform();
+
+        SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
+
+        // attach the camera to the player
+        Camera& camera = mScene.addCamera(playerNode);
+        camera.setPosition(glm::vec3(0, 20.0f, 0));
+        camera.setFacing(glm::vec3(0, 0, 0));
+        camera.setUp(glm::vec3(0.0f, 0, -1.0f));
+      }
     } else {
       model = Model::Cube(foundObject->getTransform(), *mLoader);
     }
@@ -193,21 +170,22 @@ void GameManager::UpdateObject(GameObject* obj) {
   foundObject->setHealth(obj->getHealth());
 }
 
-SceneGraphNode* GameManager::findNode(GameObject* obj, SceneGraphNode* node) {
-  if (obj->getName() == node->getObject()->getName()) {
-    return node;
-  }
-
-  for (int i = 0; i < node->getChildren().size(); i++) {
-    SceneGraphNode* foundNode = findNode(obj, node->getChildren()[i]);
-
-    if (foundNode) {
-      return foundNode;
-    }
-  }
-
-  return NULL;
-}
+// SceneGraphNode* GameManager::findNode(GameObject* obj, SceneGraphNode* node)
+// {
+//  if (obj->getName() == node->getObject()->getName()) {
+//    return node;
+//  }
+//
+//  for (int i = 0; i < node->getChildren().size(); i++) {
+//    SceneGraphNode* foundNode = findNode(obj, node->getChildren()[i]);
+//
+//    if (foundNode) {
+//      return foundNode;
+//    }
+//  }
+//
+//  return NULL;
+//}
 GameObject* GameManager::unmarshalInfo(char* data) {
   // 1) 8 byte char[] name
   // 32 bit (4 byte) floats

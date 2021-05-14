@@ -51,9 +51,10 @@ class GameLogicServer {
   Player* players[MAX_PLAYERS];
   GameObject* getCollidingObject(GameObject* obj);
 
+  void sendInfo();
+
  private:
   void resetKeyPresses();
-  void sendInfo();
   char* marshalInfo(GameObject* obj);
   void updatePlayers();
   void handlePlayerCollision(int playerIndex);

@@ -80,7 +80,7 @@ bool NetworkServer::OnClientConnect(
   GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
   Transform* transform = new Transform(glm::vec3(0, RADIUS, 0), glm::vec3(0),
-                                       glm::vec3(.5), glm::vec3(0.5 * .5));
+                                       glm::vec3(.5), glm::vec3(3.5));
 
   Player* newPlayer =
       new Player(transform, Player::makeName(numPlayers), 10, numPlayers);

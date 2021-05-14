@@ -7,8 +7,8 @@
 #include "RenderManager.h"
 #include "SceneGraphNode.h"
 #include "SceneLoader.h"
-#include "Transform.h"
 #include "Sound.h"
+#include "Transform.h"
 
 class GameManager {
  public:
@@ -27,8 +27,6 @@ class GameManager {
 
   GameObject* unmarshalInfo(char* data);
 
-  void AddPlayer(int clientId);
-
   void UpdateObject(GameObject* obj);
 
   bool mKeyPresses[NUM_KEYS];
@@ -41,6 +39,8 @@ class GameManager {
 
   void ResizeCallback(int width, int height);
 
+  int mClientId;
+
  private:
   // TODO: fix formatting on this...
   [[deprecated("Replaced by SceneGraph.getByName()")]] SceneGraphNode* findNode(
@@ -52,7 +52,6 @@ class GameManager {
   Camera* mCamera;
   SceneGraph mScene;
   GLFWwindow* mWindow;
-  int mClientId;
 
   static GameManager* mManager;
 
