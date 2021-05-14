@@ -10,6 +10,12 @@
 #include "Sound.h"
 #include "Transform.h"
 
+#define PLAYER_MODEL "Assets/models/enemy/mainEnemyShip/enemyShip.obj"
+#define ENEMY_MODEL "Assets/models/usership/geisel/geisel.obj"
+#define BEARL_MODEL "Assets/models/enemy/mainEnemyShip/enemyShip.obj"
+#define STONEHENGE_MODEL "models/towers/stonehenge/stonehenge.obj"
+#define FALLEN_STAR_MODEL "Assets/models/towers/fallenstar/fallenstar.obj"
+
 class GameManager {
  public:
   static const int FORWARD_KEY = GLFW_KEY_W;

@@ -16,13 +16,9 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   mLoader = new MeshLoader();
   mpRenderManager =
       std::make_unique<RenderManager>(window, *mLoader, mTLoader, mCamera);
-  // RenderManager& renderMananger = RenderManager::get();
-  // renderMananger.init(mWindow);
+
   glfwSetWindowUserPointer(mWindow, this);
   mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
-
-  // mScene.getByName("tree1")->getModel()->mMaterials[0].isRainbow = true;
-  // mScene.getByName("tree1")->getModel()->mMaterials[1].isRainbow = true;
 
   mpRenderManager->setRenderBoundingBoxes(true);
 
@@ -57,8 +53,6 @@ GameManager* GameManager::getManager() {
 }
 
 void GameManager::Update() {
-  glfwSetKeyCallback(mWindow, key_callback);
-
   std::string host = DEFAULT_SERVER_HOST;
   uint16_t port = DEFAULT_SERVER_PORT;
   std::string filename = CONFIG_FILE;
@@ -122,14 +116,11 @@ void GameManager::UpdateObject(GameObject* obj) {
 
     Model* model = nullptr;
     if (obj->isTower()) {
-      model = new Model(ASSET("models/towers/stonehenge/stonehenge.obj"),
-                        transform, *mLoader, mTLoader);
+      model = new Model(STONEHENGE_MODEL, transform, *mLoader, mTLoader);
     } else if (obj->isEnemy()) {
-      model = new Model(ASSET("models/usership/geisel/geisel.obj"), transform,
-                        *mLoader, mTLoader);
+      model = new Model(ENEMY_MODEL, transform, *mLoader, mTLoader);
     } else if (obj->isPlayer()) {
-      model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
-                        transform, *mLoader, mTLoader);
+      model = new Model(PLAYER_MODEL, transform, *mLoader, mTLoader);
 
       // If this is the first time a player connects, add it!
       if (obj->getName() == GameObject::makeName("play", mClientId)) {
@@ -170,28 +161,7 @@ void GameManager::UpdateObject(GameObject* obj) {
   foundObject->setHealth(obj->getHealth());
 }
 
-// SceneGraphNode* GameManager::findNode(GameObject* obj, SceneGraphNode* node)
-// {
-//  if (obj->getName() == node->getObject()->getName()) {
-//    return node;
-//  }
-//
-//  for (int i = 0; i < node->getChildren().size(); i++) {
-//    SceneGraphNode* foundNode = findNode(obj, node->getChildren()[i]);
-//
-//    if (foundNode) {
-//      return foundNode;
-//    }
-//  }
-//
-//  return NULL;
-//}
 GameObject* GameManager::unmarshalInfo(char* data) {
-  // 1) 8 byte char[] name
-  // 32 bit (4 byte) floats
-  // 2) Transform: 3 floats for location, 3 for rotation, 3 for scale
-  // 3) 4 byte int health 48 bytes
-
   char* tmpInfo = data;
 
   // NAME_LEN + 1 so we ensure it is null terminated
@@ -224,7 +194,6 @@ GameObject* GameManager::unmarshalInfo(char* data) {
   memcpy(&type, tmpInfo, TYPE_SIZE);
   tmpInfo += TYPE_SIZE;
 
-  // TODO maybe we should send over actual values in addition to the matrix
   Transform* transform = new Transform(glm::vec3(0), glm::vec3(0), glm::vec3(0),
                                        glm::vec3(xbb, ybb, zbb));
 
@@ -241,37 +210,4 @@ void GameManager::setClientID(int id) { mClientId = id; }
 
 void GameManager::ResizeCallback(int width, int height) {
   mpRenderManager->setViewportSize(width, height);
-}
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action,
-                  int mods) {
-  // Need synchronization?
-  // Suggested by Edward
-
-  // printf("%d %d\n", key, action);
-
-  if (action == GLFW_REPEAT) {
-    return;
-  }
-
-  switch (key) {
-    case GameManager::FORWARD_KEY:
-      GameManager::getManager()->mKeyPresses[GameObject::FORWARD] =
-          action == GLFW_PRESS;
-      break;
-    case GameManager::LEFT_KEY:
-      GameManager::getManager()->mKeyPresses[GameObject::LEFT] =
-          action == GLFW_PRESS;
-      break;
-    case GameManager::BACKWARD_KEY:
-      GameManager::getManager()->mKeyPresses[GameObject::BACKWARD] =
-          action == GLFW_PRESS;
-      break;
-    case GameManager::RIGHT_KEY:
-      GameManager::getManager()->mKeyPresses[GameObject::RIGHT] =
-          action == GLFW_PRESS;
-      break;
-    case GLFW_KEY_SPACE:
-      break;
-  }
 }

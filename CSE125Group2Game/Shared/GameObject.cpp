@@ -52,7 +52,6 @@ std::string GameObject::makeName(std::string prefix, int count) {
   }
 
   name += std::to_string(count);
-  // std::cout << "New Enemy Name: " << name << std::endl;
 
   return name;
 }

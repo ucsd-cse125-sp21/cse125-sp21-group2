@@ -22,7 +22,7 @@ class Player : public Moveable {
   glm::vec3 getRotationSpeed();
 
  private:
-  glm::vec3 mRotationSpeed = glm::vec3(-0.04, -0.08, 0);
+  glm::vec3 mRotationSpeed = glm::vec3(-0.04, -0.12, 0);
 
   glm::vec3 mVelocity;
 

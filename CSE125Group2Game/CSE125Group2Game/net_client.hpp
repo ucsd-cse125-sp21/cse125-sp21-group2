@@ -22,9 +22,6 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     olc::net::message<CustomMsgTypes> msg;
     msg.header.id = CustomMsgTypes::ClientMessage;
 
-    /*std::cout << "Sending message to the server! Current tick:"
-              << GetTickCount() << std::endl;*/
-
     int sum = 0;
     for (int i = 0; i < NUM_KEYS; i++) {
       sum += keysPressed[i];
@@ -95,23 +92,6 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             }
 
             GameObject* obj = GameManager::getManager()->unmarshalInfo(data);
-
-            // Object updated this tick, skip it
-            // if (updatedObjects.find(std::string(obj->getName())) !=
-            //    updatedObjects.end()) {
-            //  continue;
-            //}
-
-            // updatedObjects.insert(std::string(obj->getName()));
-
-            // if (obj->getObjectType() == ObjectType::Player) {
-            //  glm::vec3 angle =
-            //      glm::eulerAngles(obj->getTransform()->getRotation());
-
-            //  std::cout << glm::degrees(angle.x) << " " <<
-            //  glm::degrees(angle.y)
-            //            << " " << glm::degrees(angle.z) << std::endl;
-            //}
 
             GameManager::getManager()->UpdateObject(obj);
 

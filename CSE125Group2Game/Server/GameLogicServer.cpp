@@ -164,7 +164,6 @@ void GameLogicServer::updateProjectiles() {
       GameObject* collider = getCollidingObject(mWorld[i]);
 
       if (collider != nullptr) {
-        std::cout << "ENEMY DOWN!!!" << std::endl;
         mWorld[i]->setHealth(0);
         collider->setHealth(collider->getHealth() - PROJ_DAMAGE);
         continue;
