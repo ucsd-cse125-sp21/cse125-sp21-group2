@@ -128,6 +128,11 @@ ServerLoader::ServerLoader(std::string fileName) {
     float bbWidth = 0;
     if (!bbWidthS.is_null()) bbWidth = bbWidthS;
 
+    // Assign the isTower bool
+    nlohmann::json& isTowerS = object["isTower"];
+    bool isTower = false;
+    if (!isTowerS.is_null()) isTower = isTowerS;
+
     Transform* transform =
         new Transform(glm::vec3(xPos, yPos, zPos), glm::vec3(xRot, yRot, zRot),
                       glm::vec3(xScale, yScale, zScale),
@@ -135,6 +140,11 @@ ServerLoader::ServerLoader(std::string fileName) {
 
     ServerGraphNode* node = new ServerGraphNode(parentNode, transform);
     node->setName(((std::string)name).data());
-    mObjects.insert(std::make_pair(name, node));
+
+    if (isTower) {
+      mTowers.push_back(node);
+    } else {
+      mObjects.insert(std::make_pair(name, node));
+    }
   }
 }

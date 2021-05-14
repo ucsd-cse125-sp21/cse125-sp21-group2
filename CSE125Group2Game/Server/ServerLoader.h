@@ -13,6 +13,7 @@ class ServerLoader {
  public:
   ServerLoader(std::string fileName);
 
- private:
+  std::vector<ServerGraphNode*> mTowers;
+
   std::unordered_map<std::string, ServerGraphNode*> mObjects;
 };
