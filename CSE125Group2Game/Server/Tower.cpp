@@ -21,8 +21,6 @@ void Tower::update() {
   if (mHealth > TOWER_HEALTH) {
     mHealth = TOWER_HEALTH;
   }
-
-  std::cout << "Tower health set to " << mHealth << std::endl;
 }
 
 void Tower::spawn() {

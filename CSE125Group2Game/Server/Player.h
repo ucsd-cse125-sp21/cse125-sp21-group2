@@ -3,6 +3,9 @@
 #include "Projectile.h"
 
 #define PLAYER_DAMAGE 2
+#define PLAYER_HEAL_RATE_MS 5000
+#define PLAYER_HEAL_AMT 1
+
 class Player : public Moveable {
  public:
   Player(Transform* transform, std::string name, int health, int id);
@@ -26,6 +29,8 @@ class Player : public Moveable {
 
   bool shouldNotCollide(GameObject* obj);
 
+  void setHealth(int amt);
+
  private:
   glm::vec3 mRotationSpeed = glm::vec3(-0.04, -0.12, 0);
 
@@ -35,5 +40,6 @@ class Player : public Moveable {
 
   unsigned long mRespawnTimeMS = 5000;
   unsigned long mTimeToSpawn;
+  unsigned long mLastHeal;
 };
 const std::string player_prefix = "play";

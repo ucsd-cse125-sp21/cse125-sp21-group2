@@ -24,7 +24,24 @@ void Player::update() {
       mTimeToSpawn = 0;
       mHealth = DEFAULT_HEALTH;
     }
+
+    return;
   }
+
+  if (mHealth >= DEFAULT_HEALTH ||
+      GetTickCount() - mLastHeal < PLAYER_HEAL_RATE_MS) {
+    return;
+  }
+
+  mLastHeal = GetTickCount();
+  mHealth += PLAYER_HEAL_AMT;
+
+  // Ensure health never goes above max
+  if (mHealth > DEFAULT_HEALTH) {
+    mHealth = DEFAULT_HEALTH;
+  }
+
+  std::cout << "Player healed: " << mHealth << std::endl;
 }
 
 int Player::getId() { return mPlayerId; }
@@ -56,4 +73,13 @@ bool Player::shouldNotCollide(GameObject* obj) {
   // projectiles???? interesting question
   return GameObject::shouldNotCollide(obj) ||  // Call super method
          obj->isTower();
+}
+
+void Player::setHealth(int amt) {
+  // reset timer if taking damage
+  if (amt < mHealth) {
+    mLastHeal = GetTickCount();
+  }
+
+  GameObject::setHealth(amt);
 }
