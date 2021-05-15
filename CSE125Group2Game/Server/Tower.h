@@ -1,20 +1,17 @@
-#pragma once
+﻿#pragma once
 #include "GameObject.h"
 
 class Tower : public GameObject {
-public:
-    static int mTowerSpawned;
+ public:
+  static int mTowerSpawned;
 
-    Tower(Transform* transform, char* name, int health)
-        : GameObject(transform, name, health, ObjectType::Tower) {}
+  Tower(Transform* transform, std::string name, int health)
+      : GameObject(transform, name, health, ObjectType::Tower) {}
 
-    void update();
+  void update();
 
-    static void spawn(int count);
+  static void spawn();
 
-
-
-protected:
-    static std::string makeName();
-
+ protected:
+  static std::string makeName();
 };

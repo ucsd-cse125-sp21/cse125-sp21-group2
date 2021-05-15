@@ -54,6 +54,8 @@ class GameLogicServer {
 
   void sendInfo();
 
+  ServerLoader mScene;
+
  private:
   void resetKeyPresses();
   char* marshalInfo(GameObject* obj);
@@ -71,7 +73,6 @@ class GameLogicServer {
   void movePlayerToBoundary(Player* player);
   void updatePlayerPosition(int playerId);
   std::vector<GameObject*> mWorld;
-  ServerLoader mScene;
   uint16_t mTick_ms;
   PriorityMutex mMtx;
 

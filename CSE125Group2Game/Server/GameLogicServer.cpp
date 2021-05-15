@@ -65,6 +65,7 @@ GameLogicServer* GameLogicServer::getLogicServer() {
   if (!mLogicServer) {
     uint16_t tick = 33;
     std::string config_tick("tick");
+
     ServerLoader scene(SCENE_JSON);
 
     std::vector<GameObject*> world = ServerGraphNode::getRoot()->makeWorld(
@@ -91,7 +92,7 @@ GameLogicServer* GameLogicServer::getLogicServer() {
     } else {
       tower_count = std::stoi(str_tower);
     }
-    // Tower::spawn(tower_count);
+    Tower::spawn();
     std::cout << "Spawning " << tower_count << " towers." << std::endl;
   }
   return mLogicServer;

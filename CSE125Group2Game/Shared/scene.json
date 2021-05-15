@@ -18,7 +18,7 @@
       "obj_file": "models/planet/planet.obj"
     },
     {
-      "name": "bearl1",
+      "name": "towrbear",
       "parent_name": "root",
       "xPos": -1.112959384918213,
       "yPos": 20.923466682434082,
@@ -32,7 +32,8 @@
       "bb_length": 5,
       "bb_height": 5,
       "bb_width": 5,
-      "obj_file": "models/towers/bearl/bearl.obj"
+      "obj_file": "models/towers/bearl/bearl.obj",
+      "isTower": true
     }
   ]
 }

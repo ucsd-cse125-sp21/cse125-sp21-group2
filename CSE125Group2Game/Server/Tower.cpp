@@ -9,14 +9,13 @@ void Tower::update() {
   // mIsModified = true;
 }
 
-void Tower::spawn(int count) {
+void Tower::spawn() {
   GameLogicServer* logicServer = GameLogicServer::getLogicServer();
-  for (int i = 1; i <= count; i++) {
+
+  for (int i = 0; i < logicServer->mScene.mTowers.size(); i++) {
     // TODO: spawn based on scene.json
-    Tower* tower =
-        new Tower(new Transform(glm::vec3(5 + 5 * i, 0, 0), glm::vec3(0),
-                                glm::vec3(1), glm::vec3(0.5)),
-                  (char*)makeName().c_str(), 100);
+    Tower* tower = new Tower(logicServer->mScene.mTowers[i]->getTransform(),
+                             logicServer->mScene.mTowers[i]->getName(), 100);
 
     logicServer->addGameObject(tower);
   }
