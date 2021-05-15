@@ -83,17 +83,8 @@ GameLogicServer* GameLogicServer::getLogicServer() {
     }
 
     mLogicServer = new GameLogicServer(world, scene, tick);
-    int tower_count;
-    std::string config_tower("tower_count");
-    std::string str_tower = server_read_config2(config_tower, CONFIG_TXT);
-    if (str_tower.compare(std::string()) == 0) {
-      tower_count = DEFAULT_TOWER_COUNT;
-      std::cout << SERVER_CONFIG_ERROR << std::endl;
-    } else {
-      tower_count = std::stoi(str_tower);
-    }
+
     Tower::spawn();
-    std::cout << "Spawning " << tower_count << " towers." << std::endl;
   }
   return mLogicServer;
 }
@@ -136,11 +127,12 @@ void GameLogicServer::updateTowers() {
     if (mWorld[i]->isTower()) {
       GameObject* collider = getCollidingObject(mWorld[i]);
 
-      if (collider != nullptr &&
-          collider->getObjectType() == ObjectType::Enemy) {
+      if (collider != nullptr && collider->isEnemy()) {
         // Take Damage when enemy collide with tower
         // TODO: make damage dynamic
-        mWorld[i]->setHealth(mWorld[i]->getHealth() - 0);
+        mWorld[i]->setHealth(mWorld[i]->getHealth() - TOWER_DAMAGE);
+        // Kill the enemy!
+        collider->setHealth(0);
         // std::cout << "Tower Health:"
         // << mWorld[i]->getHealth()
         //          << ",collided with " << collider->getName() << std::endl;

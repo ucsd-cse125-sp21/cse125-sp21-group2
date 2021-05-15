@@ -21,7 +21,7 @@
       "name": "towrbear",
       "parent_name": "root",
       "xPos": -1.112959384918213,
-      "yPos": 20.923466682434082,
+      "yPos": 21.923466682434082,
       "zPos": 1.41459184885025024,
       "xRot": 0.002629730151966214,
       "yRot": 0,
@@ -29,9 +29,9 @@
       "xScale": 0.3169567584991455,
       "yScale": 0.3169567584991455,
       "zScale": 0.3169567584991455,
-      "bb_length": 5,
+      "bb_length": 1,
       "bb_height": 5,
-      "bb_width": 5,
+      "bb_width": 1,
       "obj_file": "models/towers/bearl/bearl.obj",
       "isTower": true
     }

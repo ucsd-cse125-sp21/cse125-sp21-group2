@@ -24,6 +24,8 @@ class Player : public Moveable {
 
   static Player* spawnPlayer(int playerId);
 
+  bool shouldNotCollide(GameObject* obj);
+
  private:
   glm::vec3 mRotationSpeed = glm::vec3(-0.04, -0.12, 0);
 

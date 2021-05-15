@@ -143,6 +143,7 @@ ServerLoader::ServerLoader(std::string fileName) {
 
     if (isTower) {
       mTowers.push_back(node);
+      parentNode->removeChild(node);
     } else {
       mObjects.insert(std::make_pair(name, node));
     }
