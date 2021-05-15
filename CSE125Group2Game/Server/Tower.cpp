@@ -2,11 +2,27 @@
 
 #include "GameLogicServer.h"
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 int Tower::mTowerSpawned = 0;
 
 void Tower::update() {
-  // TODO: add healing feature?
-  // mIsModified = true;
+  // Do nothing if at full health
+  if (mHealth >= TOWER_HEALTH ||
+      GetTickCount() - mLastHeal < TOWER_HEAL_RATE_MS) {
+    return;
+  }
+
+  mLastHeal = GetTickCount();
+  mHealth += TOWER_HEAL_AMT;
+
+  // Ensure health never goes above max
+  if (mHealth > TOWER_HEALTH) {
+    mHealth = TOWER_HEALTH;
+  }
+
+  std::cout << "Tower health set to " << mHealth << std::endl;
 }
 
 void Tower::spawn() {
@@ -20,6 +36,15 @@ void Tower::spawn() {
 
     logicServer->addGameObject(tower);
   }
+}
+
+void Tower::setHealth(int amt) {
+  // reset timer if taking damage
+  if (amt < mHealth) {
+    mLastHeal = GetTickCount();
+  }
+
+  GameObject::setHealth(amt);
 }
 
 std::string Tower::makeName() {

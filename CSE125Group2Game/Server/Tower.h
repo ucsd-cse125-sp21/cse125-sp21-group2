@@ -4,6 +4,9 @@
 #define TOWER_DAMAGE 10
 #define TOWER_HEALTH 100
 
+#define TOWER_HEAL_RATE_MS 5000
+#define TOWER_HEAL_AMT 5
+
 class Tower : public GameObject {
  public:
   static int mTowerSpawned;
@@ -13,9 +16,13 @@ class Tower : public GameObject {
 
   void update();
 
+  void setHealth(int amt);
+
   static void spawn();
   bool shouldNotCollide(GameObject* obj);
 
  protected:
   static std::string makeName();
+
+  unsigned long mLastHeal;
 };

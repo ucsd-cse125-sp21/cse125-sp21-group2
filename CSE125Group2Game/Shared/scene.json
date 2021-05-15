@@ -34,6 +34,24 @@
       "bb_width": 1,
       "obj_file": "models/towers/bearl/bearl.obj",
       "isTower": true
+    },
+    {
+      "name": "towrstar",
+      "parent_name": "root",
+      "xPos": -1.112959384918213,
+      "yPos": -23.923466682434082,
+      "zPos": 1.41459184885025024,
+      "xRot": 180,
+      "yRot": 0,
+      "zRot": 0,
+      "xScale": 2.5,
+      "yScale": 2,
+      "zScale": 2,
+      "bb_length": 0.5,
+      "bb_length": 0.5,
+      "bb_height": 1,
+      "bb_width": 0.5,
+      "obj_file": "models/towers/fallenstar/fallenstar.obj"
     }
   ]
 }
