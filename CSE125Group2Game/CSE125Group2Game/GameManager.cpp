@@ -73,11 +73,7 @@ void GameManager::Update() {
     glfwPollEvents();
 
     bool keysPressed[NUM_KEYS];
-    keysPressed[GameObject::FORWARD] = glfwGetKey(mWindow, FORWARD_KEY);
-    keysPressed[GameObject::LEFT] = glfwGetKey(mWindow, LEFT_KEY);
-    keysPressed[GameObject::BACKWARD] = glfwGetKey(mWindow, BACKWARD_KEY);
-    keysPressed[GameObject::RIGHT] = glfwGetKey(mWindow, RIGHT_KEY);
-    keysPressed[GameObject::SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
+    updateKeyPresses(keysPressed);
 
     // 2) Call client update
     if (c.Update(keysPressed)) {
@@ -94,6 +90,15 @@ void GameManager::Update() {
   }
 
   glfwTerminate();
+}
+
+void GameManager::updateKeyPresses(bool* keysPressed) {
+  keysPressed[FORWARD] = glfwGetKey(mWindow, FORWARD_KEY);
+  keysPressed[LEFT] = glfwGetKey(mWindow, LEFT_KEY);
+  keysPressed[BACKWARD] = glfwGetKey(mWindow, BACKWARD_KEY);
+  keysPressed[RIGHT] = glfwGetKey(mWindow, RIGHT_KEY);
+  keysPressed[SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
+  keysPressed[RESTART] = glfwGetKey(mWindow, RESTART_KEY);
 }
 
 void GameManager::UpdateObject(GameObject* obj) {
@@ -146,7 +151,7 @@ void GameManager::UpdateObject(GameObject* obj) {
   // Health is 0, delete object
   if (obj->isDead()) {
     // Don't render the player if they die
-    if (foundObject->isPlayer()) {
+    if (foundObject->isPlayer() || obj->isTower()) {
       foundObject->mShouldRender = false;
       return;
     }

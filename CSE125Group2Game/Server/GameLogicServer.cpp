@@ -7,7 +7,6 @@
 //#include "Projectile.h"
 #include "Tower.h"
 #include "WaveManager.h"
-#define DEFAULT_TOWER_COUNT 2
 
 #define SERVER_CONFIG_ERROR \
   "server couldn't read config file using default values\n"
@@ -92,25 +91,57 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 void GameLogicServer::update() {
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
-  // printKeyPresses();
-  WaveManager::getWaveManager()->update();
+  // Only update game state if game isn't over
+  if (!isGameOver()) {
+    // printKeyPresses();
+    WaveManager::getWaveManager()->update();
+    updatePlayers();  // Update player locations
+    updateEnemies();
+    updateTowers();
+    updateProjectiles();
+  } else {
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+      if (players[i] == NULL || !mKeyPresses[i][RESTART]) {
+        continue;
+      }
 
-  // 1) Player's, 2) enemies, 3) projectile
-
-  // Update player locations
-  updatePlayers();
-
-  updateEnemies();
-
-  updateTowers();
-
-  // TODO: should we create projectiles before moving players or after? moving
-  // changes their forward vector
-  updateProjectiles();
+      restartGame();
+      break;
+    }
+  }
 
   sendInfo();
 
   resetKeyPresses();
+}
+
+bool GameLogicServer::isGameOver() {
+  // Game is not over until all towers are destroyed
+  for (int i = 0; i < mTowers.size(); i++) {
+    if (!mTowers[i]->isDead()) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+void GameLogicServer::restartGame() {
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (!players[i]) {
+      continue;
+    }
+
+    players[i]->resetModel();
+    players[i]->setHealth(DEFAULT_HEALTH);
+  }
+
+  for (int i = 0; i < mTowers.size(); i++) {
+    mTowers[i]->setHealth(TOWER_HEALTH);
+    mWorld.push_back(mTowers[i]);
+  }
+
+  // TODO: delete enemies?
 }
 
 void GameLogicServer::updateEnemies() {
@@ -123,25 +154,25 @@ void GameLogicServer::updateEnemies() {
 }
 
 void GameLogicServer::updateTowers() {
-  for (int i = 0; i < mWorld.size(); i++) {
-    if (mWorld[i]->isTower()) {
-      GameObject* collider = getCollidingObject(mWorld[i]);
+  for (int i = 0; i < mTowers.size(); i++) {
+    Tower* tower = mTowers[i];
 
-      if (collider != nullptr && collider->isEnemy()) {
-        // Take Damage when enemy collide with tower
-        // TODO: make damage dynamic
-        ((Tower*)mWorld[i])->setHealth(mWorld[i]->getHealth() - TOWER_DAMAGE);
-        // Kill the enemy!
-        collider->setHealth(0);
-        // std::cout << "Tower Health:"
-        // << mWorld[i]->getHealth()
-        //          << ",collided with " << collider->getName() << std::endl;
-        continue;
-      }
-
-      // call tower update
-      mWorld[i]->update();
+    if (tower->isDead()) {
+      continue;
     }
+
+    GameObject* collider = getCollidingObject(tower);
+
+    if (collider != nullptr && collider->isEnemy()) {
+      tower->setHealth(tower->getHealth() - TOWER_DAMAGE);
+      // Kill the enemy!
+      collider->setHealth(0);
+
+      continue;
+    }
+
+    // call tower update
+    tower->update();
   }
 }
 
@@ -170,12 +201,11 @@ void GameLogicServer::updatePlayers() {
 
     players[i]->update();
 
-    // if (players[i]->getHealth() <= 0) {
     if (players[i]->isDead()) {
       continue;
     }
 
-    if (mKeyPresses[i][GameObject::SHOOT]) {
+    if (mKeyPresses[i][SHOOT]) {
       // std::cout << "Player " << i << " wants to spawn a projectile!!";
       Projectile::spawnProjectile(players[i]);
     }
@@ -190,16 +220,12 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
   Player* player = players[playerIndex];
 
   // Collision detection
-  // player->/*addTranslation*/ (player->getVelocity());
-
   GameObject* collidedObj = getCollidingObject(player);
   if (!collidedObj) {
     return;
   }
 
-  std::string name = collidedObj->getName();
-
-  // std::cout << "Collision with: " << name << std::endl;
+  // std::cout << "Collision with: " << collidedObj->getName() << std::endl;
 
   if (collidedObj->isEnemy()) {
     collidedObj->setHealth(0);
@@ -228,7 +254,8 @@ GameObject* GameLogicServer::getCollidingObject(GameObject* obj) {
   // For every gameobject in the world, check if this object collides with
   // anything
   for (int i = 0; i < mWorld.size(); i++) {
-    // If this object is the root, or has 0 health, or is itself, do not collide
+    // If this object is the root, or has 0 health, or is itself, do not
+    // collide
     if (obj->shouldNotCollide(mWorld[i])) {
       continue;
     }
@@ -287,8 +314,6 @@ std::vector<float> GameLogicServer::getMinMax(GameObject* obj) {
 }
 
 std::vector<glm::vec3> GameLogicServer::getCorners(GameObject* obj) {
-  // TODO: Consider rotation of object when doing bounding box corners
-  // TODO: also scale :D
   glm::vec3 center = obj->getTransform()->getTranslation();
   // L,H,W
   glm::vec3 boundingBox = -1.0f * obj->getTransform()->getBBox();
@@ -326,17 +351,16 @@ std::vector<glm::vec3> GameLogicServer::getCorners(GameObject* obj) {
   vertices.push_back(center -
                      glm::vec3(boundingBox.x, -boundingBox.y, boundingBox.z));
   vertices.push_back(center -
-                     glm::vec3(-boundingBox.x, -boundingBox.y, boundingBox.z));
-  vertices.push_back(center -
-                     glm::vec3(boundingBox.x, boundingBox.y, -boundingBox.z));
-  vertices.push_back(center -
+                     glm::vec3(-boundingBox.x, -boundingBox.y,
+  boundingBox.z)); vertices.push_back(center - glm::vec3(boundingBox.x,
+  boundingBox.y, -boundingBox.z)); vertices.push_back(center -
                      glm::vec3(-boundingBox.x, boundingBox.y, boundingBox.z));
   vertices.push_back(center -
-                     glm::vec3(-boundingBox.x, boundingBox.y, -boundingBox.z));
-  vertices.push_back(center -
-                     glm::vec3(boundingBox.x, -boundingBox.y, -boundingBox.z));
-  vertices.push_back(center -
-                     glm::vec3(-boundingBox.x, -boundingBox.y, -boundingBox.z));
+                     glm::vec3(-boundingBox.x, boundingBox.y,
+  -boundingBox.z)); vertices.push_back(center - glm::vec3(boundingBox.x,
+  -boundingBox.y, -boundingBox.z)); vertices.push_back(center -
+                     glm::vec3(-boundingBox.x, -boundingBox.y,
+  -boundingBox.z));
 
    */
 
@@ -378,7 +402,12 @@ void GameLogicServer::resetKeyPresses() {
   }
 }
 
-void GameLogicServer::addGameObject(GameObject* obj) { mWorld.push_back(obj); }
+void GameLogicServer::addGameObject(GameObject* obj) {
+  mWorld.push_back(obj);
+  if (obj->isTower()) {
+    mTowers.push_back((Tower*)obj);
+  }
+}
 
 void GameLogicServer::sendInfo() {
   for (int i = 0; i < mWorld.size(); i++) {
@@ -413,7 +442,11 @@ void GameLogicServer::deleteObject(int worldIndex) {
   }
 
   mWorld.erase(mWorld.begin() + worldIndex);
-  delete tmpObj;
+
+  // Don't delete towers
+  if (!tmpObj->isTower()) {
+    delete tmpObj;
+  }
 }
 
 char* GameLogicServer::marshalInfo(GameObject* obj) {
@@ -469,11 +502,12 @@ void GameLogicServer::printKeyPresses() {
 
     std::cout << "key presses for player " << i << std::endl;
 
-    std::cout << "forward: " << mKeyPresses[i][GameObject::FORWARD];
-    std::cout << "backward: " << mKeyPresses[i][GameObject::BACKWARD];
-    std::cout << "left: " << mKeyPresses[i][GameObject::LEFT];
-    std::cout << "right: " << mKeyPresses[i][GameObject::RIGHT];
-    std::cout << "shoot: " << mKeyPresses[i][GameObject::SHOOT];
+    std::cout << "forward: " << mKeyPresses[i][FORWARD];
+    std::cout << "backward: " << mKeyPresses[i][BACKWARD];
+    std::cout << "left: " << mKeyPresses[i][LEFT];
+    std::cout << "right: " << mKeyPresses[i][RIGHT];
+    std::cout << "shoot: " << mKeyPresses[i][SHOOT];
+    std::cout << "restart: " << mKeyPresses[i][RESTART] << std::endl;
   }
 }
 
@@ -492,10 +526,8 @@ void GameLogicServer::updatePlayerPosition(int playerId) {
 }
 
 int GameLogicServer::getVerticalInput(int playerId) {
-  return mKeyPresses[playerId][GameObject::FORWARD] -
-         mKeyPresses[playerId][GameObject::BACKWARD];
+  return mKeyPresses[playerId][FORWARD] - mKeyPresses[playerId][BACKWARD];
 }
 int GameLogicServer::getHorizontalInput(int playerId) {
-  return mKeyPresses[playerId][GameObject::RIGHT] -
-         mKeyPresses[playerId][GameObject::LEFT];
+  return mKeyPresses[playerId][RIGHT] - mKeyPresses[playerId][LEFT];
 }

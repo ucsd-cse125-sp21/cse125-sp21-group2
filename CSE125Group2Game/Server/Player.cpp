@@ -65,7 +65,6 @@ Player* Player::spawnPlayer(int playerId) {
 
   Player* newPlayer = new Player(transform, Player::makeName(playerId),
                                  DEFAULT_HEALTH, playerId);
-  newPlayer->move(glm::vec3(0));
 
   return newPlayer;
 }

@@ -16,18 +16,21 @@
 #define STONEHENGE_MODEL "models/towers/stonehenge/stonehenge.obj"
 #define FALLEN_STAR_MODEL "Assets/models/towers/fallenstar/fallenstar.obj"
 
+#define FORWARD_KEY GLFW_KEY_W
+#define LEFT_KEY GLFW_KEY_A
+#define BACKWARD_KEY GLFW_KEY_S
+#define RIGHT_KEY GLFW_KEY_D
+#define PROJECTILE_KEY GLFW_KEY_SPACE
+#define RESTART_KEY GLFW_KEY_R
+
 class GameManager {
  public:
-  static const int FORWARD_KEY = GLFW_KEY_W;
-  static const int LEFT_KEY = GLFW_KEY_A;
-  static const int BACKWARD_KEY = GLFW_KEY_S;
-  static const int RIGHT_KEY = GLFW_KEY_D;
-  static const int PROJECTILE_KEY = GLFW_KEY_SPACE;
-
   GameManager(GLFWwindow* window);
   ~GameManager();
 
   void Update();
+
+  void updateKeyPresses(bool keysPressed[5]);
 
   static GameManager* getManager();
 

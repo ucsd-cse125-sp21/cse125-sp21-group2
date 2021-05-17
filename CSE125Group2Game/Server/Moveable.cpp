@@ -26,4 +26,12 @@ void Moveable::initPivotModel(Transform* transform) {
 
   mModelTransform = new Transform(transform->getTranslation(), glm::vec3(0),
                                   transform->getScale());
+
+  move(glm::vec3(0));
+  mInitPivotModel = mPivot->getModel();
+}
+
+void Moveable::resetModel() {
+  mPivot->setModel(mInitPivotModel);
+  move(glm::vec3(0));
 }
