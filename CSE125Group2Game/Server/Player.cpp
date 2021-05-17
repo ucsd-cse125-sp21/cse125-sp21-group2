@@ -59,11 +59,13 @@ std::string Player::makeName(int id) {
 glm::vec3 Player::getRotationSpeed() { return mRotationSpeed; }
 
 Player* Player::spawnPlayer(int playerId) {
-  Transform* transform = new Transform(glm::vec3(0, RADIUS, 0), glm::vec3(0),
-                                       glm::vec3(.5), glm::vec3(3.5));
+  Transform* transform =
+      new Transform(glm::vec3(0, RADIUS, 0), glm::vec3(0, 0, playerId * -20),
+                    glm::vec3(.5), glm::vec3(3.5));
 
   Player* newPlayer = new Player(transform, Player::makeName(playerId),
                                  DEFAULT_HEALTH, playerId);
+  newPlayer->move(glm::vec3(0));
 
   return newPlayer;
 }

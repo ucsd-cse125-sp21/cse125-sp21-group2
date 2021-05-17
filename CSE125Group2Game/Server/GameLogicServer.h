@@ -55,6 +55,7 @@ class GameLogicServer {
   void sendInfo();
 
   ServerLoader mScene;
+  PriorityMutex mMtx;
 
  private:
   void resetKeyPresses();
@@ -74,7 +75,6 @@ class GameLogicServer {
   void updatePlayerPosition(int playerId);
   std::vector<GameObject*> mWorld;
   uint16_t mTick_ms;
-  PriorityMutex mMtx;
 
   std::vector<bool*> mKeyPresses;  // Queue for storing events before each
                                    // tick for each player

@@ -10,7 +10,7 @@ int Tower::mTowerSpawned = 0;
 void Tower::update() {
   // Do nothing if at full health
   if (mHealth >= TOWER_HEALTH ||
-      GetTickCount() - mLastHeal < TOWER_HEAL_RATE_MS) {
+      GetTickCount() - mLastHeal < TOWER_HEAL_RATE_MS || mHealth <= 0) {
     return;
   }
 

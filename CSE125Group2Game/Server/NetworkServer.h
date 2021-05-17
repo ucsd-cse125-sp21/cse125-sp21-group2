@@ -81,16 +81,18 @@ bool NetworkServer::OnClientConnect(
 
   GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
-  // Transform* transform = new Transform(glm::vec3(0, RADIUS, 0), glm::vec3(0),
-  //                                     glm::vec3(.5), glm::vec3(3.5));
-
-  // Player* newPlayer = new Player(transform, Player::makeName(numPlayers),
-  //                               DEFAULT_HEALTH, numPlayers);
-
   Player* newPlayer = Player::spawnPlayer(numPlayers);
   logicServer->addGameObject(newPlayer);
 
   logicServer->players[numPlayers] = newPlayer;
+
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (logicServer->players[i] == nullptr) {
+      continue;
+    }
+
+    logicServer->players[i]->mIsModified = true;
+  }
 
   return true;
 }
