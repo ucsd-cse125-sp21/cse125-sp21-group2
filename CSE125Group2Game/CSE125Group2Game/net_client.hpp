@@ -94,7 +94,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
               data[i] = msg.body[i];
             }
 
-            GameObject* obj = GameManager::getManager()->Unmarshal(data);
+            GameObject* obj = GameManager::getManager()->unmarshalInfo(data);
 
             // Object updated this tick, skip it
             // if (updatedObjects.find(std::string(obj->getName())) !=
@@ -103,6 +103,15 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             //}
 
             // updatedObjects.insert(std::string(obj->getName()));
+
+            // if (obj->getObjectType() == ObjectType::Player) {
+            //  glm::vec3 angle =
+            //      glm::eulerAngles(obj->getTransform()->getRotation());
+
+            //  std::cout << glm::degrees(angle.x) << " " <<
+            //  glm::degrees(angle.y)
+            //            << " " << glm::degrees(angle.z) << std::endl;
+            //}
 
             GameManager::getManager()->UpdateObject(obj);
 

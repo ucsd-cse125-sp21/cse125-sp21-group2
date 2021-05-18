@@ -6,14 +6,17 @@
 // TODO: Create moveable class which deals with rotation (each object has its
 // own pivot)
 
-enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile };
+enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile, Tower };
 
 #define NUM_KEYS 5
 #define NAME_LEN 8
 #define FLOAT_SIZE 4
 #define INT_SIZE sizeof(int)
-#define MESSAGE_SIZE NAME_LEN + (12 * FLOAT_SIZE) + INT_SIZE
+#define TYPE_SIZE sizeof(ObjectType)
+#define MESSAGE_SIZE NAME_LEN + (19 * FLOAT_SIZE) + INT_SIZE + TYPE_SIZE
 #define MAX_PLAYERS 4
+
+#define RADIUS 25
 
 class GameObject {
  public:
@@ -33,6 +36,7 @@ class GameObject {
   bool isDefault();
   bool isPlayer();
   bool isEnemy();
+  bool isTower();
   bool isProjectile();
 
   void setTransform(Transform* transform);

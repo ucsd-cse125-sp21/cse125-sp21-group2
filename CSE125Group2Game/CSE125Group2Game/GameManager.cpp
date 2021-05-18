@@ -21,10 +21,12 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   glfwSetWindowUserPointer(mWindow, this);
   mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
 
-  mScene.getByName("tree1")->getModel()->mMaterials[0].isRainbow = true;
-  mScene.getByName("tree1")->getModel()->mMaterials[1].isRainbow = true;
+  // mScene.getByName("tree1")->getModel()->mMaterials[0].isRainbow = true;
+  // mScene.getByName("tree1")->getModel()->mMaterials[1].isRainbow = true;
 
   mpRenderManager->setRenderBoundingBoxes(true);
+
+  mSound = new Sound();
 }
 
 GameManager* GameManager::getManager() {
@@ -88,7 +90,7 @@ void GameManager::Update() {
       break;
     }
 
-    // 3) Call drawAll on scene graph
+    // 4) Call drawAll on scene graph
     mpRenderManager->beginRender();
 
     // draw scene
@@ -108,26 +110,28 @@ void GameManager::AddPlayer(int clientId) {
 
   mPlayerTransform = playerTransform;
 
-  std::string clientName = "play000";
-  clientName += std::to_string(clientId);
+  // std::string clientName = "play000";
+  // clientName += std::to_string(clientId);
+
+  std::string clientName = GameObject::makeName("play", clientId);
 
   GameObject* playerObject =
       new GameObject(playerTransform, (char*)clientName.c_str(), 10);
 
   // TODO: make camera a child of the player object in the scene graph
 
-  // Model* model =
-  // new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
-  // playerTransform, *mLoader);
-  Model* model = Model::Cube(playerTransform, *mLoader);
+  Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+                           playerTransform, *mLoader, mTLoader);
+  // mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
+  // Model* model = Model::Cube(playerTransform, *mLoader);
 
   SceneGraphNode* playerNode = mScene.addChild(playerObject, model);
 
   // attach the camera to the player
   Camera& camera = mScene.addCamera(playerNode);
-  camera.setPosition(glm::vec3(0, 0, 10.0f));
-  camera.setFacing(glm::vec3(0, 0, -1.0f));
-  camera.setUp(glm::vec3(0.0f, 1.0f, 0.0f));
+  camera.setPosition(glm::vec3(0, 10.0f, 0));
+  camera.setFacing(glm::vec3(0, 0, 0));
+  camera.setUp(glm::vec3(0.0f, 0, -1.0f));
 }
 
 void GameManager::UpdateObject(GameObject* obj) {
@@ -137,17 +141,31 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Object does not exist, create it
   if (!foundNode) {
+    Transform* transform = new Transform(obj->getTransform()->getTranslation(),
+                                         obj->getTransform()->getRotation(),
+                                         obj->getTransform()->getScale(),
+                                         obj->getTransform()->getBBox());
+
+    transform->setModel(obj->getTransform()->getModel());
     // std::cout << "creating new  object" << std::endl;
-    foundObject =
-        new GameObject(new Transform(obj->getTransform()->getTranslation(),
-                                     obj->getTransform()->getRotation(),
-                                     obj->getTransform()->getScale()),
-                       obj->getName(), obj->getHealth());
+
+    foundObject = new GameObject(transform, obj->getName(), obj->getHealth(),
+                                 obj->getObjectType());
 
     // TODO: if else for model based on enum (constructor adds itself as child
     // of parent)
-    foundNode = mScene.addChild(
-        foundObject, Model::Cube(foundObject->getTransform(), *mLoader));
+
+    Model* model = nullptr;
+    if (obj->isTower()) {
+      model = new Model(ASSET("models/towers/stonehenge/stonehenge.obj"),
+                        transform, *mLoader, mTLoader);
+    } else if (false && obj->isEnemy()) {
+      model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
+                        transform, *mLoader, mTLoader);
+    } else {
+      model = Model::Cube(foundObject->getTransform(), *mLoader);
+    }
+    foundNode = mScene.addChild(foundObject, model);
   }
 
   // Update object
@@ -161,16 +179,14 @@ void GameManager::UpdateObject(GameObject* obj) {
     return;
   }
 
-  // Set found objects position, rotation, scale, and health to passed in obj
-  foundObject->getTransform()->setTranslation(
-      obj->getTransform()->getTranslation());
+  // Update sound listener position on player update
+  if (foundObject->getTransform() == mPlayerTransform) {
+    // 3) Update sound listener position
+    mSound->setListenerPosition(mPlayerTransform);
+  }
 
-  foundObject->getTransform()->setRotation(obj->getTransform()->getRotation());
-
-  foundObject->getTransform()->setScale(obj->getTransform()->getScale());
-
+  foundObject->getTransform()->setModel(obj->getTransform()->getModel());
   foundObject->setHealth(obj->getHealth());
-  return;
 }
 
 SceneGraphNode* GameManager::findNode(GameObject* obj, SceneGraphNode* node) {
@@ -188,7 +204,7 @@ SceneGraphNode* GameManager::findNode(GameObject* obj, SceneGraphNode* node) {
 
   return NULL;
 }
-GameObject* GameManager::Unmarshal(char* data) {
+GameObject* GameManager::unmarshalInfo(char* data) {
   // 1) 8 byte char[] name
   // 32 bit (4 byte) floats
   // 2) Transform: 3 floats for location, 3 for rotation, 3 for scale
@@ -201,30 +217,14 @@ GameObject* GameManager::Unmarshal(char* data) {
   memcpy(name, tmpInfo, NAME_LEN);  // Copy name into data
   tmpInfo += NAME_LEN;
 
-  GLfloat xPos, yPos, zPos;
-  memcpy(&xPos, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&yPos, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&zPos, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
+  glm::mat4 model;
 
-  // TODO: In unmarshling, euler angles -> quat
-  GLfloat xRot, yRot, zRot;
-  memcpy(&xRot, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&yRot, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&zRot, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-
-  GLfloat xScale, yScale, zScale;
-  memcpy(&xScale, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&yScale, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(&zScale, tmpInfo, FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      memcpy(&(model[j][i]), tmpInfo, FLOAT_SIZE);
+      tmpInfo += FLOAT_SIZE;
+    }
+  }
 
   int health;
   memcpy(&health, tmpInfo, INT_SIZE);
@@ -238,12 +238,19 @@ GameObject* GameManager::Unmarshal(char* data) {
   memcpy(&zbb, tmpInfo, FLOAT_SIZE);
   tmpInfo += FLOAT_SIZE;
 
-  Transform* transform = new Transform(
-      glm::vec3(xPos, yPos, zPos), glm::vec3(xRot, yRot, zRot),
-      glm::vec3(xScale, yScale, zScale), glm::vec3(xbb, ybb, zbb));
+  ObjectType type;
+  memcpy(&type, tmpInfo, TYPE_SIZE);
+  tmpInfo += TYPE_SIZE;
 
+  // TODO maybe we should send over actual values in addition to the matrix
+  Transform* transform = new Transform(glm::vec3(0), glm::vec3(0), glm::vec3(0),
+                                       glm::vec3(xbb, ybb, zbb));
+
+  transform->setModel(model);
   // TODO: should we add forward vector on client?
-  GameObject* obj = new GameObject(transform, name, health);
+  GameObject* obj = new GameObject(transform, name, health, type);
+
+  mSound->playAccordingToGameObject(obj);
 
   return obj;
 }

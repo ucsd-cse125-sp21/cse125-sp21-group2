@@ -4,8 +4,10 @@
 
 #include <limits>
 
-#include "Projectile.h"
+//#include "Projectile.h"
+#include "Tower.h"
 #include "WaveManager.h"
+#define DEFAULT_TOWER_COUNT 2
 
 GameLogicServer* GameLogicServer::mLogicServer;
 
@@ -75,6 +77,18 @@ GameLogicServer* GameLogicServer::getLogicServer() {
     }
 
     mLogicServer = new GameLogicServer(world, scene, tick);
+    int tower_count;
+    std::string config_tower("tower_count");
+    std::string str_tower = server_read_config2(config_tower, "../config.txt");
+    if (str_tower.compare(std::string()) == 0) {
+      tower_count = DEFAULT_TOWER_COUNT;
+      std::cout << "server couldn't find tower config, use default tower count."
+                << std::endl;
+    } else {
+      tower_count = std::stoi(str_tower);
+    }
+    // Tower::spawn(tower_count);
+    std::cout << "Spawning " << tower_count << " towers." << std::endl;
   }
   return mLogicServer;
 }
@@ -91,6 +105,8 @@ void GameLogicServer::update() {
   updatePlayers();
 
   updateEnemies();
+
+  updateTowers();
 
   // TODO: should we create projectiles before moving players or after? moving
   // changes their forward vector
@@ -110,6 +126,26 @@ void GameLogicServer::updateEnemies() {
   }
 }
 
+void GameLogicServer::updateTowers() {
+  for (int i = 0; i < mWorld.size(); i++) {
+    if (mWorld[i]->isTower()) {
+      GameObject* collider = getCollidingObject(mWorld[i]);
+
+      if (collider != nullptr &&
+          collider->getObjectType() == ObjectType::Enemy) {
+        // Take Damage when enemy collide with tower
+        // TODO: make damage dynamic
+        mWorld[i]->setHealth(mWorld[i]->getHealth() - 0);
+        // std::cout << "Tower Health:" << mWorld[i]->getHealth()
+        //          << ",collided with " << collider->getName() << std::endl;
+        continue;
+      }
+      // call tower update
+      mWorld[i]->update();
+    }
+  }
+}
+
 void GameLogicServer::updateProjectiles() {
   for (int i = 0; i < MAX_PLAYERS; i++) {
     if (players[i] == NULL) {
@@ -123,13 +159,13 @@ void GameLogicServer::updateProjectiles() {
   }
 
   for (int i = 0; i < mWorld.size(); i++) {
-    // if (mWorld[i]->getObjectType() == ObjectType::Projectile) {
     if (mWorld[i]->isProjectile()) {
-      GameObject* collider = doesCollide(mWorld[i]);
+      GameObject* collider = getCollidingObject(mWorld[i]);
 
       if (collider != nullptr) {
+        std::cout << "ENEMY DOWN!!!" << std::endl;
         mWorld[i]->setHealth(0);
-        collider->setHealth(collider->getHealth() - 5);
+        collider->setHealth(collider->getHealth() - 0.1);
         continue;
       }
 
@@ -150,52 +186,42 @@ void GameLogicServer::updatePlayers() {
 }
 
 void GameLogicServer::handlePlayerCollision(int playerIndex) {
-  int vsp = mKeyPresses[playerIndex][GameObject::FORWARD] -
-            mKeyPresses[playerIndex][GameObject::BACKWARD];
+  updatePlayerPosition(playerIndex);
 
-  int hsp = mKeyPresses[playerIndex][GameObject::RIGHT] -
-            mKeyPresses[playerIndex][GameObject::LEFT];
-
-  glm::vec3 velocity = glm::vec3(hsp, vsp, 0);
-  if (hsp != 0 || vsp != 0)
-    velocity = glm::vec3(0.4) * glm::normalize(velocity);
-
-  std::string clientId = "play000";
-  clientId += std::to_string(playerIndex);
-
-  GameObject* player = players[playerIndex];
+  Player* player = players[playerIndex];
 
   // Collision detection
-  player->addTranslation(velocity);
+  // player->/*addTranslation*/ (player->getVelocity());
 
-  GameObject* collidedObj = doesCollide(player);
+  GameObject* collidedObj = getCollidingObject(player);
   if (!collidedObj) {
     return;
   }
 
   std::string name = collidedObj->getName();
 
-  std::cout << "Collision with: " << name << std::endl;
+  // std::cout << "Collision with: " << name << std::endl;
 
   if (collidedObj->isEnemy()) {
-    // Set enemy health to 0
     collidedObj->setHealth(0);
   } else if (collidedObj->isDefault()) {
-    // Collision with scene object
-    // Remove velocity if object collides
-    player->addTranslation(-velocity);
-
-    // Step player towards collision boundary
-    while (!doesCollide(player)) {
-      player->addTranslation(glm::vec3(0.1, 0.1, 0.1) * velocity);
-    }
-
-    // Move player 0.1 units away from collision
-    player->addTranslation(glm::vec3(-0.1, -0.1, -0.1) * velocity);
+    // movePlayerToBoundary(player);
   }
 }
 
-GameObject* GameLogicServer::doesCollide(GameObject* obj) {
+void GameLogicServer::movePlayerToBoundary(Player* player) {
+  player->addTranslation(-player->getVelocity());
+
+  // Step player towards collision boundary
+  while (!getCollidingObject(player)) {
+    player->addTranslation(glm::vec3(0.1, 0.1, 0.1) * player->getVelocity());
+  }
+
+  // Move player 0.1 units away from collision
+  player->addTranslation(glm::vec3(-0.1, -0.1, -0.1) * player->getVelocity());
+}
+
+GameObject* GameLogicServer::getCollidingObject(GameObject* obj) {
   // get 8 points of A in world space
   std::vector<glm::vec3> A = getCorners(obj);
 
@@ -358,7 +384,7 @@ void GameLogicServer::sendInfo() {
   for (int i = 0; i < mWorld.size(); i++) {
     // Only send info for moving objects
     if (mWorld[i]->isPlayer() || mWorld[i]->isEnemy() ||
-        mWorld[i]->isProjectile()) {
+        mWorld[i]->isProjectile() || mWorld[i]->isTower()) {
       // if (mWorld[i]->isProjectile()) {
       //  std::cout << "sending projectile!!!" << std::endl;
       //  if (!mWorld[i]->mIsModified) {
@@ -388,6 +414,8 @@ void GameLogicServer::deleteObject(int worldIndex) {
   // Remove from WaveManager if this is an enemy
   if (tmpObj->isEnemy()) {
     WaveManager::getWaveManager()->removeEnemy((Enemy*)tmpObj);
+  } else if (tmpObj->isPlayer()) {
+    players[((Player*)tmpObj)->getId()] = NULL;
   }
 
   mWorld.erase(mWorld.begin() + worldIndex);
@@ -411,30 +439,14 @@ char* GameLogicServer::marshalInfo(GameObject* obj) {
 
   tmpInfo += NAME_LEN;
 
-  glm::vec3 pos = obj->getTransform()->getTranslation();
-  memcpy(tmpInfo, &(pos.x), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(pos.y), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(pos.z), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
+  glm::mat4 model = obj->getTransform()->getModel();
 
-  // TODO: In unmarshling, euler angles -> quat
-  glm::vec3 rot = glm::eulerAngles(obj->getTransform()->getRotation());
-  memcpy(tmpInfo, &(rot.x), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(rot.y), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(rot.z), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-
-  glm::vec3 scale = obj->getTransform()->getScale();
-  memcpy(tmpInfo, &(scale.x), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(scale.y), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
-  memcpy(tmpInfo, &(scale.z), FLOAT_SIZE);
-  tmpInfo += FLOAT_SIZE;
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      memcpy(tmpInfo, &(model[j][i]), FLOAT_SIZE);
+      tmpInfo += FLOAT_SIZE;
+    }
+  }
 
   int health = obj->getHealth();
   memcpy(tmpInfo, &(health), INT_SIZE);
@@ -447,6 +459,10 @@ char* GameLogicServer::marshalInfo(GameObject* obj) {
   tmpInfo += FLOAT_SIZE;
   memcpy(tmpInfo, &(bb.z), FLOAT_SIZE);
   tmpInfo += FLOAT_SIZE;
+
+  ObjectType type = obj->getObjectType();
+  memcpy(tmpInfo, &(type), TYPE_SIZE);
+  tmpInfo += TYPE_SIZE;
 
   return info;
 }
@@ -465,4 +481,27 @@ void GameLogicServer::printKeyPresses() {
     std::cout << "right: " << mKeyPresses[i][GameObject::RIGHT];
     std::cout << "shoot: " << mKeyPresses[i][GameObject::SHOOT];
   }
+}
+
+void GameLogicServer::updatePlayerPosition(int playerId) {
+  int vsp = getVerticalInput(playerId);
+  int hsp = getHorizontalInput(playerId);
+
+  glm::vec3 velocity(vsp, hsp, 0);
+
+  if (hsp != 0 || vsp != 0) {
+    velocity = players[playerId]->getRotationSpeed() * glm::normalize(velocity);
+    players[playerId]->move(velocity);
+  }
+
+  // players[playerId]->setVelocity(velocity);
+}
+
+int GameLogicServer::getVerticalInput(int playerId) {
+  return mKeyPresses[playerId][GameObject::FORWARD] -
+         mKeyPresses[playerId][GameObject::BACKWARD];
+}
+int GameLogicServer::getHorizontalInput(int playerId) {
+  return mKeyPresses[playerId][GameObject::RIGHT] -
+         mKeyPresses[playerId][GameObject::LEFT];
 }

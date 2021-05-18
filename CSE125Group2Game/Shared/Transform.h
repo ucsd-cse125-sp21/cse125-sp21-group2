@@ -30,6 +30,7 @@ class Transform {
   void setModel(glm::mat4 model);
 
   glm::vec3 getTranslation();
+  glm::vec3 getModelTranslation();
   glm::quat getRotation();
   glm::vec3 getScale();
   glm::mat4 getModel() const;

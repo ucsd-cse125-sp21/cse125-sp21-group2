@@ -12,7 +12,7 @@ int Enemy::enemysSpawned = 0;
 
 WaveManager::WaveManager() {
   // Spawn one enemy every
-  mSpawnSpeed = 0.01f * 1000;
+  mSpawnSpeed = 0.1f * 1000;
 }
 
 WaveManager* WaveManager::getWaveManager() {
@@ -39,9 +39,10 @@ void WaveManager::startWave() {
   // TODO????: random enemy spawns would be dope
   for (int i = 0; i < mMaxWaveSize; i++) {
     Enemy* enemy =
-        new Enemy(new Transform(glm::vec3(-5 - i, 0, 0), glm::vec3(0, 0, 0),
-                                glm::vec3(1, 1, 1), glm::vec3(0.5, 0.5, 0.5)),
-                  (char*)makeName().c_str(), 10);
+        new Enemy(new Transform(glm::vec3(0, RADIUS, 0),
+                                glm::vec3(rand() % 360, 0, rand() % 360),
+                                glm::vec3(.5), glm::vec3(0.25)),
+                  Enemy::makeName(), 10);
 
     mWaveEnemies.push_back(enemy);
   }
@@ -79,18 +80,18 @@ void WaveManager::removeEnemy(Enemy* enemy) {
   }
 }
 
-std::string WaveManager::makeName() {
-  // std::string name;
-
-  // If the enemysSpawned is more than 4 digits, reset it
-  if (Enemy::enemysSpawned >= 10000) {
-    Enemy::enemysSpawned = 0;
-  }
-
-  std::string name = GameObject::makeName("enem", Enemy::enemysSpawned);
-  Enemy::enemysSpawned++;
-  return name;
-}
+// std::string WaveManager::makeName() {
+//  // std::string name;
+//
+//  // If the enemysSpawned is more than 4 digits, reset it
+//  if (Enemy::enemysSpawned >= 10000) {
+//    Enemy::enemysSpawned = 0;
+//  }
+//
+//  std::string name = GameObject::makeName("enem", Enemy::enemysSpawned);
+//  Enemy::enemysSpawned++;
+//  return name;
+//}
 
 bool WaveManager::isWaveComplete() { return mWaveEnemies.size() == 0; }
 bool WaveManager::fullWaveSpawned() {

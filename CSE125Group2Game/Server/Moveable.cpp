@@ -1,26 +1,29 @@
 ﻿#include "Moveable.h"
 
-void Moveable::moveForward() {
-  mPivot->addRotation(glm::vec3(rotationSpeed.x, 0, 0));
+#include <glm/gtx/euler_angles.hpp>
+#include <iostream>
+
+void Moveable::move(glm::vec3 angle) {
+  mPivot->setModel(mPivot->getModel() *
+                   glm::eulerAngleXYZ(angle.x, angle.y, angle.z));
+
+  // Childs model
+  glm::mat4 currModel = mModelTransform->getModel();
+
+  glm::mat4 newModel = mPivot->getModel() * currModel;
+
+  glm::vec3 newPos(newModel * glm::vec4(0, 0, 0, 1));
+
+  // Hack to fix component translation
+  mTransform->setTranslation(newPos);
+
+  // DO NOT REMOVE
+  mTransform->setModel(newModel);
 }
 
-void Moveable::moveBack() {
-  mPivot->addRotation(glm::vec3(-rotationSpeed.x, 0, 0));
-}
+void Moveable::initPivotModel(Transform* transform) {
+  mPivot = new Transform(glm::vec3(0), transform->getRotation(), glm::vec3(1));
 
-void Moveable::moveLeft() {
-  mPivot->addRotation(glm::vec3(0, 0, rotationSpeed.z));
-}
-
-void Moveable::moveRight() {
-  mPivot->addRotation(glm::vec3(0, 0, -rotationSpeed.z));
-}
-
-void Moveable::move(glm::vec3 angle) { mPivot->addRotation(angle); }
-
-glm::vec3 Moveable ::getWorldPositionFromPivot(glm::vec3 modelPos) {
-  return glm::vec3(0);
-  // TODO: figure out math
-
-  // glm::vec3(mPivot->getModel() * glm::mat4(1));
+  mModelTransform = new Transform(transform->getTranslation(), glm::vec3(0),
+                                  transform->getScale());
 }
