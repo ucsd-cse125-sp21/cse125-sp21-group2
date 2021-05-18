@@ -10,6 +10,15 @@ void Sound::play(const char* filePath, irrklang::vec3df positionOfSoundOrigin) {
   engine->play3D(filePath, positionOfSoundOrigin, false);
 }
 
+void Sound::playBackgroundMusic(const char* filePath) {
+    // Play Sound infinitely
+    backgroundSound = engine->play2D(filePath, true);
+}
+
+void Sound::pauseBackgroundMusic() {
+    backgroundSound->setIsPaused(!backgroundSound->getIsPaused());
+}
+
 void Sound::pauseAllSounds(bool toPause) {
   // Play Sound Once
   engine->setAllSoundsPaused(toPause);
@@ -43,14 +52,23 @@ void Sound::playAccordingToGameObject(GameObject* obj) {
   }
 
   mSoundVector.push_back(obj->getName());
+  irrklang::vec3d position(obj->getTransform()->getTranslation().x,
+      obj->getTransform()->getTranslation().y,
+      obj->getTransform()->getTranslation().z);
+
   if (obj->isPlayer()) {
   } else if (obj->isEnemy()) {
   } else if (obj->isProjectile()) {
-    irrklang::vec3d position(obj->getTransform()->getTranslation().x,
-                             obj->getTransform()->getTranslation().y,
-                             obj->getTransform()->getTranslation().z);
-
     play(Sound::shootingSoundPath, position);
   } else if (obj->isTower()) {
   }
+}
+
+void Sound::deleteFromSoundVector(GameObject* obj) {
+    for (int i = 0; i < mSoundVector.size(); i++) {
+        if (obj->getName() == mSoundVector[i]) {
+            mSoundVector.erase(mSoundVector.begin() + i);
+            return;
+        }
+    }
 }

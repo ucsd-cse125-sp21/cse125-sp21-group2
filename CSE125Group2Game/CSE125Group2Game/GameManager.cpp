@@ -24,6 +24,7 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   mpRenderManager->setRenderBoundingBoxes(true);
 
   mSound = new Sound();
+  mSound->playBackgroundMusic(mSound->backgroundMusicPath);
 }
 
 GameManager* GameManager::getManager() {
@@ -151,13 +152,24 @@ void GameManager::UpdateObject(GameObject* obj) {
   // Health is 0, delete object
   if (obj->isDead()) {
     // Don't render the player if they die
-    if (foundObject->isPlayer() || obj->isTower()) {
+    if (foundObject->isPlayer()) {
       foundObject->mShouldRender = false;
       return;
+    }
+    else if (obj->isTower()) {
+        foundObject->mShouldRender = false;
+        // Play tower Destroyed sound
+        irrklang::vec3d position(obj->getTransform()->getTranslation().x,
+            obj->getTransform()->getTranslation().y,
+            obj->getTransform()->getTranslation().z);
+        mSound->play(mSound->towerCollapseSoundPath, position);
+
+        return;
     }
 
     // std::cerr << "Deleting object: " << ((std::string)obj->getName())
     //        << std::endl;
+    mSound->deleteFromSoundVector(obj);
     mScene.removeChild(foundNode);
     return;
   } else {
