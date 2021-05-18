@@ -18,7 +18,6 @@ Material::Material(aiMaterial* other, TextureLoader& tloader) {
 
   // we have a diffuse texture!
   if (numTextures > 0) {
-    // HACK: just assume any mat with texture map also has bump map possibly
     res = other->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texName);
     if (res == aiReturn_SUCCESS) {
       diffuseMap = tloader.loadTexture(ASSET(texName.C_Str()));

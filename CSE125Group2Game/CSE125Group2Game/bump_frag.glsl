@@ -39,6 +39,7 @@ void main() {
   vec3 halfwayVec = normalize(lightVec + viewVec);
 
   // float specStrength = pow(max(dot(viewVec, reflectVec), 0.0), shininess);
+  // TODO: fix this exponent?
   float specStrength = pow(max(dot(nnormal, halfwayVec), 0.0), shininess);
   vec3 specular = specStrength * specular;
 
