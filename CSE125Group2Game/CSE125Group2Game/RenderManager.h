@@ -11,6 +11,7 @@
 #include "Model.h"
 #include "SceneGraph.h"
 #include "ShaderProgram.h"
+#include "Skybox.h"
 
 // singleton
 /* Responsibilities:
@@ -57,6 +58,7 @@ class RenderManager {
   std::unique_ptr<ShaderProgram> mpTextureProgram;
   std::unique_ptr<ShaderProgram> mpRainbowProgram;
   std::unique_ptr<ShaderProgram> mpBumpProgram;
+  std::unique_ptr<ShaderProgram> mpSkyboxProgram;
 
   bool mUseNormalShading = false;
 

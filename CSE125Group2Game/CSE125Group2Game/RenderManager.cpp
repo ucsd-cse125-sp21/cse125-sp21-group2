@@ -58,6 +58,8 @@ RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader,
       std::make_unique<ShaderProgram>("rainbow_vert.glsl", "rainbow_frag.glsl");
   mpBumpProgram =
       std::make_unique<ShaderProgram>("bump_vert.glsl", "bump_frag.glsl");
+  mpSkyboxProgram =
+      std::make_unique<ShaderProgram>("skybox_vert.glsl", "skybox_frag.glsl");
 
   mProjection =
       glm::perspective(glm::radians(FOVY), static_cast<float>(width) / height,
@@ -161,16 +163,39 @@ void RenderManager::draw(const SceneGraph& graph, MeshLoader& loader) {
   // what should default behavior be? i.e. if there is no camera, what do we do?
   // id matrix? idk
   if (!viewOption.has_value()) {
-    // for now, if we don't ahve camera, just crash to make it easy to notice
-    // LOL
-    /*CRASH(
-        "There isn't a camera! This probably isn't fatal, but Evan wanted to "
-        "make it easy to debug for now");*/
+    // TODO?
   }
 
+  // get the view matrix from the camera
   auto cameraMatrix = viewOption.value_or(glm::mat4(1.0f));
   glm::vec3 viewPos = cameraMatrix * glm::vec4(0, 0, 0, 1);
   auto view = glm::inverse(cameraMatrix);
+
+  // draw the skybox if it exists
+  if (graph.getSkybox()) {
+    // TODO: gross, but necessary or will cull skybox
+    glDisable(GL_CULL_FACE);
+    glDepthMask(GL_FALSE);
+    mpSkyboxProgram->use();
+
+    // don't include translate in skybox view
+    glUniformMatrix4fv(1, 1, GL_FALSE,
+                       glm::value_ptr(glm::mat4(glm::mat3(view))));
+    glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(mProjection));
+
+    // render the skybox
+    glBindVertexArray(graph.getSkybox()->mpCube->meshes()[0].vao());
+    mTexLoader->use(graph.getSkybox()->mCubeMap);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
+                 graph.getSkybox()->mpCube->meshes()[0].ibo());
+    glDrawElements(GL_TRIANGLES,
+                   graph.getSkybox()->mpCube->meshes()[0].indexCount(),
+                   GL_UNSIGNED_INT, nullptr);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_CULL_FACE);
+  }
+
+  // recursivly render the scene
   draw(*root, loader, glm::mat4(1), view, viewPos);
 }
 

@@ -90,6 +90,9 @@
     <ClCompile Include="ModelLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -122,6 +125,12 @@
       <Filter>Source Files\render\shaders</Filter>
     </None>
     <None Include="bump_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="skybox_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="skybox_frag.glsl">
       <Filter>Source Files\render\shaders</Filter>
     </None>
   </ItemGroup>
@@ -185,6 +194,9 @@
     </ClInclude>
     <ClInclude Include="ModelLoader.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files\render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

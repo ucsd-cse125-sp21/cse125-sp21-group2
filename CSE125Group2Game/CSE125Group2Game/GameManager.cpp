@@ -20,6 +20,7 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
 
   glfwSetWindowUserPointer(mWindow, this);
   mScene = SceneGraph::FromFile(SCENE_JSON, *mLoader, mTLoader, mMLoader);
+  mScene.setSkybox(new Skybox(ASSET("skybox"), *mLoader, mTLoader));
 
   mpRenderManager->setRenderBoundingBoxes(true);
 

@@ -192,6 +192,7 @@
     <ClCompile Include="SceneGraphNode.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -209,6 +210,8 @@
     <None Include="color_vert.glsl" />
     <None Include="rainbow_frag.glsl" />
     <None Include="rainbow_vert.glsl" />
+    <None Include="skybox_frag.glsl" />
+    <None Include="skybox_vert.glsl" />
     <None Include="texture_frag.glsl" />
     <None Include="texture_vert.glsl" />
   </ItemGroup>
@@ -228,6 +231,7 @@
     <ClInclude Include="SceneGraphNode.h" />
     <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="Skybox.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
