@@ -151,7 +151,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>XCOPY "$(SolutionDir)"\Lib\*.dll "$(TargetDir)" /D /K /Y</Command>
@@ -225,8 +225,11 @@
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="SceneGraphNode.h" />
     <ClInclude Include="SceneLoader.h" />
+<<<<<<<<< Temporary merge branch 1
     <ClInclude Include="ShaderProgram.h" />
+=========
     <ClInclude Include="Sound.h" />
+>>>>>>>>> Temporary merge branch 2
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />

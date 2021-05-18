@@ -174,11 +174,12 @@
     <ClInclude Include="Model.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderProgram.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
     <ClInclude Include="Sound.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderProgram.h">
+      <Filter>Header Files\render</Filter>
+>>>>>>>>> Temporary merge branch 2
     </ClInclude>
   </ItemGroup>
 </Project>

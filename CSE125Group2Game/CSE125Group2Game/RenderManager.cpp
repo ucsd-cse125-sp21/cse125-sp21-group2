@@ -178,6 +178,11 @@ void RenderManager::draw(const SceneGraph& graph, MeshLoader& loader) {
 void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
                          const glm::mat4& prev, const glm::mat4& view,
                          const glm::vec3& viewPos) {
+  // Added by network folks :D
+  if (!node.getObject()->mShouldRender) {
+    return;
+  }
+
   glm::mat4 currTransform = prev * node.getObject()->getTransform()->getModel();
   // TODO: PLEASE REFACTOR :((
   if (mRenderBoundingBoxes) {
@@ -237,6 +242,7 @@ void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
   }
 
   auto model = node.getModel();
+
   if (model) {
     draw(*model, currTransform, view, viewPos);
   }

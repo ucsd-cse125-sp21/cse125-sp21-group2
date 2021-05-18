@@ -3,10 +3,11 @@
 #include "Utils.h"
 #include "client_helper.h"
 
+#define SCENE_JSON "../Shared/scene.json"
+#define CLIENT_CONFIG_ERROR \
+  "client couldn't read config file, using default values"
 // Predefinitions to make compiler happy
 GameManager* GameManager::mManager;
-void key_callback(GLFWwindow* window, int key, int scancode, int action,
-                  int mods);
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   GameManager::getManager()->ResizeCallback(width, height);
@@ -16,13 +17,9 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   mLoader = new MeshLoader();
   mpRenderManager =
       std::make_unique<RenderManager>(window, *mLoader, mTLoader, mCamera);
-  // RenderManager& renderMananger = RenderManager::get();
-  // renderMananger.init(mWindow);
-  glfwSetWindowUserPointer(mWindow, this);
-  mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
 
-  // mScene.getByName("tree1")->getModel()->mMaterials[0].isRainbow = true;
-  // mScene.getByName("tree1")->getModel()->mMaterials[1].isRainbow = true;
+  glfwSetWindowUserPointer(mWindow, this);
+  mScene = SceneGraph::FromFile(SCENE_JSON, *mLoader, mTLoader);
 
   mpRenderManager->setRenderBoundingBoxes(true);
 
@@ -57,15 +54,12 @@ GameManager* GameManager::getManager() {
 }
 
 void GameManager::Update() {
-  glfwSetKeyCallback(mWindow, key_callback);
-
   std::string host = DEFAULT_SERVER_HOST;
   uint16_t port = DEFAULT_SERVER_PORT;
   std::string filename = CONFIG_FILE;
 
   if (!read_client_config(host, port, filename)) {
-    std::cout
-        << "client couldn't read config file, using default host and port";
+    std::cout << CLIENT_CONFIG_ERROR;
   }
 
   std::cout << "host: " << host << "port: " << port << "\n";
@@ -79,11 +73,7 @@ void GameManager::Update() {
     glfwPollEvents();
 
     bool keysPressed[NUM_KEYS];
-    keysPressed[GameObject::FORWARD] = glfwGetKey(mWindow, FORWARD_KEY);
-    keysPressed[GameObject::LEFT] = glfwGetKey(mWindow, LEFT_KEY);
-    keysPressed[GameObject::BACKWARD] = glfwGetKey(mWindow, BACKWARD_KEY);
-    keysPressed[GameObject::RIGHT] = glfwGetKey(mWindow, RIGHT_KEY);
-    keysPressed[GameObject::SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
+    updateKeyPresses(keysPressed);
 
     // 2) Call client update
     if (c.Update(keysPressed)) {
@@ -102,36 +92,13 @@ void GameManager::Update() {
   glfwTerminate();
 }
 
-void GameManager::AddPlayer(int clientId) {
-  // Create player and set it as first layer (child of root)
-  Transform* playerTransform =
-      new Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1),
-                    glm::vec3(0.5f, 0.5f, 0.5f));
-
-  mPlayerTransform = playerTransform;
-
-  // std::string clientName = "play000";
-  // clientName += std::to_string(clientId);
-
-  std::string clientName = GameObject::makeName("play", clientId);
-
-  GameObject* playerObject =
-      new GameObject(playerTransform, (char*)clientName.c_str(), 10);
-
-  // TODO: make camera a child of the player object in the scene graph
-
-  Model* model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
-                           playerTransform, *mLoader, mTLoader);
-  // mScene = SceneGraph::FromFile("../Shared/scene.json", *mLoader, mTLoader);
-  // Model* model = Model::Cube(playerTransform, *mLoader);
-
-  SceneGraphNode* playerNode = mScene.addChild(playerObject, model);
-
-  // attach the camera to the player
-  Camera& camera = mScene.addCamera(playerNode);
-  camera.setPosition(glm::vec3(0, 10.0f, 0));
-  camera.setFacing(glm::vec3(0, 0, 0));
-  camera.setUp(glm::vec3(0.0f, 0, -1.0f));
+void GameManager::updateKeyPresses(bool* keysPressed) {
+  keysPressed[FORWARD] = glfwGetKey(mWindow, FORWARD_KEY);
+  keysPressed[LEFT] = glfwGetKey(mWindow, LEFT_KEY);
+  keysPressed[BACKWARD] = glfwGetKey(mWindow, BACKWARD_KEY);
+  keysPressed[RIGHT] = glfwGetKey(mWindow, RIGHT_KEY);
+  keysPressed[SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
+  keysPressed[RESTART] = glfwGetKey(mWindow, RESTART_KEY);
 }
 
 void GameManager::UpdateObject(GameObject* obj) {
@@ -152,16 +119,26 @@ void GameManager::UpdateObject(GameObject* obj) {
     foundObject = new GameObject(transform, obj->getName(), obj->getHealth(),
                                  obj->getObjectType());
 
-    // TODO: if else for model based on enum (constructor adds itself as child
-    // of parent)
-
     Model* model = nullptr;
     if (obj->isTower()) {
-      model = new Model(ASSET("models/towers/stonehenge/stonehenge.obj"),
-                        transform, *mLoader, mTLoader);
-    } else if (false && obj->isEnemy()) {
-      model = new Model(ASSET("models/enemy/mainEnemyShip/enemyShip.obj"),
-                        transform, *mLoader, mTLoader);
+      model = new Model(STONEHENGE_MODEL, transform, *mLoader, mTLoader);
+    } else if (obj->isEnemy()) {
+      model = new Model(ENEMY_MODEL, transform, *mLoader, mTLoader);
+    } else if (obj->isPlayer()) {
+      model = new Model(PLAYER_MODEL, transform, *mLoader, mTLoader);
+
+      // If this is the first time a player connects, add it!
+      if (obj->getName() == GameObject::makeName("play", mClientId)) {
+        mPlayerTransform = foundObject->getTransform();
+
+        SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
+
+        // attach the camera to the player
+        Camera& camera = mScene.addCamera(playerNode);
+        camera.setPosition(glm::vec3(0, 20.0f, 0));
+        camera.setFacing(glm::vec3(0, 0, 0));
+        camera.setUp(glm::vec3(0.0f, 0, -1.0f));
+      }
     } else {
       model = Model::Cube(foundObject->getTransform(), *mLoader);
     }
@@ -172,11 +149,19 @@ void GameManager::UpdateObject(GameObject* obj) {
   foundObject = foundNode->getObject();
 
   // Health is 0, delete object
-  if (obj->getHealth() <= 0) {
+  if (obj->isDead()) {
+    // Don't render the player if they die
+    if (foundObject->isPlayer() || obj->isTower()) {
+      foundObject->mShouldRender = false;
+      return;
+    }
+
     // std::cerr << "Deleting object: " << ((std::string)obj->getName())
     //        << std::endl;
     mScene.removeChild(foundNode);
     return;
+  } else {
+    foundObject->mShouldRender = true;
   }
 
   // Update sound listener position on player update
@@ -186,30 +171,9 @@ void GameManager::UpdateObject(GameObject* obj) {
   }
 
   foundObject->getTransform()->setModel(obj->getTransform()->getModel());
-  foundObject->setHealth(obj->getHealth());
 }
 
-SceneGraphNode* GameManager::findNode(GameObject* obj, SceneGraphNode* node) {
-  if (obj->getName() == node->getObject()->getName()) {
-    return node;
-  }
-
-  for (int i = 0; i < node->getChildren().size(); i++) {
-    SceneGraphNode* foundNode = findNode(obj, node->getChildren()[i]);
-
-    if (foundNode) {
-      return foundNode;
-    }
-  }
-
-  return NULL;
-}
 GameObject* GameManager::unmarshalInfo(char* data) {
-  // 1) 8 byte char[] name
-  // 32 bit (4 byte) floats
-  // 2) Transform: 3 floats for location, 3 for rotation, 3 for scale
-  // 3) 4 byte int health 48 bytes
-
   char* tmpInfo = data;
 
   // NAME_LEN + 1 so we ensure it is null terminated
@@ -242,7 +206,6 @@ GameObject* GameManager::unmarshalInfo(char* data) {
   memcpy(&type, tmpInfo, TYPE_SIZE);
   tmpInfo += TYPE_SIZE;
 
-  // TODO maybe we should send over actual values in addition to the matrix
   Transform* transform = new Transform(glm::vec3(0), glm::vec3(0), glm::vec3(0),
                                        glm::vec3(xbb, ybb, zbb));
 
@@ -259,37 +222,4 @@ void GameManager::setClientID(int id) { mClientId = id; }
 
 void GameManager::ResizeCallback(int width, int height) {
   mpRenderManager->setViewportSize(width, height);
-}
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action,
-                  int mods) {
-  // Need synchronization?
-  // Suggested by Edward
-
-  // printf("%d %d\n", key, action);
-
-  if (action == GLFW_REPEAT) {
-    return;
-  }
-
-  switch (key) {
-    case GameManager::FORWARD_KEY:
-      GameManager::getManager()->mKeyPresses[GameObject::FORWARD] =
-          action == GLFW_PRESS;
-      break;
-    case GameManager::LEFT_KEY:
-      GameManager::getManager()->mKeyPresses[GameObject::LEFT] =
-          action == GLFW_PRESS;
-      break;
-    case GameManager::BACKWARD_KEY:
-      GameManager::getManager()->mKeyPresses[GameObject::BACKWARD] =
-          action == GLFW_PRESS;
-      break;
-    case GameManager::RIGHT_KEY:
-      GameManager::getManager()->mKeyPresses[GameObject::RIGHT] =
-          action == GLFW_PRESS;
-      break;
-    case GLFW_KEY_SPACE:
-      break;
-  }
 }

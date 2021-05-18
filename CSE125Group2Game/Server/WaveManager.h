@@ -13,16 +13,16 @@ class WaveManager {
 
   void removeEnemy(Enemy* enemy);
 
+  void reset();
+
  private:
   void startWave();
   bool fullWaveSpawned();
   bool isWaveComplete();
-  void spawnEnemy();
+  void spawnEnemyInWave();
   std::string makeName();
   static WaveManager* mWaveManager;
 
-  bool mInWave = false;
-  // bool mFullWaveSpawned = false;
   int mEnemiesSpawnedInWave = 0;
   int mWavesCompleted = 0;
   int mMaxWaveSize = 10;

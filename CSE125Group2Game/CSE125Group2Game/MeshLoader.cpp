@@ -1,4 +1,4 @@
-#include "MeshLoader.h"
+﻿#include "MeshLoader.h"
 
 #include <glad/glad.h>
 
@@ -153,7 +153,7 @@ Mesh MeshLoader::loadMesh(const aiMesh* mesh) {
   }
 
   // get indices out .... must do because they are in ptrs...
-  std::cerr << mesh->mNumFaces << std::endl;
+  // std::cerr << mesh->mNumFaces << std::endl;
   std::vector<glm::uvec3> indices;
   for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
     // TODO: some faces aren't complete for some reason (i.e. lines) .... just

@@ -7,9 +7,14 @@
 //#include "Projectile.h"
 #include "Tower.h"
 #include "WaveManager.h"
-#define DEFAULT_TOWER_COUNT 2
+
+#define SERVER_CONFIG_ERROR \
+  "server couldn't read config file using default values\n"
+#define SCENE_JSON "../Shared/scene.json"
+#define CONFIG_TXT "../config.txt"
 
 GameLogicServer* GameLogicServer::mLogicServer;
+int Player::numPlayers = 0;
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
                                  ServerLoader scene, uint16_t tick_ms)
@@ -60,15 +65,16 @@ GameLogicServer* GameLogicServer::getLogicServer() {
   if (!mLogicServer) {
     uint16_t tick = 33;
     std::string config_tick("tick");
-    ServerLoader scene("../Shared/scene.json");
+
+    ServerLoader scene(SCENE_JSON);
 
     std::vector<GameObject*> world = ServerGraphNode::getRoot()->makeWorld(
         glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
 
-    std::string str_tick = server_read_config2(config_tick, "../config.txt");
+    std::string str_tick = server_read_config2(config_tick, CONFIG_TXT);
 
     if (str_tick.compare(std::string()) == 0) {
-      std::cout << "server couldn't read config file, using default tick\n";
+      std::cout << SERVER_CONFIG_ERROR;
     } else {
       int temp_int(std::stoi(str_tick));
       if (temp_int <= static_cast<int>(UINT16_MAX) && temp_int >= 0) {
@@ -77,18 +83,8 @@ GameLogicServer* GameLogicServer::getLogicServer() {
     }
 
     mLogicServer = new GameLogicServer(world, scene, tick);
-    int tower_count;
-    std::string config_tower("tower_count");
-    std::string str_tower = server_read_config2(config_tower, "../config.txt");
-    if (str_tower.compare(std::string()) == 0) {
-      tower_count = DEFAULT_TOWER_COUNT;
-      std::cout << "server couldn't find tower config, use default tower count."
-                << std::endl;
-    } else {
-      tower_count = std::stoi(str_tower);
-    }
-    // Tower::spawn(tower_count);
-    std::cout << "Spawning " << tower_count << " towers." << std::endl;
+
+    Tower::spawn();
   }
   return mLogicServer;
 }
@@ -96,25 +92,65 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 void GameLogicServer::update() {
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
-  // printKeyPresses();
-  WaveManager::getWaveManager()->update();
+  // Only update game state if game isn't over
+  if (!isGameOver() || Player::numPlayers < MIN_PLAYERS) {
+    // printKeyPresses();
+    WaveManager::getWaveManager()->update();
+    updatePlayers();  // Update player locations
+    updateEnemies();
+    updateTowers();
+    updateProjectiles();
+  } else {
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+      if (players[i] == NULL || !mKeyPresses[i][RESTART]) {
+        continue;
+      }
 
-  // 1) Player's, 2) enemies, 3) projectile
-
-  // Update player locations
-  updatePlayers();
-
-  updateEnemies();
-
-  updateTowers();
-
-  // TODO: should we create projectiles before moving players or after? moving
-  // changes their forward vector
-  updateProjectiles();
+      restartGame();
+      break;
+    }
+  }
 
   sendInfo();
 
   resetKeyPresses();
+}
+
+bool GameLogicServer::isGameOver() {
+  // Game is not over until all towers are destroyed
+  for (int i = 0; i < mTowers.size(); i++) {
+    if (!mTowers[i]->isDead()) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+void GameLogicServer::restartGame() {
+  // Delete enemies and projectiles
+  for (int i = 0; i < mWorld.size(); i++) {
+    mWorld[i]->setHealth(0);
+  }
+
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (!players[i]) {
+      continue;
+    }
+
+    std::cout << "enemies killed: " << players[i]->getEnemiesKilled();
+
+    players[i]->resetModel();
+    players[i]->setHealth(DEFAULT_HEALTH);
+    players[i]->setEnemiesKilled(0);
+  }
+
+  for (int i = 0; i < mTowers.size(); i++) {
+    mTowers[i]->setHealth(TOWER_HEALTH);
+    mWorld.push_back(mTowers[i]);
+  }
+
+  WaveManager::getWaveManager()->reset();
 }
 
 void GameLogicServer::updateEnemies() {
@@ -127,45 +163,41 @@ void GameLogicServer::updateEnemies() {
 }
 
 void GameLogicServer::updateTowers() {
-  for (int i = 0; i < mWorld.size(); i++) {
-    if (mWorld[i]->isTower()) {
-      GameObject* collider = getCollidingObject(mWorld[i]);
+  for (int i = 0; i < mTowers.size(); i++) {
+    Tower* tower = mTowers[i];
 
-      if (collider != nullptr &&
-          collider->getObjectType() == ObjectType::Enemy) {
-        // Take Damage when enemy collide with tower
-        // TODO: make damage dynamic
-        mWorld[i]->setHealth(mWorld[i]->getHealth() - 0);
-        // std::cout << "Tower Health:" << mWorld[i]->getHealth()
-        //          << ",collided with " << collider->getName() << std::endl;
-        continue;
-      }
-      // call tower update
-      mWorld[i]->update();
+    if (tower->isDead()) {
+      continue;
     }
+
+    GameObject* collider = getCollidingObject(tower);
+
+    if (collider != nullptr && collider->isEnemy()) {
+      tower->setHealth(tower->getHealth() - TOWER_DAMAGE);
+      // Kill the enemy!
+      collider->setHealth(0);
+
+      continue;
+    }
+
+    // call tower update
+    tower->update();
   }
 }
 
 void GameLogicServer::updateProjectiles() {
-  for (int i = 0; i < MAX_PLAYERS; i++) {
-    if (players[i] == NULL) {
-      continue;
-    }
-
-    if (mKeyPresses[i][GameObject::SHOOT]) {
-      // std::cout << "Player " << i << " wants to spawn a projectile!!";
-      Projectile::spawnProjectile(players[i]);
-    }
-  }
-
   for (int i = 0; i < mWorld.size(); i++) {
     if (mWorld[i]->isProjectile()) {
+      Projectile* proj = (Projectile*)mWorld[i];
       GameObject* collider = getCollidingObject(mWorld[i]);
 
       if (collider != nullptr) {
-        std::cout << "ENEMY DOWN!!!" << std::endl;
-        mWorld[i]->setHealth(0);
-        collider->setHealth(collider->getHealth() - 0.1);
+        proj->setHealth(0);
+        collider->setHealth(collider->getHealth() - PROJ_DAMAGE);
+
+        if (collider->isDead() && collider->isEnemy()) {
+          ((Player*)proj->getParent())->incrementEnemiesKilled();
+        }
         continue;
       }
 
@@ -181,6 +213,17 @@ void GameLogicServer::updatePlayers() {
       continue;
     }
 
+    players[i]->update();
+
+    if (players[i]->isDead()) {
+      continue;
+    }
+
+    if (mKeyPresses[i][SHOOT]) {
+      // std::cout << "Player " << i << " wants to spawn a projectile!!";
+      Projectile::spawnProjectile(players[i]);
+    }
+
     handlePlayerCollision(i);
   }
 }
@@ -191,19 +234,17 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
   Player* player = players[playerIndex];
 
   // Collision detection
-  // player->/*addTranslation*/ (player->getVelocity());
-
   GameObject* collidedObj = getCollidingObject(player);
   if (!collidedObj) {
     return;
   }
 
-  std::string name = collidedObj->getName();
-
-  // std::cout << "Collision with: " << name << std::endl;
+  // std::cout << "Collision with: " << collidedObj->getName() << std::endl;
 
   if (collidedObj->isEnemy()) {
     collidedObj->setHealth(0);
+    player->incrementEnemiesKilled();
+    player->setHealth(player->getHealth() - PLAYER_DAMAGE);
   } else if (collidedObj->isDefault()) {
     // movePlayerToBoundary(player);
   }
@@ -214,11 +255,11 @@ void GameLogicServer::movePlayerToBoundary(Player* player) {
 
   // Step player towards collision boundary
   while (!getCollidingObject(player)) {
-    player->addTranslation(glm::vec3(0.1, 0.1, 0.1) * player->getVelocity());
+    player->addTranslation(glm::vec3(0.1) * player->getVelocity());
   }
 
   // Move player 0.1 units away from collision
-  player->addTranslation(glm::vec3(-0.1, -0.1, -0.1) * player->getVelocity());
+  player->addTranslation(glm::vec3(-0.1) * player->getVelocity());
 }
 
 GameObject* GameLogicServer::getCollidingObject(GameObject* obj) {
@@ -228,7 +269,8 @@ GameObject* GameLogicServer::getCollidingObject(GameObject* obj) {
   // For every gameobject in the world, check if this object collides with
   // anything
   for (int i = 0; i < mWorld.size(); i++) {
-    // If this object is the root, or has 0 health, or is itself, do not collide
+    // If this object is the root, or has 0 health, or is itself, do not
+    // collide
     if (obj->shouldNotCollide(mWorld[i])) {
       continue;
     }
@@ -287,8 +329,6 @@ std::vector<float> GameLogicServer::getMinMax(GameObject* obj) {
 }
 
 std::vector<glm::vec3> GameLogicServer::getCorners(GameObject* obj) {
-  // TODO: Consider rotation of object when doing bounding box corners
-  // TODO: also scale :D
   glm::vec3 center = obj->getTransform()->getTranslation();
   // L,H,W
   glm::vec3 boundingBox = -1.0f * obj->getTransform()->getBBox();
@@ -326,17 +366,16 @@ std::vector<glm::vec3> GameLogicServer::getCorners(GameObject* obj) {
   vertices.push_back(center -
                      glm::vec3(boundingBox.x, -boundingBox.y, boundingBox.z));
   vertices.push_back(center -
-                     glm::vec3(-boundingBox.x, -boundingBox.y, boundingBox.z));
-  vertices.push_back(center -
-                     glm::vec3(boundingBox.x, boundingBox.y, -boundingBox.z));
-  vertices.push_back(center -
+                     glm::vec3(-boundingBox.x, -boundingBox.y,
+  boundingBox.z)); vertices.push_back(center - glm::vec3(boundingBox.x,
+  boundingBox.y, -boundingBox.z)); vertices.push_back(center -
                      glm::vec3(-boundingBox.x, boundingBox.y, boundingBox.z));
   vertices.push_back(center -
-                     glm::vec3(-boundingBox.x, boundingBox.y, -boundingBox.z));
-  vertices.push_back(center -
-                     glm::vec3(boundingBox.x, -boundingBox.y, -boundingBox.z));
-  vertices.push_back(center -
-                     glm::vec3(-boundingBox.x, -boundingBox.y, -boundingBox.z));
+                     glm::vec3(-boundingBox.x, boundingBox.y,
+  -boundingBox.z)); vertices.push_back(center - glm::vec3(boundingBox.x,
+  -boundingBox.y, -boundingBox.z)); vertices.push_back(center -
+                     glm::vec3(-boundingBox.x, -boundingBox.y,
+  -boundingBox.z));
 
    */
 
@@ -378,20 +417,18 @@ void GameLogicServer::resetKeyPresses() {
   }
 }
 
-void GameLogicServer::addGameObject(GameObject* obj) { mWorld.push_back(obj); }
+void GameLogicServer::addGameObject(GameObject* obj) {
+  mWorld.push_back(obj);
+  if (obj->isTower()) {
+    mTowers.push_back((Tower*)obj);
+  }
+}
 
 void GameLogicServer::sendInfo() {
   for (int i = 0; i < mWorld.size(); i++) {
     // Only send info for moving objects
     if (mWorld[i]->isPlayer() || mWorld[i]->isEnemy() ||
         mWorld[i]->isProjectile() || mWorld[i]->isTower()) {
-      // if (mWorld[i]->isProjectile()) {
-      //  std::cout << "sending projectile!!!" << std::endl;
-      //  if (!mWorld[i]->mIsModified) {
-      //    std::cout << "hmmm projectile NOT modified???" << std::endl;
-      //    continue;
-      //  }
-      //}
       if (!mWorld[i]->mIsModified) {
         continue;
       }
@@ -401,7 +438,9 @@ void GameLogicServer::sendInfo() {
       mTestBuffer.push_back(data);
 
       // If the enemy has health 0, remove it from the world
-      if (mWorld[i]->getHealth() == 0) {
+      // Allow player to be deleted if they disconnected
+      if ((mWorld[i]->isDead() && !mWorld[i]->isPlayer()) ||
+          (mWorld[i]->isPlayer() && ((Player*)mWorld[i])->forceDelete)) {
         deleteObject(i);
       }
     }
@@ -419,7 +458,11 @@ void GameLogicServer::deleteObject(int worldIndex) {
   }
 
   mWorld.erase(mWorld.begin() + worldIndex);
-  delete tmpObj;
+
+  // Don't delete towers
+  if (!tmpObj->isTower()) {
+    delete tmpObj;
+  }
 }
 
 char* GameLogicServer::marshalInfo(GameObject* obj) {
@@ -475,11 +518,12 @@ void GameLogicServer::printKeyPresses() {
 
     std::cout << "key presses for player " << i << std::endl;
 
-    std::cout << "forward: " << mKeyPresses[i][GameObject::FORWARD];
-    std::cout << "backward: " << mKeyPresses[i][GameObject::BACKWARD];
-    std::cout << "left: " << mKeyPresses[i][GameObject::LEFT];
-    std::cout << "right: " << mKeyPresses[i][GameObject::RIGHT];
-    std::cout << "shoot: " << mKeyPresses[i][GameObject::SHOOT];
+    std::cout << "forward: " << mKeyPresses[i][FORWARD];
+    std::cout << "backward: " << mKeyPresses[i][BACKWARD];
+    std::cout << "left: " << mKeyPresses[i][LEFT];
+    std::cout << "right: " << mKeyPresses[i][RIGHT];
+    std::cout << "shoot: " << mKeyPresses[i][SHOOT];
+    std::cout << "restart: " << mKeyPresses[i][RESTART] << std::endl;
   }
 }
 
@@ -498,10 +542,8 @@ void GameLogicServer::updatePlayerPosition(int playerId) {
 }
 
 int GameLogicServer::getVerticalInput(int playerId) {
-  return mKeyPresses[playerId][GameObject::FORWARD] -
-         mKeyPresses[playerId][GameObject::BACKWARD];
+  return mKeyPresses[playerId][FORWARD] - mKeyPresses[playerId][BACKWARD];
 }
 int GameLogicServer::getHorizontalInput(int playerId) {
-  return mKeyPresses[playerId][GameObject::RIGHT] -
-         mKeyPresses[playerId][GameObject::LEFT];
+  return mKeyPresses[playerId][RIGHT] - mKeyPresses[playerId][LEFT];
 }

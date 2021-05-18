@@ -11,7 +11,7 @@
 #include "ServerLoader.h"
 #include "msd/channel.hpp"
 
-#define MAX_PLAYERS 4
+class Tower;
 
 /*
   http://www.cplusplus.com/reference/mutex/unique_lock/#:~:text=A%20unique%20lock%20is%20an%20object%20that%20manages,The%20object%20supports%20both%20states%3A%20locked%20and%20unlocked.
@@ -20,12 +20,15 @@
   std::unique_lock<decltype(mtx)> lk(mtx, std::adopt_lock);
   lk.unlock();*/
 
+#define MAX_PLAYERS 4
 #define MIN_X 0
 #define MIN_Y 1
 #define MIN_Z 2
 #define MAX_X 3
 #define MAX_Y 4
 #define MAX_Z 5
+#define DEFAULT_HEALTH 10
+#define MIN_PLAYERS 1
 
 class GameLogicServer {
  public:
@@ -45,15 +48,20 @@ class GameLogicServer {
 
   void addGameObject(GameObject* obj);
 
+  GameObject* getCollidingObject(GameObject* obj);
+
+  void sendInfo();
+
   msd::channel<char*> mSendingBuffer;  // Queue for storing events to send
   std::vector<char*> mTestBuffer;
 
   Player* players[MAX_PLAYERS];
-  GameObject* getCollidingObject(GameObject* obj);
+  std::vector<Tower*> mTowers;
+  ServerLoader mScene;
+  PriorityMutex mMtx;
 
  private:
   void resetKeyPresses();
-  void sendInfo();
   char* marshalInfo(GameObject* obj);
   void updatePlayers();
   void handlePlayerCollision(int playerIndex);
@@ -68,10 +76,11 @@ class GameLogicServer {
   int getHorizontalInput(int playerId);
   void movePlayerToBoundary(Player* player);
   void updatePlayerPosition(int playerId);
+  bool isGameOver();
+  void restartGame();
+
   std::vector<GameObject*> mWorld;
-  ServerLoader mScene;
   uint16_t mTick_ms;
-  PriorityMutex mMtx;
 
   std::vector<bool*> mKeyPresses;  // Queue for storing events before each
                                    // tick for each player

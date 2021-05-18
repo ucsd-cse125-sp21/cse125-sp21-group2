@@ -4,6 +4,8 @@
 
 #include "GameLogicServer.h"
 
+#define STEP 22.5
+#define MAX_ANGLE 360
 Enemy::Enemy(Transform* transform, std::string name, int health)
     : Moveable(transform, name, health, ObjectType::Enemy) {
   mIsModified = true;
@@ -20,6 +22,8 @@ void Enemy::update() {
 
   GameObject* nearestPlayer = GetNearestPlayer();
   if (!nearestPlayer) {
+    // Spin to "seek" out new player
+    move(glm::vec3(0, rotationSpeed * 4, 0));
     return;
   }
 
@@ -29,7 +33,7 @@ void Enemy::update() {
   float minDistance = FLT_MAX;
   float bestAngle;
 
-  for (float i = 0; i < 360; i += 22.5) {
+  for (float i = 0; i < MAX_ANGLE; i += STEP) {
     move(glm::vec3(0, glm::radians(i), rotationSpeed));
 
     glm::vec3 newPos = mTransform->getModelTranslation();
@@ -53,13 +57,14 @@ GameObject* Enemy::GetNearestPlayer() {
   GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
   float minDist = FLT_MAX;
-  int worldIndex = 0;
+  int worldIndex = -1;
 
   auto mWorld = logicServer->getWorld();
 
   for (int i = 0; i < mWorld.size(); i++) {
     if (mWorld[i]->isPlayer() || mWorld[i]->isTower()) {
-      if (mWorld[i] == NULL) {
+      // if (mWorld[i]->getHealth() <= 0) {
+      if (mWorld[i]->isDead()) {
         continue;
       }
       glm::vec pos = mWorld[i]->getTransform()->getTranslation();
@@ -69,6 +74,10 @@ GameObject* Enemy::GetNearestPlayer() {
         worldIndex = i;
       }
     }
+  }
+
+  if (worldIndex < 0) {
+    return nullptr;
   }
 
   return mWorld[worldIndex];
@@ -82,4 +91,15 @@ std::string Enemy::makeName() {
   std::string name = GameObject::makeName("enem", enemysSpawned);
   enemysSpawned++;
   return name;
+}
+
+Enemy* Enemy::spawnEnemy() {
+  Enemy* enemy = new Enemy(
+      new Transform(glm::vec3(0, RADIUS, 0),
+                    glm::vec3(rand() % MAX_ANGLE, 0, rand() % MAX_ANGLE),
+                    glm::vec3(.5), glm::vec3(3)),
+      Enemy::makeName(), DEFAULT_HEALTH);
+  enemy->move(glm::vec3(0));  // hack to fix world position
+
+  return enemy;
 }
