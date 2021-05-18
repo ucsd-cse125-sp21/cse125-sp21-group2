@@ -23,6 +23,8 @@ class Projectile : public Moveable {
   void update();
   bool shouldNotCollide(GameObject* obj);
 
+  GameObject* getParent();
+
  protected:
   static std::string makeName();
   // honestly not sure if we would need this / if we wanna change it

@@ -84,3 +84,11 @@ void Player::setHealth(int amt) {
 
   GameObject::setHealth(amt);
 }
+
+void Player::incrementEnemiesKilled() { mEnemiesKilled++; }
+
+int Player::getEnemiesKilled() { return mEnemiesKilled; }
+
+void Player::setEnemiesKilled(int enemiesKilled) {
+  mEnemiesKilled = enemiesKilled;
+}

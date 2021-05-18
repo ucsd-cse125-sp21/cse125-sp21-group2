@@ -137,8 +137,11 @@ void GameLogicServer::restartGame() {
       continue;
     }
 
+    std::cout << "enemies killed: " << players[i]->getEnemiesKilled();
+
     players[i]->resetModel();
     players[i]->setHealth(DEFAULT_HEALTH);
+    players[i]->setEnemiesKilled(0);
   }
 
   for (int i = 0; i < mTowers.size(); i++) {
@@ -184,11 +187,16 @@ void GameLogicServer::updateTowers() {
 void GameLogicServer::updateProjectiles() {
   for (int i = 0; i < mWorld.size(); i++) {
     if (mWorld[i]->isProjectile()) {
+      Projectile* proj = (Projectile*)mWorld[i];
       GameObject* collider = getCollidingObject(mWorld[i]);
 
       if (collider != nullptr) {
-        mWorld[i]->setHealth(0);
+        proj->setHealth(0);
         collider->setHealth(collider->getHealth() - PROJ_DAMAGE);
+
+        if (collider->isDead() && collider->isEnemy()) {
+          ((Player*)proj->getParent())->incrementEnemiesKilled();
+        }
         continue;
       }
 
@@ -234,6 +242,7 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
 
   if (collidedObj->isEnemy()) {
     collidedObj->setHealth(0);
+    player->incrementEnemiesKilled();
     player->setHealth(player->getHealth() - PLAYER_DAMAGE);
   } else if (collidedObj->isDefault()) {
     // movePlayerToBoundary(player);

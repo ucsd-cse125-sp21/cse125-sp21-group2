@@ -13,6 +13,9 @@ int Enemy::enemysSpawned = 0;
 WaveManager::WaveManager() {
   // Spawn one enemy every
   mSpawnSpeed = 1 * 1000;
+  mTimeOfLastSpawn =
+      GetTickCount() +
+      10000;  // so that we have some time at the beginning without enemies
 }
 
 WaveManager* WaveManager::getWaveManager() {
@@ -29,8 +32,10 @@ void WaveManager::update() {
     return;
   }
 
+  unsigned long currTick = GetTickCount();
+
   // Only spawn enemy once every mSpawnSpeed (3 seconds)
-  if (!fullWaveSpawned() && GetTickCount() - mTimeOfLastSpawn > mSpawnSpeed) {
+  if (!fullWaveSpawned() && currTick > mSpawnSpeed + mTimeOfLastSpawn) {
     spawnEnemyInWave();
   }
 }

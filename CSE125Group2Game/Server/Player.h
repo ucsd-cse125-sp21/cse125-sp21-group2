@@ -31,6 +31,12 @@ class Player : public Moveable {
 
   void setHealth(int amt);
 
+  void incrementEnemiesKilled();
+
+  int getEnemiesKilled();
+
+  void setEnemiesKilled(int enemiesKilled);
+
  private:
   glm::vec3 mRotationSpeed = glm::vec3(-0.04, -0.12, 0);
 
@@ -41,5 +47,6 @@ class Player : public Moveable {
   unsigned long mRespawnTimeMS = 5000;
   unsigned long mTimeToSpawn;
   unsigned long mLastHeal;
+  int mEnemiesKilled;
 };
 const std::string player_prefix = "play";
