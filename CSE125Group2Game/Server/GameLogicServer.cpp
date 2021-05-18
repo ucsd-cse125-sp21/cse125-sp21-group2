@@ -127,6 +127,11 @@ bool GameLogicServer::isGameOver() {
 }
 
 void GameLogicServer::restartGame() {
+  // Delete enemies and projectiles
+  for (int i = 0; i < mWorld.size(); i++) {
+    mWorld[i]->setHealth(0);
+  }
+
   for (int i = 0; i < MAX_PLAYERS; i++) {
     if (!players[i]) {
       continue;
@@ -141,7 +146,7 @@ void GameLogicServer::restartGame() {
     mWorld.push_back(mTowers[i]);
   }
 
-  // TODO: delete enemies?
+  WaveManager::getWaveManager()->reset();
 }
 
 void GameLogicServer::updateEnemies() {

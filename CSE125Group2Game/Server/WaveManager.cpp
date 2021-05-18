@@ -37,13 +37,6 @@ void WaveManager::update() {
 
 void WaveManager::startWave() {
   for (int i = 0; i < mMaxWaveSize; i++) {
-    // Enemy* enemy =
-    //    new Enemy(new Transform(glm::vec3(0, RADIUS, 0),
-    //                            glm::vec3(rand() % 360, 0, rand() % 360),
-    //                            glm::vec3(.5), glm::vec3(3)),
-    //              Enemy::makeName(), 10);
-    // enemy->move(glm::vec3(0));  // hack to fix world position
-
     Enemy* enemy = Enemy::spawnEnemy();
 
     mWaveEnemies.push_back(enemy);
@@ -69,15 +62,19 @@ void WaveManager::removeEnemy(Enemy* enemy) {
     if (enemy->getName() == mWaveEnemies[i]->getName()) {
       mWaveEnemies.erase(mWaveEnemies.begin() + i);
       mNextEnemyIndex--;
-      // std::cout << "deleting player, mNextEnemyIndex: " << mNextEnemyIndex
-      //          << "mWaveEnemies.size(): " << mWaveEnemies.size() <<
-      //          std::endl;
+      std::cout << "deleting player, mNextEnemyIndex: " << mNextEnemyIndex
+                << "mWaveEnemies.size(): " << mWaveEnemies.size() << std::endl;
       return;
     }
   }
 }
 
+void WaveManager::reset() {
+  mWavesCompleted = 0;
+  mWaveEnemies.clear();
+}
 bool WaveManager::isWaveComplete() { return mWaveEnemies.size() == 0; }
+
 bool WaveManager::fullWaveSpawned() {
   return mEnemiesSpawnedInWave >= mMaxWaveSize;
 }
