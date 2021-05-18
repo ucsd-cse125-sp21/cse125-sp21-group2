@@ -9,7 +9,10 @@ Player::Player(Transform* transform, std::string name, int health, int id)
     : Moveable(transform, name, health, ObjectType::Player) {
   mPlayerId = id;
   Projectile::mTickLastSpawn[name] = 0;
+  numPlayers++;
 }
+
+Player::~Player() { numPlayers--; }
 
 void Player::update() {
   // If the player is dead,

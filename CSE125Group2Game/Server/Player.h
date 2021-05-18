@@ -8,6 +8,8 @@
 
 class Player : public Moveable {
  public:
+  static int numPlayers;
+
   Player(Transform* transform, std::string name, int health, int id);
 
   void update();
@@ -37,6 +39,10 @@ class Player : public Moveable {
 
   void setEnemiesKilled(int enemiesKilled);
 
+  ~Player();
+
+  bool forceDelete = false;
+
  private:
   glm::vec3 mRotationSpeed = glm::vec3(-0.04, -0.12, 0);
 
@@ -49,4 +55,5 @@ class Player : public Moveable {
   unsigned long mLastHeal;
   int mEnemiesKilled;
 };
+
 const std::string player_prefix = "play";

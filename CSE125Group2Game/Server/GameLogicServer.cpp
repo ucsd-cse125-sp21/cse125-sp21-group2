@@ -14,6 +14,7 @@
 #define CONFIG_TXT "../config.txt"
 
 GameLogicServer* GameLogicServer::mLogicServer;
+int Player::numPlayers = 0;
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
                                  ServerLoader scene, uint16_t tick_ms)
@@ -92,7 +93,7 @@ void GameLogicServer::update() {
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
   // Only update game state if game isn't over
-  if (!isGameOver()) {
+  if (!isGameOver() || Player::numPlayers < MIN_PLAYERS) {
     // printKeyPresses();
     WaveManager::getWaveManager()->update();
     updatePlayers();  // Update player locations
@@ -437,8 +438,9 @@ void GameLogicServer::sendInfo() {
       mTestBuffer.push_back(data);
 
       // If the enemy has health 0, remove it from the world
-      // if (mWorld[i]->getHealth() <= 0 && !mWorld[i]->isPlayer()) {
-      if (mWorld[i]->isDead() && !mWorld[i]->isPlayer()) {
+      // Allow player to be deleted if they disconnected
+      if ((mWorld[i]->isDead() && !mWorld[i]->isPlayer()) ||
+          (mWorld[i]->isPlayer() && ((Player*)mWorld[i])->forceDelete)) {
         deleteObject(i);
       }
     }

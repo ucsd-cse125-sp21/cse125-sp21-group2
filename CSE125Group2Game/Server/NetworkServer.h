@@ -104,6 +104,10 @@ void NetworkServer::OnClientDisconnect(
   GameLogicServer::getLogicServer()
       ->players[serverToLogicID->find(client->GetID())->second]
       ->setHealth(0);
+
+  GameLogicServer::getLogicServer()
+      ->players[serverToLogicID->find(client->GetID())->second]
+      ->forceDelete = true;
 }
 
 // Called when a message arrives
