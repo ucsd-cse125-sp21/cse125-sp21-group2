@@ -186,6 +186,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
+    <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
     <ClCompile Include="SceneGraphNode.cpp" />
@@ -220,16 +221,14 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="net_client.hpp" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="SceneGraphNode.h" />
     <ClInclude Include="SceneLoader.h" />
-<<<<<<<<< Temporary merge branch 1
     <ClInclude Include="ShaderProgram.h" />
-=========
     <ClInclude Include="Sound.h" />
->>>>>>>>> Temporary merge branch 2
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />

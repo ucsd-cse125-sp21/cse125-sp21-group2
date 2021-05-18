@@ -19,7 +19,7 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
       std::make_unique<RenderManager>(window, *mLoader, mTLoader, mCamera);
 
   glfwSetWindowUserPointer(mWindow, this);
-  mScene = SceneGraph::FromFile(SCENE_JSON, *mLoader, mTLoader);
+  mScene = SceneGraph::FromFile(SCENE_JSON, *mLoader, mTLoader, mMLoader);
 
   mpRenderManager->setRenderBoundingBoxes(true);
 
@@ -121,11 +121,11 @@ void GameManager::UpdateObject(GameObject* obj) {
 
     Model* model = nullptr;
     if (obj->isTower()) {
-      model = new Model(STONEHENGE_MODEL, transform, *mLoader, mTLoader);
+      model = mMLoader.LoadModel(STONEHENGE_MODEL, *mLoader, mTLoader);
     } else if (obj->isEnemy()) {
-      model = new Model(ENEMY_MODEL, transform, *mLoader, mTLoader);
+      model = mMLoader.LoadModel(PLAYER_MODEL, *mLoader, mTLoader);
     } else if (obj->isPlayer()) {
-      model = new Model(PLAYER_MODEL, transform, *mLoader, mTLoader);
+      model = mMLoader.LoadModel(PLAYER_MODEL, *mLoader, mTLoader);
 
       // If this is the first time a player connects, add it!
       if (obj->getName() == GameObject::makeName("play", mClientId)) {
@@ -140,7 +140,7 @@ void GameManager::UpdateObject(GameObject* obj) {
         camera.setUp(glm::vec3(0.0f, 0, -1.0f));
       }
     } else {
-      model = Model::Cube(foundObject->getTransform(), *mLoader);
+      model = Model::Cube(*mLoader);
     }
     foundNode = mScene.addChild(foundObject, model);
   }
