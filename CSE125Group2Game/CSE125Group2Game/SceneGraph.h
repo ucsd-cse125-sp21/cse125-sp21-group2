@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "ModelLoader.h"
 #include "SceneGraphNode.h"
+#include "Skybox.h"
 
 class SceneLoader;
 
@@ -28,9 +29,13 @@ class SceneGraph {
   Camera& addCamera();
   Camera& addCamera(SceneGraphNode* node);
 
+  void setSkybox(Skybox* skybox) { mpSkybox = skybox; }
+  Skybox* getSkybox() const { return mpSkybox; }
   void removeChild(SceneGraphNode* node);
 
   std::optional<glm::mat4> getCameraMatrix() const;
+
+  void Update(float delta);
 
  private:
   std::unique_ptr<SceneGraphNode> mpRoot;
@@ -41,6 +46,10 @@ class SceneGraph {
   //       something, but that will add some complexity
   Camera mCamera;
   SceneGraphNode* cameraNode;
+
+  // skybox if it exists
+  Skybox* mpSkybox;
+
   // This only gets populated by SceneLoader rn.... we can fix that by changing
   // SceneGraphNode but w/e
   std::unordered_map<std::string, SceneGraphNode*> mNameMapping;

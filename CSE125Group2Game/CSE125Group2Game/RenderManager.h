@@ -9,8 +9,10 @@
 #include "Camera.h"
 #include "MeshLoader.h"
 #include "Model.h"
+#include "ParticleEmitter.h"
 #include "SceneGraph.h"
 #include "ShaderProgram.h"
+#include "Skybox.h"
 
 // singleton
 /* Responsibilities:
@@ -32,6 +34,12 @@ class RenderManager {
   void draw(const SceneGraphNode& node, MeshLoader& loader,
             const glm::mat4& prev, const glm::mat4& view,
             const glm::vec3& viewPos);
+  void drawParticles(const SceneGraphNode& node, const glm::mat4& prev,
+                     const glm::mat4& view, const glm::vec3& viewPos);
+
+  // refactor this
+  void draw(ParticleEmitter& emitter, const glm::mat4& model,
+            const glm::mat4& view, const glm::vec3& viewPos);
 
   void setViewportSize(int width, int height);
 
@@ -57,6 +65,8 @@ class RenderManager {
   std::unique_ptr<ShaderProgram> mpTextureProgram;
   std::unique_ptr<ShaderProgram> mpRainbowProgram;
   std::unique_ptr<ShaderProgram> mpBumpProgram;
+  std::unique_ptr<ShaderProgram> mpParticleProgram;
+  std::unique_ptr<ShaderProgram> mpSkyboxProgram;
 
   bool mUseNormalShading = false;
 
@@ -66,4 +76,9 @@ class RenderManager {
   Model* cubeboi;
 
   float currentTime = 0.0f;
+
+  // helpers
+  void drawBoundingBox(const SceneGraphNode& node,
+                       const glm::mat4& currTransform, const glm::mat4& view,
+                       const glm::vec3& viewPos);
 };

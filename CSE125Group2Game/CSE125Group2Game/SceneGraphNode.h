@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "Model.h"
+#include "ParticleEmitter.h"
 #include "Transform.h"
 
 class SceneGraph;
@@ -20,6 +21,7 @@ class SceneGraphNode {
   SceneGraphNode* getParent();
 
   // TODO: no transforms in graph sadge
+  ParticleEmitter* emitter;
 
  private:
   SceneGraphNode(SceneGraphNode* parent, GameObject* object);
@@ -27,6 +29,8 @@ class SceneGraphNode {
 
   void addChild(SceneGraphNode* child);
   void removeChild(SceneGraphNode* child);
+
+  void update(float delta);
 
   GameObject* mObject;
   Model* mModel;

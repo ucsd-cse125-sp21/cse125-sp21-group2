@@ -20,6 +20,10 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
 
   glfwSetWindowUserPointer(mWindow, this);
   mScene = SceneGraph::FromFile(SCENE_JSON, *mLoader, mTLoader, mMLoader);
+  mScene.setSkybox(new Skybox(ASSET("skybox"), *mLoader, mTLoader));
+
+  /*mScene.getByName("tree1")->getModel()->mMaterials[0].isRainbow = true;
+  mScene.getByName("tree1")->getModel()->mMaterials[1].isRainbow = true;*/
 
   mpRenderManager->setRenderBoundingBoxes(true);
 
@@ -68,8 +72,15 @@ void GameManager::Update() {
   CustomClient c;
   c.Init(host, port);
 
+  auto tex = mTLoader.loadTexture(ASSET("flame.png"));
+  ParticleEmitter testEmitter(tex);
+  float last = glfwGetTime();
+
   while (!glfwWindowShouldClose(mWindow)) {
     // 1) Update local states (use key logger to update gameobject)
+    float now = glfwGetTime();
+    float delta = now - last;
+    last = now;
 
     glfwPollEvents();
 
@@ -86,6 +97,7 @@ void GameManager::Update() {
 
     // draw scene
     mpRenderManager->draw(mScene, *mLoader);
+    mScene.Update(delta);
 
     glfwSwapBuffers(mWindow);
   }
@@ -167,6 +179,13 @@ void GameManager::UpdateObject(GameObject* obj) {
         return;
     }
 
+    if (foundObject->isEnemy()) {
+      // TODO: we never clean tehse up ... .causes big lag
+      foundObject->mShouldRender = false;
+      Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
+      foundNode->emitter = new ParticleEmitter(flameTexture);
+      return;
+    }
     // std::cerr << "Deleting object: " << ((std::string)obj->getName())
     //        << std::endl;
     mSound->deleteFromSoundVector(obj);
