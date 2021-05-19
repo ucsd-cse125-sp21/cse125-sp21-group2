@@ -1,13 +1,19 @@
 ﻿#include "Sound.h"
+#include <iostream>
 
 Sound::Sound() {
   engine = irrklang::createIrrKlangDevice();
   if (!engine) throw "Sound engine not supported!";
+  engine->setSoundVolume(irrklang::ik_f32(0.8));
 }
 
 void Sound::play(const char* filePath, irrklang::vec3df positionOfSoundOrigin) {
   // Play Sound Once
-  engine->play3D(filePath, positionOfSoundOrigin, false);
+  auto music = engine->play3D(filePath, positionOfSoundOrigin, false);
+  if (music) {
+      music->setMaxDistance(5.0f);
+      mSoundObjectVector.push_back(music);
+  }
 }
 
 void Sound::playBackgroundMusic(const char* filePath) {
@@ -44,11 +50,22 @@ void Sound::setListenerPosition(Transform* playerTransform) {
 }
 
 void Sound::playAccordingToGameObject(GameObject* obj) {
+  
   if (!obj) return;
   for (std::string objectName : mSoundVector) {
     if (obj->getName() == objectName) {
       return;
     }
+  }
+
+  for (int i = 0; i < mSoundObjectVector.size(); i++) {
+      auto sound = mSoundObjectVector[i];
+      if (sound->isFinished()) {
+          std::cout << "finished" << std::endl;
+          sound->stop();
+          sound->drop();
+          mSoundObjectVector.erase(mSoundObjectVector.begin() + i);
+      }
   }
 
   mSoundVector.push_back(obj->getName());
