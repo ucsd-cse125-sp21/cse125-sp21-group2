@@ -271,7 +271,6 @@ void RenderManager::setNormalShading(bool useNormalShading) {
   mUseNormalShading = useNormalShading;
 }
 
-// TODO: remove
 void RenderManager::draw(ParticleEmitter& emitter, const glm::mat4& model,
                          const glm::mat4& view, const glm::vec3& viewPos) {
   mpParticleProgram->use();
@@ -303,12 +302,13 @@ void RenderManager::draw(ParticleEmitter& emitter, const glm::mat4& model,
   // TODO: for now, just assume shader set, uniforms are set, etc.
   glBindVertexArray(emitter.mVao);
 
-  // update the particle buffer
+  // update the particle buffer - what is the behavior here?????
   glBindBuffer(GL_ARRAY_BUFFER, emitter.mParticleVBO);
-  glBufferSubData(GL_ARRAY_BUFFER, 0, emitter.mNumParticles * sizeof(Particle),
+  glBufferSubData(GL_ARRAY_BUFFER, 0,
+                  emitter.mParticles.size() * sizeof(Particle),
                   emitter.mParticles.data());
 
-  glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, emitter.mNumParticles);
+  glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, emitter.mParticles.size());
 }
 
 void RenderManager::drawBoundingBox(const SceneGraphNode& node,

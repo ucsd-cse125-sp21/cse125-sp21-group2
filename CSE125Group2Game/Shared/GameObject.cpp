@@ -65,3 +65,7 @@ bool GameObject::isProjectile() {
 }
 
 bool GameObject::isDead() { return mHealth <= 0; }
+
+bool GameObject::shouldDelete() {
+  return !isPlayer() && !isTower() && !mShouldRender;
+}

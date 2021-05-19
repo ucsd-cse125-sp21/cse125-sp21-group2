@@ -167,19 +167,16 @@ void GameManager::UpdateObject(GameObject* obj) {
     if (foundObject->isPlayer()) {
       foundObject->mShouldRender = false;
       return;
-    }
-    else if (obj->isTower()) {
-        foundObject->mShouldRender = false;
-        // Play tower Destroyed sound
-        irrklang::vec3d position(obj->getTransform()->getTranslation().x,
-            obj->getTransform()->getTranslation().y,
-            obj->getTransform()->getTranslation().z);
-        mSound->play(mSound->towerCollapseSoundPath, position);
+    } else if (obj->isTower()) {
+      foundObject->mShouldRender = false;
+      // Play tower Destroyed sound
+      irrklang::vec3d position(obj->getTransform()->getTranslation().x,
+                               obj->getTransform()->getTranslation().y,
+                               obj->getTransform()->getTranslation().z);
+      mSound->play(mSound->towerCollapseSoundPath, position);
 
-        return;
-    }
-
-    if (foundObject->isEnemy()) {
+      return;
+    } else if (foundObject->isEnemy()) {
       // TODO: we never clean tehse up ... .causes big lag
       foundObject->mShouldRender = false;
       Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));

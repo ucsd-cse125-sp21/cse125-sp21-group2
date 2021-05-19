@@ -37,6 +37,7 @@ class GameObject {
   bool isTower();
   bool isProjectile();
   bool isDead();
+  bool shouldDelete();
 
   void setTransform(Transform* transform);
   void addTranslation(glm::vec3 translation);

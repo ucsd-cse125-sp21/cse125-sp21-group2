@@ -41,7 +41,14 @@ void SceneGraphNode::update(float delta) {
     emitter->Update(delta);
   }
 
-  for (auto child = mChildren.begin(); child != mChildren.end(); child++) {
-    (*child)->update(delta);
+  for (int i = 0; i < mChildren.size(); i++) {
+    auto child = mChildren[i];
+    child->update(delta);
+
+    if ((!child->emitter || child->emitter->isDone()) &&
+        child->mChildren.empty() && child->getObject()->shouldDelete()) {
+      removeChild(child);
+      i--;
+    }
   }
 }

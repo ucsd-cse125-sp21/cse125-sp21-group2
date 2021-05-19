@@ -1,4 +1,4 @@
-#include "ParticleEmitter.h"
+﻿#include "ParticleEmitter.h"
 
 #include <glad/glad.h>
 
@@ -63,12 +63,19 @@ void ParticleEmitter::Update(float delta) {
   // lets just move them up a random bit
   // TODO: fix this. Have each particle have an angle? then move along angle.
   // respawn when dead
-  for (Particle& particle : mParticles) {
+  int i = 0;
+  for (int i = 0; i < mParticles.size(); i++) {
+    Particle& particle = mParticles[i];
     UpdateParticle(particle, delta);
-    if (particle.life <= 0.0f && mIsContinuous) {
-      InitializeParticle(particle);
-      assert(particle.life >= 0 && particle.life <= 1,
-             "Particle life out side of bounds!");
+    if (particle.life <= 0.0f) {
+      if (mIsContinuous) {
+        InitializeParticle(particle);
+        assert(particle.life >= 0 && particle.life <= 1,
+               "Particle life out side of bounds!");
+      } else {
+        mParticles.erase(mParticles.begin() + i);
+        i--;
+      }
     }
   }
 }
@@ -100,12 +107,4 @@ void ParticleEmitter::UpdateParticle(Particle& particle, float delta) {
 void ParticleEmitter::Draw(TextureLoader& tloader,
                            const glm::mat4& cameraMatrix) {}
 
-bool ParticleEmitter::isDone() const {
-  for (const Particle& particle : mParticles) {
-    if (particle.life > 0.0f) {
-      return false;
-    }
-  }
-
-  return true;
-}
+bool ParticleEmitter::isDone() const { return mParticles.empty(); }
