@@ -15,6 +15,8 @@ class Camera {
   void setFacing(const glm::vec3& facing);
   void setUp(const glm::vec3& up);
 
+  glm::vec3 getPosition() const { return mPosition; }
+
  private:
   glm::vec3 mPosition, mFacing, mUp;
 };

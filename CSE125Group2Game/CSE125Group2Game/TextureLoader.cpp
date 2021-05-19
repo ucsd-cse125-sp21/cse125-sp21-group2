@@ -28,7 +28,7 @@ TextureLoader::GLTexture::GLTexture(unsigned char* data, int width,
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   // copy the image data into the texture buffer
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA,
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
                GL_UNSIGNED_BYTE, data);
 
   // generate mipmaps for the texture
@@ -83,7 +83,7 @@ Texture TextureLoader::loadCubeMap(const std::string& directory) {
     // TODO: This uses RGB format cause jpg, other use RGBA cause png. Probably
     // should just use png here too shrug
     // TODO: Could break things if use file format that is wrong
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height,
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height,
                  0, GL_RGBA, GL_UNSIGNED_BYTE, data);
   }
 

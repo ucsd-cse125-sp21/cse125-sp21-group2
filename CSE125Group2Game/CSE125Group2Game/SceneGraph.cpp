@@ -236,3 +236,6 @@ std::optional<glm::mat4> SceneGraph::getCameraMatrix() const {
 
   return std::optional<glm::mat4>(std::move(matAccumulator));
 }
+
+// call update on all nodes
+void SceneGraph::Update(float delta) { mpRoot->update(delta); }

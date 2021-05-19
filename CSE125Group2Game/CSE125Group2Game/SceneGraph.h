@@ -35,6 +35,8 @@ class SceneGraph {
 
   std::optional<glm::mat4> getCameraMatrix() const;
 
+  void Update(float delta);
+
  private:
   std::unique_ptr<SceneGraphNode> mpRoot;
 

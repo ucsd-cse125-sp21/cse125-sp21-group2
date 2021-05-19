@@ -71,7 +71,8 @@ void GameManager::Update() {
   CustomClient c;
   c.Init(host, port);
 
-  ParticleEmitter testEmitter;
+  auto tex = mTLoader.loadTexture(ASSET("flame.png"));
+  ParticleEmitter testEmitter(tex);
   float last = glfwGetTime();
 
   while (!glfwWindowShouldClose(mWindow)) {
@@ -95,8 +96,7 @@ void GameManager::Update() {
 
     // draw scene
     mpRenderManager->draw(mScene, *mLoader);
-    mpRenderManager->draw(testEmitter, mScene);
-    testEmitter.Update(delta);
+    mScene.Update(delta);
 
     glfwSwapBuffers(mWindow);
   }
@@ -168,6 +168,13 @@ void GameManager::UpdateObject(GameObject* obj) {
       return;
     }
 
+    if (foundObject->isEnemy()) {
+      // TODO: we never clean tehse up ... .causes big lag
+      foundObject->mShouldRender = false;
+      Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
+      foundNode->emitter = new ParticleEmitter(flameTexture);
+      return;
+    }
     // std::cerr << "Deleting object: " << ((std::string)obj->getName())
     //        << std::endl;
     mScene.removeChild(foundNode);

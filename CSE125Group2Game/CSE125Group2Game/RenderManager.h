@@ -34,9 +34,12 @@ class RenderManager {
   void draw(const SceneGraphNode& node, MeshLoader& loader,
             const glm::mat4& prev, const glm::mat4& view,
             const glm::vec3& viewPos);
+  void drawParticles(const SceneGraphNode& node, const glm::mat4& prev,
+                     const glm::mat4& view, const glm::vec3& viewPos);
 
   // refactor this
-  void draw(const ParticleEmitter& emitter, const SceneGraph& scene);
+  void draw(ParticleEmitter& emitter, const glm::mat4& model,
+            const glm::mat4& view, const glm::vec3& viewPos);
 
   void setViewportSize(int width, int height);
 
@@ -73,4 +76,9 @@ class RenderManager {
   Model* cubeboi;
 
   float currentTime = 0.0f;
+
+  // helpers
+  void drawBoundingBox(const SceneGraphNode& node,
+                       const glm::mat4& currTransform, const glm::mat4& view,
+                       const glm::vec3& viewPos);
 };
