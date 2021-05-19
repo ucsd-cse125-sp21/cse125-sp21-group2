@@ -3,9 +3,6 @@
 
 #include "Transform.h"
 
-// TODO: Create moveable class which deals with rotation (each object has its
-// own pivot)
-
 enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile, Tower };
 
 #define NUM_KEYS 6

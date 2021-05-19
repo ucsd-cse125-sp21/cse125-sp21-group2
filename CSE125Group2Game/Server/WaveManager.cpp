@@ -9,13 +9,11 @@
 
 WaveManager* WaveManager::mWaveManager;
 int Enemy::enemysSpawned = 0;
+void sendWaveTimer(int seconds);
 
 WaveManager::WaveManager() {
   // Spawn one enemy every
   mSpawnSpeed = 1 * 1000;
-  mTimeOfLastSpawn =
-      GetTickCount() +
-      10000;  // so that we have some time at the beginning without enemies
 }
 
 WaveManager* WaveManager::getWaveManager() {
@@ -38,6 +36,15 @@ void WaveManager::update() {
   if (!fullWaveSpawned() && currTick > mSpawnSpeed + mTimeOfLastSpawn) {
     spawnEnemyInWave();
   }
+
+  // No enemies created yet, waiting for wave to start
+  if (mEnemiesSpawnedInWave == 0) {
+    unsigned long msLeftToWave = mTimeOfLastSpawn + mSpawnSpeed - currTick;
+
+    int secondsLeftToWave = msLeftToWave / 1000;
+
+    sendWaveTimer(secondsLeftToWave);
+  }
 }
 
 void WaveManager::startWave() {
@@ -49,6 +56,9 @@ void WaveManager::startWave() {
 
   mNextEnemyIndex = 0;
   mEnemiesSpawnedInWave = 0;
+  mTimeOfLastSpawn =
+      GetTickCount() + WAVE_INTERMISSION;  // so that we have some time at the
+                                           // beginning without enemies
 }
 
 void WaveManager::spawnEnemyInWave() {
@@ -67,6 +77,7 @@ void WaveManager::removeEnemy(Enemy* enemy) {
     if (enemy->getName() == mWaveEnemies[i]->getName()) {
       mWaveEnemies.erase(mWaveEnemies.begin() + i);
       mNextEnemyIndex--;
+
       return;
     }
   }

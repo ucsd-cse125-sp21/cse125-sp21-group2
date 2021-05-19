@@ -2,6 +2,8 @@
 
 #include "Enemy.h"
 
+#define WAVE_INTERMISSION 15000
+
 class WaveManager {
  public:
   WaveManager();

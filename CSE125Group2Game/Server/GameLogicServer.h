@@ -51,6 +51,7 @@ class GameLogicServer {
   GameObject* getCollidingObject(GameObject* obj);
 
   void sendInfo();
+  void sendWaveTimer(int seconds);
 
   msd::channel<char*> mSendingBuffer;  // Queue for storing events to send
   std::vector<char*> mTestBuffer;

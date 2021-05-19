@@ -114,11 +114,13 @@ void NetworkServer::OnClientDisconnect(
 void NetworkServer::OnMessage(shared_ptr<connection<CustomMsgTypes>> client,
                               message<CustomMsgTypes>& msg) {
   switch (msg.header.id) {
-    case CustomMsgTypes::ServerPing: {
-      cout << "[" << client->GetID() << "]: Server Ping\n";
+    case CustomMsgTypes::StartGame: {
+      cout << "[" << client->GetID() << "]: StartGame Ping\n";
 
-      // Simply bounce message back to client
-      client->Send(msg);
+      // TODO: Restart/start game
+
+      // Simply bounce message back to clients
+      // client->Send(msg);
     } break;
 
     case CustomMsgTypes::ClientMessage: {

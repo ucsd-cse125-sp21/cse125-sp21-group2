@@ -7,17 +7,6 @@
 
 class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
  public:
-  void PingServer() {
-    olc::net::message<CustomMsgTypes> msg;
-    msg.header.id = CustomMsgTypes::ServerPing;
-
-    // Caution with this...
-    std::chrono::system_clock::time_point timeNow =
-        std::chrono::system_clock::now();
-
-    Send(msg);
-  }
-
   void ClientMessageSend(bool* keysPressed) {
     olc::net::message<CustomMsgTypes> msg;
     msg.header.id = CustomMsgTypes::ClientMessage;
@@ -63,16 +52,24 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
           } break;
 
-          case CustomMsgTypes::ServerPing: {
-            // Server has responded to a ping request
-            std::chrono::system_clock::time_point timeNow =
-                std::chrono::system_clock::now();
-            std::chrono::system_clock::time_point timeThen;
-            msg >> timeThen;
-            std::cout
-                << "Ping: "
-                << std::chrono::duration<double>(timeNow - timeThen).count()
-                << "\n";
+          case CustomMsgTypes::WaveTimer: {
+            int currentWaveTimer;
+            msg >> currentWaveTimer;
+
+            std::cout << "Wave Timer: " << currentWaveTimer << std::endl;
+
+            // TODO: Update current wave timer in GameManager
+
+          } break;
+
+          case CustomMsgTypes::StartGame: {
+            // TODO: Lower UI to start game
+
+          } break;
+
+          case CustomMsgTypes::EndGame: {
+            // TODO: Bring up UI to restart game
+
           } break;
 
           case CustomMsgTypes::ServerMessage: {
