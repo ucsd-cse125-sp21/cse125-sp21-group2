@@ -6,6 +6,7 @@
 #include <string>
 
 #include "Camera.h"
+#include "ModelLoader.h"
 #include "SceneGraphNode.h"
 
 class SceneLoader;
@@ -15,7 +16,7 @@ class SceneGraph {
   SceneGraph();
 
   static SceneGraph FromFile(const std::string& fileName, MeshLoader& loader,
-                             TextureLoader& tloader);
+                             TextureLoader& tloader, ModelLoader& mMLoader);
 
   SceneGraphNode* getRoot() const;
   SceneGraphNode* getByName(const std::string& name) const;

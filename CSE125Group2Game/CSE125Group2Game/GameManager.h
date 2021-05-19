@@ -4,6 +4,7 @@
 
 #include "Camera.h"
 #include "Model.h"
+#include "ModelLoader.h"
 #include "RenderManager.h"
 #include "SceneGraphNode.h"
 #include "SceneLoader.h"
@@ -57,6 +58,7 @@ class GameManager {
 
   std::unique_ptr<RenderManager> mpRenderManager;
   TextureLoader mTLoader;
+  ModelLoader mMLoader;
 
   Camera* mCamera;
   SceneGraph mScene;

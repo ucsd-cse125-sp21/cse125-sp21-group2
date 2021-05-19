@@ -67,7 +67,7 @@ RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader,
   mpTextureProgram->use();
   mTexLoader = &tloader;
 
-  cubeboi = Model::Cube(nullptr, loader);
+  cubeboi = Model::Cube(loader);
 }
 
 /**
