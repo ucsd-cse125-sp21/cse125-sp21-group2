@@ -22,6 +22,9 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   mScene = SceneGraph::FromFile(SCENE_JSON, *mLoader, mTLoader, mMLoader);
   mScene.setSkybox(new Skybox(ASSET("skybox"), *mLoader, mTLoader));
 
+  /*mScene.getByName("tree1")->getModel()->mMaterials[0].isRainbow = true;
+  mScene.getByName("tree1")->getModel()->mMaterials[1].isRainbow = true;*/
+
   mpRenderManager->setRenderBoundingBoxes(true);
 
   mSound = new Sound();
@@ -68,8 +71,14 @@ void GameManager::Update() {
   CustomClient c;
   c.Init(host, port);
 
+  ParticleEmitter testEmitter;
+  float last = glfwGetTime();
+
   while (!glfwWindowShouldClose(mWindow)) {
     // 1) Update local states (use key logger to update gameobject)
+    float now = glfwGetTime();
+    float delta = now - last;
+    last = now;
 
     glfwPollEvents();
 
@@ -86,6 +95,8 @@ void GameManager::Update() {
 
     // draw scene
     mpRenderManager->draw(mScene, *mLoader);
+    mpRenderManager->draw(testEmitter, mScene);
+    testEmitter.Update(delta);
 
     glfwSwapBuffers(mWindow);
   }

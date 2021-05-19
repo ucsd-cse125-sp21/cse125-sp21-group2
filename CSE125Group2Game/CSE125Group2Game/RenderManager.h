@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "MeshLoader.h"
 #include "Model.h"
+#include "ParticleEmitter.h"
 #include "SceneGraph.h"
 #include "ShaderProgram.h"
 #include "Skybox.h"
@@ -34,6 +35,9 @@ class RenderManager {
             const glm::mat4& prev, const glm::mat4& view,
             const glm::vec3& viewPos);
 
+  // refactor this
+  void draw(const ParticleEmitter& emitter, const SceneGraph& scene);
+
   void setViewportSize(int width, int height);
 
   void setNormalShading(bool useNormalShading);
@@ -58,6 +62,7 @@ class RenderManager {
   std::unique_ptr<ShaderProgram> mpTextureProgram;
   std::unique_ptr<ShaderProgram> mpRainbowProgram;
   std::unique_ptr<ShaderProgram> mpBumpProgram;
+  std::unique_ptr<ShaderProgram> mpParticleProgram;
   std::unique_ptr<ShaderProgram> mpSkyboxProgram;
 
   bool mUseNormalShading = false;

@@ -16,7 +16,7 @@ layout(location = 5) uniform vec3 specular;
 layout(location = 6) uniform float shininess = 32;
 
 // constants (for now ....)
-uniform vec3 lightColor = vec3(0.6f, 0.6f, 0.6f);
+uniform vec3 lightColor = vec3(0.75f, 0.75f, 0.75f);
 uniform vec3 lightPos = vec3(0.0, 0.0, 0.0f);
 layout(location = 8) uniform vec3 viewPos = vec3(0.0, 0.0, 10.0f);
 

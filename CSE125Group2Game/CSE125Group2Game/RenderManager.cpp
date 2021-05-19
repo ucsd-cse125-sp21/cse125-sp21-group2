@@ -35,13 +35,17 @@ RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader,
   }
 
   // ensure we cull the back face to prevent wacky artifacts
-  glEnable(GL_CULL_FACE);
-  glCullFace(GL_BACK);
+  // glEnable(GL_CULL_FACE);
+  // glCullFace(GL_BACK);
 
   glEnable(GL_DEPTH_TEST);
 
   // tell opengl to multisample...
   glEnable(GL_MULTISAMPLE);
+
+  // enable blending
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // tell opengl our screen coordinate ranges
   int width, height;
@@ -58,6 +62,8 @@ RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader,
       std::make_unique<ShaderProgram>("rainbow_vert.glsl", "rainbow_frag.glsl");
   mpBumpProgram =
       std::make_unique<ShaderProgram>("bump_vert.glsl", "bump_frag.glsl");
+  mpParticleProgram = std::make_unique<ShaderProgram>("particle_vert.glsl",
+                                                      "particle_frag.glsl");
   mpSkyboxProgram =
       std::make_unique<ShaderProgram>("skybox_vert.glsl", "skybox_frag.glsl");
 
@@ -300,4 +306,17 @@ void RenderManager::setRenderBoundingBoxes(bool shouldRender) {
 
 void RenderManager::setNormalShading(bool useNormalShading) {
   mUseNormalShading = useNormalShading;
+}
+
+// TODO: remove
+void RenderManager::draw(const ParticleEmitter& emitter,
+                         const SceneGraph& scene) {
+  mpParticleProgram->use();
+  auto view = glm::inverse(scene.getCameraMatrix().value_or(glm::mat4(1.0f)));
+  auto model = glm::mat4(1.0f);
+
+  glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(mProjection));
+  glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(view));
+  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(model));
+  emitter.Draw();
 }

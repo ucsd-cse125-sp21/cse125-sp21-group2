@@ -186,6 +186,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
+    <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
@@ -208,6 +209,8 @@
     <None Include="normal_vert.glsl" />
     <None Include="packages.config" />
     <None Include="color_vert.glsl" />
+    <None Include="particle_frag.glsl" />
+    <None Include="particle_vert.glsl" />
     <None Include="rainbow_frag.glsl" />
     <None Include="rainbow_vert.glsl" />
     <None Include="skybox_frag.glsl" />
@@ -226,6 +229,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="net_client.hpp" />
+    <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="SceneGraphNode.h" />
