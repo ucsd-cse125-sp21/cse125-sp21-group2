@@ -67,8 +67,6 @@ void WaveManager::removeEnemy(Enemy* enemy) {
     if (enemy->getName() == mWaveEnemies[i]->getName()) {
       mWaveEnemies.erase(mWaveEnemies.begin() + i);
       mNextEnemyIndex--;
-      std::cout << "deleting player, mNextEnemyIndex: " << mNextEnemyIndex
-                << "mWaveEnemies.size(): " << mWaveEnemies.size() << std::endl;
       return;
     }
   }

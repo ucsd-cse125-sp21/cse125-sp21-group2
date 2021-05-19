@@ -472,10 +472,6 @@ char* GameLogicServer::marshalInfo(GameObject* obj) {
   // 3) 4 byte int health 48 bytes
 
   char* info = (char*)malloc(MESSAGE_SIZE);
-  if (!info) {
-    std::cerr << "bruh" << std::endl;
-  }
-
   char* tmpInfo = info;
 
   memcpy(tmpInfo, obj->getName().c_str(), NAME_LEN);  // Copy name into data
