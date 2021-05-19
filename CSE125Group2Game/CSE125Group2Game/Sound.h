@@ -33,7 +33,14 @@ class Sound {
   void pauseBackgroundMusic();
   void deleteFromSoundVector(GameObject* obj);
 
-  ~Sound() { delete engine; }
+  ~Sound() { 
+      if (backgroundSound) {
+          backgroundSound->stop();
+          backgroundSound->drop();
+      }
+      engine->drop();
+      delete engine;
+  }
 
  private:
   irrklang::ISoundEngine* engine;
@@ -41,5 +48,7 @@ class Sound {
   irrklang::ISound* backgroundSound;
 
   std::vector<std::string> mSoundVector;
+
+  std::vector<irrklang::ISound*> mSoundObjectVector;
 
 };
