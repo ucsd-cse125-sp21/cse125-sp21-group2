@@ -217,7 +217,7 @@ void RenderManager::draw(const SceneGraphNode& node, MeshLoader& loader,
   }
 
   glm::mat4 currTransform = prev * node.getObject()->getTransform()->getModel();
-  if (mRenderBoundingBoxes) {
+  if (false && mRenderBoundingBoxes) {
     drawBoundingBox(node, currTransform, view, viewPos);
   }
 

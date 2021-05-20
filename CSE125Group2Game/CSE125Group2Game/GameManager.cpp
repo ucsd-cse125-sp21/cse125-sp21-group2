@@ -22,9 +22,6 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   mScene = SceneGraph::FromFile(SCENE_JSON, *mLoader, mTLoader, mMLoader);
   mScene.setSkybox(new Skybox(ASSET("skybox"), *mLoader, mTLoader));
 
-  /*mScene.getByName("tree1")->getModel()->mMaterials[0].isRainbow = true;
-  mScene.getByName("tree1")->getModel()->mMaterials[1].isRainbow = true;*/
-
   mpRenderManager->setRenderBoundingBoxes(true);
 
   mSound = new Sound();
