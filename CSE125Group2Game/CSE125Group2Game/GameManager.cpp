@@ -136,26 +136,7 @@ void GameManager::UpdateObject(GameObject* obj) {
                                  obj->getObjectType());
 
     Model* model = nullptr;
-    if (obj->isEnemy()) {
-      model = mMLoader.LoadModel(ENEMY_MODEL, *mLoader, mTLoader);
-    } else if (obj->isPlayer()) {
-      model = mMLoader.LoadModel(PLAYER_MODEL, *mLoader, mTLoader);
-
-      // If this is the first time a player connects, add it!
-      if (obj->getName() == GameObject::makeName("play", mClientId)) {
-        mPlayerTransform = foundObject->getTransform();
-
-        SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
-
-        // attach the camera to the player
-        Camera& camera = mScene.addCamera(playerNode);
-        camera.setPosition(glm::vec3(0, 30.0f, 0));
-        camera.setFacing(glm::vec3(0, 0, 0));
-        camera.setUp(glm::vec3(0.0f, 0, -1.0f));
-      }
-    } else if (!obj->isTower()) {
-      model = Model::Cube(*mLoader);
-    }
+    assignModel(obj, model, foundObject);
     foundNode = mScene.addChild(foundObject, model);
   }
 
@@ -201,6 +182,30 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   foundObject->getTransform()->setModel(obj->getTransform()->getModel());
   foundObject->setHealth(obj->getHealth());
+}
+
+void GameManager::assignModel(GameObject* obj, Model*& model,
+                              GameObject* foundObject) {
+  if (obj->isEnemy()) {
+    model = mMLoader.LoadModel(ENEMY_MODEL, *mLoader, mTLoader);
+  } else if (obj->isPlayer()) {
+    model = mMLoader.LoadModel(PLAYER_MODEL, *mLoader, mTLoader);
+
+    // If this is the first time a player connects, add it!
+    if (obj->getName() == GameObject::makeName("play", mClientId)) {
+      mPlayerTransform = foundObject->getTransform();
+
+      SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
+
+      // attach the camera to the player
+      Camera& camera = mScene.addCamera(playerNode);
+      camera.setPosition(glm::vec3(0, 30.0f, 0));
+      camera.setFacing(glm::vec3(0, 0, 0));
+      camera.setUp(glm::vec3(0.0f, 0, -1.0f));
+    }
+  } else if (!obj->isTower()) {
+    model = Model::Cube(*mLoader);
+  }
 }
 
 GameObject* GameManager::unmarshalInfo(char* data) {

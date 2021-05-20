@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <cstddef>
 #include <iterator>
 #include <memory>
@@ -33,7 +33,7 @@ class SceneGraph {
   Skybox* getSkybox() const { return mpSkybox; }
   void removeChild(SceneGraphNode* node);
 
-  std::optional<glm::mat4> getCameraMatrix() const;
+  std::optional<glm::mat4> getCameraMatrix();
 
   void Update(float delta);
 

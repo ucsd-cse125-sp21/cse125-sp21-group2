@@ -1,4 +1,4 @@
-#include "SceneGraph.h"
+﻿#include "SceneGraph.h"
 
 #include <fstream>
 #include <iostream>
@@ -212,7 +212,7 @@ Camera& SceneGraph::addCamera(SceneGraphNode* node) {
   return mCamera;
 }
 
-std::optional<glm::mat4> SceneGraph::getCameraMatrix() const {
+std::optional<glm::mat4> SceneGraph::getCameraMatrix() {
   if (!cameraNode) {
     // return none, there is no camera attached to the scene.
     return std::optional<glm::mat4>();
@@ -234,7 +234,15 @@ std::optional<glm::mat4> SceneGraph::getCameraMatrix() const {
         currentNode->getObject()->getTransform()->getModel() * matAccumulator;
   }
 
-  return std::optional<glm::mat4>(std::move(matAccumulator));
+  // add to queue
+  std::optional<glm::mat4> currentModel =
+      std::optional<glm::mat4>(mCamera.modelQueue.front());
+  mCamera.modelQueue.push(matAccumulator);
+  mCamera.modelQueue.pop();
+
+  // return top of queue
+  return currentModel;
+  // return std::optional<glm::mat4>(std::move(matAccumulator));
 }
 
 // call update on all nodes

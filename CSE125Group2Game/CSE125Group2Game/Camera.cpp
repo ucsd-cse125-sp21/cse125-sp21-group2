@@ -6,7 +6,11 @@
 #include "glad/glad.h"
 
 Camera::Camera(glm::vec3 position, glm::vec3 facing, glm::vec3 up)
-    : mPosition(position), mFacing(facing), mUp(up) {}
+    : mPosition(position), mFacing(facing), mUp(up) {
+  for (int i = 0; i < LAG; i++) {
+    modelQueue.push(getViewMatrix());
+  }
+}
 
 void Camera::use() {}
 
