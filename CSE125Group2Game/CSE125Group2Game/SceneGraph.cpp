@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 
+#include "ModelLoader.h"
 #include "Utils.h"
 #include "json.hpp"
 
@@ -20,7 +21,7 @@ SceneGraph::SceneGraph() {
  * @param fileName The path to the scene file to be loaded.
  */
 SceneGraph SceneGraph::FromFile(const std::string& fileName, MeshLoader& loader,
-                                TextureLoader& tloader) {
+                                TextureLoader& tloader, ModelLoader& mMLoader) {
   // Open file
   std::ifstream file(fileName);
 
@@ -155,10 +156,10 @@ SceneGraph SceneGraph::FromFile(const std::string& fileName, MeshLoader& loader,
     // Object is a cube
     if (!objectFile.is_null() &&
         (objectFile == "cube" || objectFile == "Cube")) {
-      mesh = Model::Cube(transform, loader);
+      mesh = Model::Cube(loader);
     } else if (!objectFile.is_null()) {
       // Object is a obj file
-      mesh = new Model(ASSET(test), transform, loader, tloader);
+      mesh = mMLoader.LoadModel(ASSET(test), loader, tloader);
     }
 
     GameObject* obj = new GameObject(transform, ((std::string)name).data(), 1);
@@ -235,3 +236,6 @@ std::optional<glm::mat4> SceneGraph::getCameraMatrix() const {
 
   return std::optional<glm::mat4>(std::move(matAccumulator));
 }
+
+// call update on all nodes
+void SceneGraph::Update(float delta) { mpRoot->update(delta); }

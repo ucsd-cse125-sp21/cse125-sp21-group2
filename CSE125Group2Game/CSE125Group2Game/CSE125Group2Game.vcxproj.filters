@@ -28,6 +28,12 @@
     <Filter Include="Source Files\render\shaders">
       <UniqueIdentifier>{4f48eff9-2468-4b82-90b6-ec945badb18a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\render\ui">
+      <UniqueIdentifier>{1a6110a5-e9f2-4396-aaac-5885eb7cebc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\render\ui">
+      <UniqueIdentifier>{dac9ecd1-1771-49af-8370-dc9f67142060}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -75,17 +81,26 @@
     <ClCompile Include="SceneGraph.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
     <ClCompile Include="TextureLoader.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
     <ClCompile Include="stb_image.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleEmitter.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
     <ClCompile Include="Sound.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>Source Files\render\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +134,30 @@
       <Filter>Source Files\render\shaders</Filter>
     </None>
     <None Include="bump_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="particle_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="particle_frag.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="skybox_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="skybox_frag.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="font_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="font_frag.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="billboard_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="billboard_frag.glsl">
       <Filter>Source Files\render\shaders</Filter>
     </None>
   </ItemGroup>
@@ -159,9 +198,6 @@
     <ClInclude Include="SceneGraph.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
     <ClInclude Include="TextureLoader.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
@@ -179,6 +215,18 @@
     </ClInclude>
     <ClInclude Include="ShaderProgram.h">
       <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitter.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>Header Files\render\ui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

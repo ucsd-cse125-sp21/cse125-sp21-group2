@@ -1,29 +1,56 @@
-#include "Tower.h"
+﻿#include "Tower.h"
+
 #include "GameLogicServer.h"
+
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 
 int Tower::mTowerSpawned = 0;
 
 void Tower::update() {
-    // TODO: add healing feature?
-    // mIsModified = true;
+  // Do nothing if at full health
+  if (mHealth >= TOWER_HEALTH ||
+      GetTickCount() - mLastHeal < TOWER_HEAL_RATE_MS || mHealth <= 0) {
+    return;
+  }
 
+  mLastHeal = GetTickCount();
+  mHealth += TOWER_HEAL_AMT;
+
+  // Ensure health never goes above max
+  if (mHealth > TOWER_HEALTH) {
+    mHealth = TOWER_HEALTH;
+  }
 }
 
-void Tower::spawn(int count) {
-    GameLogicServer *logicServer = GameLogicServer::getLogicServer();
-    for (int i = 1; i <= count; i++) {
-        // TODO: randomize tower spawn locations
-        Tower* tower =
-            new Tower(new Transform(glm::vec3(5 + 5*i, 0, 0), glm::vec3(0, 0, 0),
-                glm::vec3(1, 1, 1), glm::vec3(0.5, 0.5, 0.5)),
-                (char*)makeName().c_str(), 100);
+void Tower::spawn() {
+  GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
-        logicServer->addGameObject(tower);
-    }
+  for (int i = 0; i < logicServer->mScene.mTowers.size(); i++) {
+    Tower* tower =
+        new Tower(logicServer->mScene.mTowers[i]->getTransform(),
+                  logicServer->mScene.mTowers[i]->getName(), TOWER_HEALTH);
 
+    logicServer->addGameObject(tower);
+  }
+}
 
+void Tower::setHealth(int amt) {
+  // reset timer if taking damage
+  if (amt < mHealth) {
+    mLastHeal = GetTickCount();
+  }
+
+  GameObject::setHealth(amt);
 }
 
 std::string Tower::makeName() {
-    return GameObject::makeName("towe", mTowerSpawned++);
+  return GameObject::makeName("tower", mTowerSpawned++);
+}
+
+bool Tower::shouldNotCollide(GameObject* obj) {
+  // TODO: Perhaps would be worth making more complex... enemies with
+  // projectiles???? interesting question
+  return GameObject::shouldNotCollide(obj) ||  // Call super method
+         obj->isPlayer();
 }

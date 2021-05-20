@@ -12,6 +12,15 @@ using namespace std;
 
 NetworkServer *NetworkServer::mNetServer;
 
+void sendWaveTimer(int seconds) {
+  olc::net::message<CustomMsgTypes> msg;
+  msg.header.id = CustomMsgTypes::WaveTimer;
+
+  msg << seconds;
+
+  NetworkServer::GetNetworkServer()->MessageAllClients(msg);
+}
+
 int main() {
   DWORD before, after, diff;
 
@@ -20,7 +29,7 @@ int main() {
 
   GameLogicServer *logicServer = GameLogicServer::getLogicServer();
 
-  logicServer->printWorld();
+  // logicServer->printWorld();
 
   std::thread netServerThread(&(NetworkServer::Update), netServer, -1, true);
 

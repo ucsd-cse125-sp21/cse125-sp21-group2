@@ -3,12 +3,9 @@
 
 #include "Transform.h"
 
-// TODO: Create moveable class which deals with rotation (each object has its
-// own pivot)
-
 enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile, Tower };
 
-#define NUM_KEYS 5
+#define NUM_KEYS 6
 #define NAME_LEN 8
 #define FLOAT_SIZE 4
 #define INT_SIZE sizeof(int)
@@ -18,14 +15,15 @@ enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile, Tower };
 
 #define RADIUS 25
 
+#define FORWARD 0
+#define LEFT 1
+#define BACKWARD 2
+#define RIGHT 3
+#define SHOOT 4
+#define RESTART 5
+
 class GameObject {
  public:
-  static const int FORWARD = 0;
-  static const int LEFT = 1;
-  static const int BACKWARD = 2;
-  static const int RIGHT = 3;
-  static const int SHOOT = 4;
-
   GameObject(Transform* transform, const std::string& name, int health);
 
   GameObject(Transform* transform, const std::string& name, int health,
@@ -33,11 +31,13 @@ class GameObject {
 
   ~GameObject();
 
-  bool isDefault();
-  bool isPlayer();
-  bool isEnemy();
-  bool isTower();
-  bool isProjectile();
+  bool isDefault() const;
+  bool isPlayer() const;
+  bool isEnemy() const;
+  bool isTower() const;
+  bool isProjectile() const;
+  bool isDead() const;
+  bool shouldDelete() const;
 
   void setTransform(Transform* transform);
   void addTranslation(glm::vec3 translation);
@@ -47,18 +47,19 @@ class GameObject {
 
   void virtual update() {}
   bool virtual shouldNotCollide(GameObject* obj) {
-    return obj->getName() == "root0000" ||
-           (obj->getHealth() <= 0 && !obj->isDefault()) ||
-           obj->getName() == mName;
+    return obj->getName() == "root0000" || obj->isDead() ||
+           obj->getObjectType() == getObjectType() || obj->isDefault();
   }
 
   // Returns null terminated name
   std::string getName();
   int getHealth();
+  bool hasHealth() const;
 
   ObjectType getObjectType();
 
   bool mIsModified = true;
+  bool mShouldRender = true;
 
   static std::string makeName(std::string prefix, int count);
 
@@ -66,6 +67,6 @@ class GameObject {
   Transform* mTransform;
   // char mName[NAME_LEN];
   std::string mName;
-  int mHealth;
+  int mHealth = 0;
   ObjectType mObjectType;
 };

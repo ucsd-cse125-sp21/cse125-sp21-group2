@@ -4,10 +4,12 @@
 #include "Moveable.h"
 
 #define PROJ_SPAWN_RATE_MS 100
+#define PROJ_DAMAGE 4
 
 class Projectile : public Moveable {
  public:
   static int mProjectilesSpawned;
+
   static std::unordered_map<std::string, unsigned long> mTickLastSpawn;
   // todo: might wanna change to hashmap to map obj name to
   // last tick because players and enemies can have
@@ -21,14 +23,18 @@ class Projectile : public Moveable {
   void update();
   bool shouldNotCollide(GameObject* obj);
 
+  GameObject* getParent();
+
  protected:
   static std::string makeName();
   // honestly not sure if we would need this / if we wanna change it
   std::vector<glm::vec3> mPath;  // pre compute path on creation and just check
                                  // for collisions as we go ahead
   int mProjectileMaxTicks =
-      100;  // how many ticks a projectile should last for unless it collides
+      15;  // how many ticks a projectile should last for unless it collides
   int mProjectileNextTick;
+
+  float rotationSpeed = -0.1;
 
   GameObject* mParent;
 };

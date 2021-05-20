@@ -10,6 +10,8 @@
 #include "olc_net.h"
 #include "server_helper.h"
 
+#define SERVER_CONFIG_ERROR \
+  "server couldn't read config file using default values\n"
 using namespace olc::net;
 using namespace std;
 
@@ -50,7 +52,7 @@ NetworkServer* NetworkServer::GetNetworkServer() {
     string str_port = server_read_config_file(config_field, CONFIG_FILE);
 
     if (str_port.compare(string()) == 0) {
-      cout << "server couldn't read config file, using default port\n";
+      cout << SERVER_CONFIG_ERROR;
     } else {
       int temp_int(stoi(str_port));
       if (temp_int <= static_cast<int>(UINT16_MAX) && temp_int >= 0) {
@@ -79,19 +81,22 @@ bool NetworkServer::OnClientConnect(
 
   GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
-  Transform* transform = new Transform(glm::vec3(0, RADIUS, 0), glm::vec3(0),
-                                       glm::vec3(.5), glm::vec3(0.5 * .5));
-
-  Player* newPlayer =
-      new Player(transform, Player::makeName(numPlayers), 10, numPlayers);
+  Player* newPlayer = Player::spawnPlayer(numPlayers);
   logicServer->addGameObject(newPlayer);
 
   logicServer->players[numPlayers] = newPlayer;
 
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (logicServer->players[i] == nullptr) {
+      continue;
+    }
+
+    logicServer->players[i]->mIsModified = true;
+  }
+
   return true;
 }
 
-// TODO: remove player from world on disconnect
 // Called when a client appears to have disconnected
 void NetworkServer::OnClientDisconnect(
     shared_ptr<connection<CustomMsgTypes>> client) {
@@ -99,17 +104,23 @@ void NetworkServer::OnClientDisconnect(
   GameLogicServer::getLogicServer()
       ->players[serverToLogicID->find(client->GetID())->second]
       ->setHealth(0);
+
+  GameLogicServer::getLogicServer()
+      ->players[serverToLogicID->find(client->GetID())->second]
+      ->forceDelete = true;
 }
 
 // Called when a message arrives
 void NetworkServer::OnMessage(shared_ptr<connection<CustomMsgTypes>> client,
                               message<CustomMsgTypes>& msg) {
   switch (msg.header.id) {
-    case CustomMsgTypes::ServerPing: {
-      cout << "[" << client->GetID() << "]: Server Ping\n";
+    case CustomMsgTypes::StartGame: {
+      cout << "[" << client->GetID() << "]: StartGame Ping\n";
 
-      // Simply bounce message back to client
-      client->Send(msg);
+      // TODO: Restart/start game
+
+      // Simply bounce message back to clients
+      // client->Send(msg);
     } break;
 
     case CustomMsgTypes::ClientMessage: {

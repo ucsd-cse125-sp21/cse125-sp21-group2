@@ -14,10 +14,13 @@ class Moveable : public GameObject {
   }
 
   void move(glm::vec3 angle);
+  void resetModel();
 
   Transform* mPivot;
   Transform* mModelTransform;
 
  private:
   void initPivotModel(Transform* transform);
+
+  glm::mat4 mInitPivotModel;
 };

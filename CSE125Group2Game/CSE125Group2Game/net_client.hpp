@@ -7,23 +7,9 @@
 
 class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
  public:
-  void PingServer() {
-    olc::net::message<CustomMsgTypes> msg;
-    msg.header.id = CustomMsgTypes::ServerPing;
-
-    // Caution with this...
-    std::chrono::system_clock::time_point timeNow =
-        std::chrono::system_clock::now();
-
-    Send(msg);
-  }
-
   void ClientMessageSend(bool* keysPressed) {
     olc::net::message<CustomMsgTypes> msg;
     msg.header.id = CustomMsgTypes::ClientMessage;
-
-    /*std::cout << "Sending message to the server! Current tick:"
-              << GetTickCount() << std::endl;*/
 
     int sum = 0;
     for (int i = 0; i < NUM_KEYS; i++) {
@@ -62,20 +48,28 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             int clientId;
             msg >> clientId;
 
-            GameManager::getManager()->AddPlayer(clientId);
+            GameManager::getManager()->mClientId = clientId;
 
           } break;
 
-          case CustomMsgTypes::ServerPing: {
-            // Server has responded to a ping request
-            std::chrono::system_clock::time_point timeNow =
-                std::chrono::system_clock::now();
-            std::chrono::system_clock::time_point timeThen;
-            msg >> timeThen;
-            std::cout
-                << "Ping: "
-                << std::chrono::duration<double>(timeNow - timeThen).count()
-                << "\n";
+          case CustomMsgTypes::WaveTimer: {
+            int currentWaveTimer;
+            msg >> currentWaveTimer;
+
+            std::cout << "Wave Timer: " << currentWaveTimer << std::endl;
+
+            // TODO: Update current wave timer in GameManager
+
+          } break;
+
+          case CustomMsgTypes::StartGame: {
+            // TODO: Lower UI to start game
+
+          } break;
+
+          case CustomMsgTypes::EndGame: {
+            // TODO: Bring up UI to restart game
+
           } break;
 
           case CustomMsgTypes::ServerMessage: {
@@ -95,23 +89,6 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             }
 
             GameObject* obj = GameManager::getManager()->unmarshalInfo(data);
-
-            // Object updated this tick, skip it
-            // if (updatedObjects.find(std::string(obj->getName())) !=
-            //    updatedObjects.end()) {
-            //  continue;
-            //}
-
-            // updatedObjects.insert(std::string(obj->getName()));
-
-            // if (obj->getObjectType() == ObjectType::Player) {
-            //  glm::vec3 angle =
-            //      glm::eulerAngles(obj->getTransform()->getRotation());
-
-            //  std::cout << glm::degrees(angle.x) << " " <<
-            //  glm::degrees(angle.y)
-            //            << " " << glm::degrees(angle.z) << std::endl;
-            //}
 
             GameManager::getManager()->UpdateObject(obj);
 

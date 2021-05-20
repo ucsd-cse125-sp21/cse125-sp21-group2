@@ -11,7 +11,7 @@
 
 #include "Utils.h"
 
-Model* Model::Cube(Transform* transform, MeshLoader& loader) {
+Model* Model::Cube(MeshLoader& loader) {
   std::vector<glm::vec3> positions{
       // front
       glm::vec3(-0.5, -0.5, 0.5),
@@ -111,13 +111,12 @@ Model* Model::Cube(Transform* transform, MeshLoader& loader) {
       glm::uvec3(33, 34, 35),
   };
 
-  return new Model(vertices, indices, transform, loader);
+  return new Model(vertices, indices, loader);
 }
 
 Model::Model(const std::vector<Vertex>& vertices,
-             const std::vector<glm::uvec3>& indices, Transform* transform,
-             MeshLoader& loader)
-    : mTransform(transform), mMeshes(0) {
+             const std::vector<glm::uvec3>& indices, MeshLoader& loader)
+    : mMeshes(0) {
   mMeshes.push_back(loader.loadMesh(vertices, indices));
   mMaterials.push_back(Material());
 }
@@ -132,9 +131,8 @@ Model::Model(const std::vector<Vertex>& vertices,
  * @throws std::exception Exception thrown when there is an error loading the
  * file.
  */
-Model::Model(const std::string& filePath, Transform* transform,
-             MeshLoader& loader, TextureLoader& tloader)
-    : mTransform(transform) {
+Model::Model(const std::string& filePath, MeshLoader& loader,
+             TextureLoader& tloader) {
   Assimp::Importer importer;
   const aiScene* scene = importer.ReadFile(
       filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices |

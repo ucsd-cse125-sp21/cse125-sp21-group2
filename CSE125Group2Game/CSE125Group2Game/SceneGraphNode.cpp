@@ -35,3 +35,20 @@ std::vector<SceneGraphNode*> SceneGraphNode::getChildren() const {
 }
 
 SceneGraphNode* SceneGraphNode::getParent() { return mParent; }
+
+void SceneGraphNode::update(float delta) {
+  if (emitter) {
+    emitter->Update(delta);
+  }
+
+  for (int i = 0; i < mChildren.size(); i++) {
+    auto child = mChildren[i];
+    child->update(delta);
+
+    if ((!child->emitter || child->emitter->isDone()) &&
+        child->mChildren.empty() && child->getObject()->shouldDelete()) {
+      removeChild(child);
+      i--;
+    }
+  }
+}

@@ -52,15 +52,26 @@ std::string GameObject::makeName(std::string prefix, int count) {
   }
 
   name += std::to_string(count);
-  // std::cout << "New Enemy Name: " << name << std::endl;
 
   return name;
 }
 
-bool GameObject::isDefault() { return mObjectType == ObjectType::Default; }
-bool GameObject::isPlayer() { return mObjectType == ObjectType::Player; }
-bool GameObject::isEnemy() { return mObjectType == ObjectType::Enemy; }
-bool GameObject::isTower() { return mObjectType == ObjectType::Tower; }
-bool GameObject::isProjectile() {
+bool GameObject::isDefault() const {
+  return mObjectType == ObjectType::Default;
+}
+bool GameObject::isPlayer() const { return mObjectType == ObjectType::Player; }
+bool GameObject::isEnemy() const { return mObjectType == ObjectType::Enemy; }
+bool GameObject::isTower() const { return mObjectType == ObjectType::Tower; }
+bool GameObject::isProjectile() const {
   return mObjectType == ObjectType::Projectile;
+}
+
+bool GameObject::isDead() const { return mHealth <= 0; }
+
+bool GameObject::shouldDelete() const {
+  return !isPlayer() && !isTower() && !mShouldRender;
+}
+
+bool GameObject::hasHealth() const {
+  return (isPlayer() || isEnemy() || isTower()) && !isDead();
 }

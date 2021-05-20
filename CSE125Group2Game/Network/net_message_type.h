@@ -1,9 +1,11 @@
-#pragma once
+﻿#pragma once
 
 enum class CustomMsgTypes : uint32_t {
   ServerAccept,
   ServerDeny,
-  ServerPing,
+  StartGame,
+  EndGame,
+  WaveTimer,
   ClientMessage,
   MessageAll,
   ServerMessage,
