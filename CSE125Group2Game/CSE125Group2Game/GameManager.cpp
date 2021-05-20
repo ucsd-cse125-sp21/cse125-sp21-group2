@@ -43,7 +43,7 @@ GameManager* GameManager::getManager() {
 
     glfwWindowHint(GLFW_SAMPLES, 8);
     // create window object
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Game", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(1920, 1080, "Game", NULL, NULL);
     if (window == NULL) {
       glfwTerminate();
       CRASH("Failed to create glfw window...");
@@ -133,9 +133,7 @@ void GameManager::UpdateObject(GameObject* obj) {
                                  obj->getObjectType());
 
     Model* model = nullptr;
-    if (obj->isTower()) {
-      model = mMLoader.LoadModel(STONEHENGE_MODEL, *mLoader, mTLoader);
-    } else if (obj->isEnemy()) {
+    if (obj->isEnemy()) {
       model = mMLoader.LoadModel(ENEMY_MODEL, *mLoader, mTLoader);
     } else if (obj->isPlayer()) {
       model = mMLoader.LoadModel(PLAYER_MODEL, *mLoader, mTLoader);
@@ -148,11 +146,11 @@ void GameManager::UpdateObject(GameObject* obj) {
 
         // attach the camera to the player
         Camera& camera = mScene.addCamera(playerNode);
-        camera.setPosition(glm::vec3(0, 20.0f, 0));
+        camera.setPosition(glm::vec3(0, 30.0f, 0));
         camera.setFacing(glm::vec3(0, 0, 0));
         camera.setUp(glm::vec3(0.0f, 0, -1.0f));
       }
-    } else {
+    } else if (!obj->isTower()) {
       model = Model::Cube(*mLoader);
     }
     foundNode = mScene.addChild(foundObject, model);

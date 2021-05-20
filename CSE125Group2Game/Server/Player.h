@@ -44,7 +44,7 @@ class Player : public Moveable {
   bool forceDelete = false;
 
  private:
-  glm::vec3 mRotationSpeed = glm::vec3(-0.04, -0.12, 0);
+  glm::vec3 mRotationSpeed = glm::vec3(-0.0225, -0.10, 0);
 
   glm::vec3 mVelocity;
 

@@ -13,7 +13,7 @@
 
 #define FOVY 100.0f
 #define NEAR_CLIP 0.1f
-#define FAR_CLIP 100.0f
+#define FAR_CLIP 200.0f
 
 /**
  * Initializes the RenderManager using the passed in window as the render

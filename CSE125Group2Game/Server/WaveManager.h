@@ -2,7 +2,7 @@
 
 #include "Enemy.h"
 
-#define WAVE_INTERMISSION 15000
+#define WAVE_INTERMISSION 10000
 
 class WaveManager {
  public:
