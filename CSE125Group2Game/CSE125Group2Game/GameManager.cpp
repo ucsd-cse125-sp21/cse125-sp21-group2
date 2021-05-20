@@ -136,7 +136,7 @@ void GameManager::UpdateObject(GameObject* obj) {
     if (obj->isTower()) {
       model = mMLoader.LoadModel(STONEHENGE_MODEL, *mLoader, mTLoader);
     } else if (obj->isEnemy()) {
-      model = mMLoader.LoadModel(PLAYER_MODEL, *mLoader, mTLoader);
+      model = mMLoader.LoadModel(ENEMY_MODEL, *mLoader, mTLoader);
     } else if (obj->isPlayer()) {
       model = mMLoader.LoadModel(PLAYER_MODEL, *mLoader, mTLoader);
 
