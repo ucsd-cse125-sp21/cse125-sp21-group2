@@ -63,6 +63,7 @@ class GameManager {
   Camera* mCamera;
   SceneGraph mScene;
   GLFWwindow* mWindow;
+  UI* mpUI;
 
   static GameManager* mManager;
 

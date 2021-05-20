@@ -1,4 +1,8 @@
 #pragma once
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include <string>
 #include <vector>
 
@@ -39,6 +43,7 @@ class TextureLoader {
  public:
   Texture loadTexture(const std::string& filePath);
   Texture loadCubeMap(const std::string& directory);
+  Texture loadGlyph(const FT_Face& face);
   void use(const Texture& texture) const;
 
  private:

@@ -98,6 +98,27 @@ Texture TextureLoader::loadCubeMap(const std::string& directory) {
   return Texture(mTextures.size() - 1, GL_TEXTURE_CUBE_MAP);
 }
 
+Texture TextureLoader::loadGlyph(const FT_Face& face) {
+  // create the gl texture
+  GLTexture texture;
+  glGenTextures(1, &texture.mId);
+  glBindTexture(GL_TEXTURE_2D, texture.mId);
+
+  // load each face of the cube map
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, face->glyph->bitmap.width,
+               face->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE,
+               face->glyph->bitmap.buffer);
+
+  // set texture filtering and wrapping
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  mTextures.push_back(texture);
+  return Texture(mTextures.size() - 1, GL_TEXTURE_2D);
+}
+
 void TextureLoader::use(const Texture& texture) const {
   mTextures[texture.mHandle].use(texture.mTextureType);
 }

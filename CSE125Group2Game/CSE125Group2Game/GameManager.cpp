@@ -22,10 +22,12 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   mScene = SceneGraph::FromFile(SCENE_JSON, *mLoader, mTLoader, mMLoader);
   mScene.setSkybox(new Skybox(ASSET("skybox"), *mLoader, mTLoader));
 
-  mpRenderManager->setRenderBoundingBoxes(true);
+  // mpRenderManager->setRenderBoundingBoxes(true);
 
   mSound = new Sound();
   mSound->playBackgroundMusic(mSound->backgroundMusicPath);
+
+  mpUI = new UI(ASSET("fonts/arial.ttf"), mTLoader);
 }
 
 GameManager* GameManager::getManager() {
@@ -40,7 +42,7 @@ GameManager* GameManager::getManager() {
 
     glfwWindowHint(GLFW_SAMPLES, 8);
     // create window object
-    GLFWwindow* window = glfwCreateWindow(1920, 1080, "Game", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(1800, 900, "Game", NULL, NULL);
     if (window == NULL) {
       glfwTerminate();
       CRASH("Failed to create glfw window...");
@@ -95,6 +97,10 @@ void GameManager::Update() {
     // draw scene
     mpRenderManager->draw(mScene, *mLoader);
     mScene.Update(delta);
+
+    // render text ui
+    mpRenderManager->drawText("Howdy", 25.0f, 25.0f, 1.0f,
+                              glm::vec3(0.5f, 0.8f, 0.2f), *mpUI);
 
     glfwSwapBuffers(mWindow);
   }
@@ -194,6 +200,7 @@ void GameManager::UpdateObject(GameObject* obj) {
   }
 
   foundObject->getTransform()->setModel(obj->getTransform()->getModel());
+  foundObject->setHealth(obj->getHealth());
 }
 
 GameObject* GameManager::unmarshalInfo(char* data) {

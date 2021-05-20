@@ -196,15 +196,19 @@
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="stb_image.cpp" />
-    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
+    <ClCompile Include="UI.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shared\scene.json" />
+    <None Include="billboard_frag.glsl" />
+    <None Include="billboard_vert.glsl" />
     <None Include="bump_frag.glsl" />
     <None Include="bump_vert.glsl" />
     <None Include="color_frag.glsl" />
+    <None Include="font_frag.glsl" />
+    <None Include="font_vert.glsl" />
     <None Include="normal_frag.glsl" />
     <None Include="normal_vert.glsl" />
     <None Include="packages.config" />
@@ -238,8 +242,8 @@
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="stb_image.h" />
-    <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
@@ -248,6 +252,8 @@
     <Import Project="..\packages\glm.0.9.9.800\build\native\glm.targets" Condition="Exists('..\packages\glm.0.9.9.800\build\native\glm.targets')" />
     <Import Project="..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets" Condition="Exists('..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" />
     <Import Project="..\packages\Assimp.3.0.0\build\native\Assimp.targets" Condition="Exists('..\packages\Assimp.3.0.0\build\native\Assimp.targets')" />
+    <Import Project="..\packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets" Condition="Exists('..\packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets')" />
+    <Import Project="..\packages\freetype2.2.6.0.1\build\native\freetype2.targets" Condition="Exists('..\packages\freetype2.2.6.0.1\build\native\freetype2.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -257,5 +263,7 @@
     <Error Condition="!Exists('..\packages\glm.0.9.9.800\build\native\glm.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glm.0.9.9.800\build\native\glm.targets'))" />
     <Error Condition="!Exists('..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets'))" />
     <Error Condition="!Exists('..\packages\Assimp.3.0.0\build\native\Assimp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Assimp.3.0.0\build\native\Assimp.targets'))" />
+    <Error Condition="!Exists('..\packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\freetype2.2.6.0.1\build\native\freetype2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freetype2.2.6.0.1\build\native\freetype2.targets'))" />
   </Target>
 </Project>

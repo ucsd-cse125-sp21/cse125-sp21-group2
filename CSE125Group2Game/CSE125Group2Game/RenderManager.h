@@ -13,6 +13,7 @@
 #include "SceneGraph.h"
 #include "ShaderProgram.h"
 #include "Skybox.h"
+#include "UI.h"
 
 // singleton
 /* Responsibilities:
@@ -36,10 +37,18 @@ class RenderManager {
             const glm::vec3& viewPos);
   void drawParticles(const SceneGraphNode& node, const glm::mat4& prev,
                      const glm::mat4& view, const glm::vec3& viewPos);
+  void drawHealthBars(const SceneGraphNode& node, const glm::mat4& prev,
+                      const glm::mat4& view, const glm::vec3& viewPos);
 
   // refactor this
   void draw(ParticleEmitter& emitter, const glm::mat4& model,
             const glm::mat4& view, const glm::vec3& viewPos);
+
+  // TODO: refactor into UI class
+  void drawText(const std::string text, float x, float y, float scale,
+                const glm::vec3& color, const UI& ui);
+  void drawHealthBar(const glm::mat4& prev, const glm::mat4& view,
+                     const glm::vec3& viewPos, float health);
 
   void setViewportSize(int width, int height);
 
@@ -67,6 +76,8 @@ class RenderManager {
   std::unique_ptr<ShaderProgram> mpBumpProgram;
   std::unique_ptr<ShaderProgram> mpParticleProgram;
   std::unique_ptr<ShaderProgram> mpSkyboxProgram;
+  std::unique_ptr<ShaderProgram> mpFontProgram;
+  std::unique_ptr<ShaderProgram> mpBillboardProgram;
 
   bool mUseNormalShading = false;
 

@@ -31,13 +31,13 @@ class GameObject {
 
   ~GameObject();
 
-  bool isDefault();
-  bool isPlayer();
-  bool isEnemy();
-  bool isTower();
-  bool isProjectile();
-  bool isDead();
-  bool shouldDelete();
+  bool isDefault() const;
+  bool isPlayer() const;
+  bool isEnemy() const;
+  bool isTower() const;
+  bool isProjectile() const;
+  bool isDead() const;
+  bool shouldDelete() const;
 
   void setTransform(Transform* transform);
   void addTranslation(glm::vec3 translation);
@@ -54,6 +54,7 @@ class GameObject {
   // Returns null terminated name
   std::string getName();
   int getHealth();
+  bool hasHealth() const;
 
   ObjectType getObjectType();
 
@@ -66,6 +67,6 @@ class GameObject {
   Transform* mTransform;
   // char mName[NAME_LEN];
   std::string mName;
-  int mHealth;
+  int mHealth = 0;
   ObjectType mObjectType;
 };
