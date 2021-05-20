@@ -166,7 +166,7 @@ void RenderManager::draw(const Model& model, const glm::mat4& transform,
   }
 }
 
-void RenderManager::draw(SceneGraph& graph, MeshLoader& loader) {
+void RenderManager::draw(const SceneGraph& graph, MeshLoader& loader) {
   SceneGraphNode* root = graph.getRoot();
   auto viewOption = graph.getCameraMatrix();
 

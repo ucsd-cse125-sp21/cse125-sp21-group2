@@ -31,7 +31,7 @@ class RenderManager {
   void draw(const Model& model, const glm::mat4& view);
   void draw(const Model& model, const glm::mat4& transform,
             const glm::mat4& view, const glm::vec3& viewPos);
-  void draw(SceneGraph& graph, MeshLoader& loader);
+  void draw(const SceneGraph& graph, MeshLoader& loader);
   void draw(const SceneGraphNode& node, MeshLoader& loader,
             const glm::mat4& prev, const glm::mat4& view,
             const glm::vec3& viewPos);

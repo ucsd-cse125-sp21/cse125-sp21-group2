@@ -39,8 +39,6 @@ class GameManager {
 
   void UpdateObject(GameObject* obj);
 
-  void assignModel(GameObject* obj, Model*& model, GameObject* foundObject);
-
   bool mKeyPresses[NUM_KEYS];
 
   void setClientID(int id);
