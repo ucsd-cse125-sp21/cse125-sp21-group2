@@ -27,7 +27,7 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   mSound = new Sound();
   mSound->playBackgroundMusic(mSound->backgroundMusicPath);
 
-  mpUI = new UI(ASSET("fonts/arial.ttf"), mTLoader);
+  mpUI = new UI(ASSET("fonts/galaxy.otf"), mTLoader);
 }
 
 GameManager* GameManager::getManager() {
@@ -99,13 +99,26 @@ void GameManager::Update() {
     mScene.Update(delta);
 
     // render text ui
-    mpRenderManager->drawText("Howdy", 25.0f, 25.0f, 1.0f,
-                              glm::vec3(0.5f, 0.8f, 0.2f), *mpUI);
+    renderUI();
 
     glfwSwapBuffers(mWindow);
   }
 
   glfwTerminate();
+}
+
+void GameManager::renderUI() {
+  if (mPlayer) {
+    mpRenderManager->drawText(
+        "Health: " + std::to_string(mPlayer->getHealth()) + " / " +
+            std::to_string(DEFAULT_HEALTH),
+        25.f, 550.0f, 0.5f, glm::vec3(0.7f), *mpUI);
+  }
+
+  if (mWaveTimer) {
+    mpRenderManager->drawText("Next Wave: " + std::to_string(mWaveTimer),
+                              650.0f, 25.0f, 0.5f, glm::vec3(0.7f), *mpUI);
+  }
 }
 
 void GameManager::updateKeyPresses(bool* keysPressed) {
@@ -143,7 +156,7 @@ void GameManager::UpdateObject(GameObject* obj) {
 
       // If this is the first time a player connects, add it!
       if (obj->getName() == GameObject::makeName("play", mClientId)) {
-        mPlayerTransform = foundObject->getTransform();
+        mPlayer = foundObject;
 
         SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
 
@@ -194,9 +207,9 @@ void GameManager::UpdateObject(GameObject* obj) {
   }
 
   // Update sound listener position on player update
-  if (foundObject->getTransform() == mPlayerTransform) {
+  if (mPlayer && (foundObject == mPlayer)) {
     // 3) Update sound listener position
-    mSound->setListenerPosition(mPlayerTransform);
+    mSound->setListenerPosition(mPlayer->getTransform());
   }
 
   foundObject->getTransform()->setModel(obj->getTransform()->getModel());

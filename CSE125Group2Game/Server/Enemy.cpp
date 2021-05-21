@@ -6,6 +6,7 @@
 
 #define STEP 12
 #define MAX_ANGLE 360
+
 Enemy::Enemy(Transform* transform, std::string name, int health)
     : Moveable(transform, name, health, ObjectType::Enemy) {
   mIsModified = true;

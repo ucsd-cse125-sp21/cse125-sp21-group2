@@ -27,7 +27,6 @@ class Tower;
 #define MAX_X 3
 #define MAX_Y 4
 #define MAX_Z 5
-#define DEFAULT_HEALTH 10
 #define MIN_PLAYERS 1
 
 class GameLogicServer {

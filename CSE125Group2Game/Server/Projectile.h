@@ -4,7 +4,6 @@
 #include "Moveable.h"
 
 #define PROJ_SPAWN_RATE_MS 100
-#define PROJ_DAMAGE 4
 
 class Projectile : public Moveable {
  public:

@@ -31,6 +31,8 @@ class GameManager {
 
   void Update();
 
+  void renderUI();
+
   void updateKeyPresses(bool keysPressed[5]);
 
   static GameManager* getManager();
@@ -39,17 +41,19 @@ class GameManager {
 
   void UpdateObject(GameObject* obj);
 
-  bool mKeyPresses[NUM_KEYS];
-
   void setClientID(int id);
+
+  bool mKeyPresses[NUM_KEYS];
 
   MeshLoader* mLoader;
 
-  Transform* mPlayerTransform;
+  GameObject* mPlayer;
 
   void ResizeCallback(int width, int height);
 
   int mClientId;
+
+  int mWaveTimer = 0;
 
  private:
   // TODO: fix formatting on this...

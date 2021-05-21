@@ -1,8 +1,7 @@
 ﻿#pragma once
 #include "GameObject.h"
 
-#define TOWER_DAMAGE 0
-#define TOWER_HEALTH 10000000
+#define TOWER_DAMAGE 10
 
 #define TOWER_HEAL_RATE_MS 5000
 #define TOWER_HEAL_AMT 5

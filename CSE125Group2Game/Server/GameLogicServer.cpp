@@ -145,7 +145,7 @@ void GameLogicServer::restartGame() {
   }
 
   for (int i = 0; i < mTowers.size(); i++) {
-    mTowers[i]->setHealth(TOWER_HEALTH);
+    mTowers[i]->setHealth(DEFAULT_HEALTH);
     mWorld.push_back(mTowers[i]);
   }
 
@@ -190,9 +190,10 @@ void GameLogicServer::updateProjectiles() {
       Projectile* proj = (Projectile*)mWorld[i];
       GameObject* collider = getCollidingObject(mWorld[i]);
 
+      // Currently only collides with enemies
       if (collider != nullptr) {
         proj->setHealth(0);
-        collider->setHealth(collider->getHealth() - PROJ_DAMAGE);
+        collider->setHealth(collider->getHealth() - ENEMY_PROJ_DAMAGE);
 
         if (collider->isDead() && collider->isEnemy()) {
           ((Player*)proj->getParent())->incrementEnemiesKilled();

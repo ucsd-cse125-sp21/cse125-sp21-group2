@@ -2,9 +2,9 @@
 #include "Moveable.h"
 #include "Projectile.h"
 
-#define PLAYER_DAMAGE 2
+#define PLAYER_DAMAGE 20
 #define PLAYER_HEAL_RATE_MS 5000
-#define PLAYER_HEAL_AMT 1
+#define PLAYER_HEAL_AMT 10
 
 class Player : public Moveable {
  public:

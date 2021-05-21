@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Moveable.h"
+#define ENEMY_PROJ_DAMAGE 40
 
 class Enemy : public Moveable {
  public:

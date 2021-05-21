@@ -22,6 +22,8 @@ enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile, Tower };
 #define SHOOT 4
 #define RESTART 5
 
+#define DEFAULT_HEALTH 100
+
 class GameObject {
  public:
   GameObject(Transform* transform, const std::string& name, int health);

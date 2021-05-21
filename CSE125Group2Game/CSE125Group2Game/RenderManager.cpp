@@ -275,7 +275,7 @@ void RenderManager::drawHealthBar(const glm::mat4& prev, const glm::mat4& view,
       prev * glm::translate(glm::mat4(1), glm::vec3(0, 5, 0));
 
   // will prolly need to change
-  float healthFrac = (float)health / (float)10;
+  float healthFrac = (float)health / (float)DEFAULT_HEALTH;
 
   glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(mProjection));
   glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(view));

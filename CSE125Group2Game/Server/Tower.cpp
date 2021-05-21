@@ -9,7 +9,7 @@ int Tower::mTowerSpawned = 0;
 
 void Tower::update() {
   // Do nothing if at full health
-  if (mHealth >= TOWER_HEALTH ||
+  if (mHealth >= DEFAULT_HEALTH ||
       GetTickCount() - mLastHeal < TOWER_HEAL_RATE_MS || mHealth <= 0) {
     return;
   }
@@ -18,8 +18,8 @@ void Tower::update() {
   mHealth += TOWER_HEAL_AMT;
 
   // Ensure health never goes above max
-  if (mHealth > TOWER_HEALTH) {
-    mHealth = TOWER_HEALTH;
+  if (mHealth > DEFAULT_HEALTH) {
+    mHealth = DEFAULT_HEALTH;
   }
 }
 
@@ -29,7 +29,7 @@ void Tower::spawn() {
   for (int i = 0; i < logicServer->mScene.mTowers.size(); i++) {
     Tower* tower =
         new Tower(logicServer->mScene.mTowers[i]->getTransform(),
-                  logicServer->mScene.mTowers[i]->getName(), TOWER_HEALTH);
+                  logicServer->mScene.mTowers[i]->getName(), DEFAULT_HEALTH);
 
     logicServer->addGameObject(tower);
   }

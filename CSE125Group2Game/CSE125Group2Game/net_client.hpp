@@ -56,9 +56,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             int currentWaveTimer;
             msg >> currentWaveTimer;
 
-            std::cout << "Wave Timer: " << currentWaveTimer << std::endl;
-
-            // TODO: Update current wave timer in GameManager
+            GameManager::getManager()->mWaveTimer = currentWaveTimer;
 
           } break;
 
