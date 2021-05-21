@@ -12,11 +12,12 @@ using namespace std;
 
 NetworkServer *NetworkServer::mNetServer;
 
-void sendWaveTimer(int seconds) {
+void sendWaveTimer(int seconds, int wavesCompleted) {
   olc::net::message<CustomMsgTypes> msg;
   msg.header.id = CustomMsgTypes::WaveTimer;
 
   msg << seconds;
+  msg << wavesCompleted;
 
   NetworkServer::GetNetworkServer()->MessageAllClients(msg);
 }

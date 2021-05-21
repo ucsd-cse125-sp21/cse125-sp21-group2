@@ -55,6 +55,8 @@ class GameManager {
 
   int mWaveTimer = 0;
 
+  int mWavesCompleted = 0;
+
  private:
   // TODO: fix formatting on this...
   [[deprecated("Replaced by SceneGraph.getByName()")]] SceneGraphNode* findNode(

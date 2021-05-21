@@ -18,7 +18,7 @@
       "obj_file": "models/planet/planet.obj"
     },
     {
-      "name": "bearl",
+      "name": "towrbear",
       "parent_name": "root",
       "xPos": -1.5087,
       "yPos": 1.44142,
@@ -121,7 +121,7 @@
       "obj_file": "tree.obj"
     },
     {
-      "name": "fallenstar",
+      "name": "towrstar",
       "parent_name": "root",
       "xPos": -17,
       "yPos": 8.4812,
@@ -156,7 +156,7 @@
       "obj_file": "tree.obj"
     },
     {
-      "name": "stonehenge",
+      "name": "towrston",
       "parent_name": "root",
       "xPos": 6.2098,
       "yPos": 16.574,
@@ -191,7 +191,7 @@
       "obj_file": "tree.obj"
     },
     {
-      "name": "sungod",
+      "name": "towrsung",
       "parent_name": "root",
       "xPos": -5.5194,
       "yPos": -27.095,

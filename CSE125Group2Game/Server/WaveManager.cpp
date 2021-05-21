@@ -9,7 +9,7 @@
 
 WaveManager* WaveManager::mWaveManager;
 int Enemy::enemysSpawned = 0;
-void sendWaveTimer(int seconds);
+void sendWaveTimer(int seconds, int wavesCompleted);
 
 WaveManager::WaveManager() {
   // Spawn one enemy every
@@ -43,11 +43,16 @@ void WaveManager::update() {
 
     int secondsLeftToWave = msLeftToWave / 1000;
 
-    sendWaveTimer(secondsLeftToWave);
+    sendWaveTimer(secondsLeftToWave, mWavesCompleted);
   }
 }
 
 void WaveManager::startWave() {
+  // Make game harder as time goes on
+  if (mMaxWaveSize < MAX_ENEMIES) {
+    mMaxWaveSize += mWavesCompleted++;
+  }
+
   for (int i = 0; i < mMaxWaveSize; i++) {
     Enemy* enemy = Enemy::spawnEnemy();
 

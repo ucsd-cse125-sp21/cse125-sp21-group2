@@ -53,10 +53,12 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
           } break;
 
           case CustomMsgTypes::WaveTimer: {
-            int currentWaveTimer;
+            int currentWaveTimer, wavesCompleted;
+            msg >> wavesCompleted;
             msg >> currentWaveTimer;
 
             GameManager::getManager()->mWaveTimer = currentWaveTimer;
+            GameManager::getManager()->mWavesCompleted = wavesCompleted;
 
           } break;
 

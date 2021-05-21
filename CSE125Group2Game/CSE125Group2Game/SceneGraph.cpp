@@ -1,4 +1,4 @@
-#include "SceneGraph.h"
+﻿#include "SceneGraph.h"
 
 #include <fstream>
 #include <iostream>
@@ -162,7 +162,14 @@ SceneGraph SceneGraph::FromFile(const std::string& fileName, MeshLoader& loader,
       mesh = mMLoader.LoadModel(ASSET(test), loader, tloader);
     }
 
-    GameObject* obj = new GameObject(transform, ((std::string)name).data(), 1);
+    nlohmann::json& isTowerS = object["isTower"];
+    bool isTower = false;
+    if (!isTowerS.is_null()) isTower = isTowerS;
+
+    GameObject* obj = new GameObject(
+        transform, name, 1, isTower ? ObjectType::Tower : ObjectType::Default);
+
+    std::cout << "Added " << name << std::endl;
 
     // add node into the graph
     scene.addChild(obj, mesh, parentNode);

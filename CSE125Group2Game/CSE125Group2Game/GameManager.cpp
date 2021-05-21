@@ -119,6 +119,9 @@ void GameManager::renderUI() {
     mpRenderManager->drawText("Next Wave: " + std::to_string(mWaveTimer),
                               650.0f, 25.0f, 0.5f, glm::vec3(0.7f), *mpUI);
   }
+
+  mpRenderManager->drawText("Wave: " + std::to_string(mWavesCompleted), 650.0f,
+                            550.0f, 0.5f, glm::vec3(0.7f), *mpUI);
 }
 
 void GameManager::updateKeyPresses(bool* keysPressed) {
@@ -131,12 +134,16 @@ void GameManager::updateKeyPresses(bool* keysPressed) {
 }
 
 void GameManager::UpdateObject(GameObject* obj) {
-  // SceneGraphNode* foundNode = findNode(obj, mScene.getRoot());
   SceneGraphNode* foundNode = mScene.getByName(obj->getName());
   GameObject* foundObject;
 
   // Object does not exist, create it
   if (!foundNode) {
+    if (obj->isTower()) {
+      int x = 1;
+      x++;
+    }
+
     Transform* transform = new Transform(obj->getTransform()->getTranslation(),
                                          obj->getTransform()->getRotation(),
                                          obj->getTransform()->getScale(),
