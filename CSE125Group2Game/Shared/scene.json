@@ -167,9 +167,9 @@
       "xScale": 0.255,
       "yScale": 0.255,
       "zScale": 0.255,
-      "bb_length": 1,
+      "bb_length": 0.75,
       "bb_height": 3,
-      "bb_width": 10,
+      "bb_width": 9,
       "obj_file": "models/towers/stonehenge/stonehenge.obj",
       "isTower": true
     },
