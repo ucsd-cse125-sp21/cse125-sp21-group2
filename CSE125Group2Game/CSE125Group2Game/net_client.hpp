@@ -90,6 +90,10 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
             GameObject* obj = GameManager::getManager()->unmarshalInfo(data);
 
+            if (obj->isPickup()) {
+              std::cout << "Pickup spawned on server.\n";
+            }
+
             GameManager::getManager()->UpdateObject(obj);
 
             free(data);

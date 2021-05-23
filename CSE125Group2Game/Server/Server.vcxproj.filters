@@ -54,6 +54,9 @@
     <ClCompile Include="ServerLoader.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="Pickup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NetworkServer.h">
@@ -99,6 +102,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Cloud.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pickup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
