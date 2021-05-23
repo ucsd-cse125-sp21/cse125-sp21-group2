@@ -4,6 +4,7 @@
 
 #include <limits>
 
+#include "Cloud.h"
 #include "Tower.h"
 #include "WaveManager.h"
 
@@ -84,6 +85,7 @@ GameLogicServer* GameLogicServer::getLogicServer() {
     mLogicServer = new GameLogicServer(world, scene, tick);
 
     Tower::spawn();
+    Cloud::spawn();
   }
   return mLogicServer;
 }
@@ -98,6 +100,7 @@ void GameLogicServer::update() {
     updatePlayers();  // Update player locations
     updateEnemies();
     updateTowers();
+    updateClouds();
     updateProjectiles();
   } else {
     for (int i = 0; i < MAX_PLAYERS; i++) {
@@ -181,6 +184,15 @@ void GameLogicServer::updateTowers() {
 
     // call tower update
     tower->update();
+  }
+}
+
+void GameLogicServer::updateClouds() {
+  int x;
+  for (int i = 0; i < mClouds.size(); i++) {
+    Cloud* cloud = mClouds[i];
+
+    cloud->update();
   }
 }
 
@@ -421,14 +433,15 @@ void GameLogicServer::addGameObject(GameObject* obj) {
   mWorld.push_back(obj);
   if (obj->isTower()) {
     mTowers.push_back((Tower*)obj);
+  } else if (obj->isCloud()) {
+    mClouds.push_back((Cloud*)obj);
   }
 }
 
 void GameLogicServer::sendInfo() {
   for (int i = 0; i < mWorld.size(); i++) {
     // Only send info for moving objects
-    if (mWorld[i]->isPlayer() || mWorld[i]->isEnemy() ||
-        mWorld[i]->isProjectile() || mWorld[i]->isTower()) {
+    if (mWorld[i]->isModifiable()) {
       if (!mWorld[i]->mIsModified) {
         continue;
       }

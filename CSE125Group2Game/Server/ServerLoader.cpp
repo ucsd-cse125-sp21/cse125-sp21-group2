@@ -128,7 +128,11 @@ ServerLoader::ServerLoader(std::string fileName) {
     float bbWidth = 0;
     if (!bbWidthS.is_null()) bbWidth = bbWidthS;
 
-    // Assign the isTower bool
+    // Assign the isCloud bool
+    nlohmann::json& isCloudS = object["isCloud"];
+    bool isCloud = false;
+    if (!isCloudS.is_null()) isCloud = isCloudS;
+
     nlohmann::json& isTowerS = object["isTower"];
     bool isTower = false;
     if (!isTowerS.is_null()) isTower = isTowerS;
@@ -143,6 +147,9 @@ ServerLoader::ServerLoader(std::string fileName) {
 
     if (isTower) {
       mTowers.push_back(node);
+      parentNode->removeChild(node);
+    } else if (isCloud) {
+      mClouds.push_back(node);
       parentNode->removeChild(node);
     } else {
       mObjects.insert(std::make_pair(name, node));

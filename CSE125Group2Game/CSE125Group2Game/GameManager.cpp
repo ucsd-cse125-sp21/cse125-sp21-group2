@@ -139,11 +139,6 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Object does not exist, create it
   if (!foundNode) {
-    if (obj->isTower()) {
-      int x = 1;
-      x++;
-    }
-
     Transform* transform = new Transform(obj->getTransform()->getTranslation(),
                                          obj->getTransform()->getRotation(),
                                          obj->getTransform()->getScale(),

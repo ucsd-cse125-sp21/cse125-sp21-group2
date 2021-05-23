@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="..\Shared\GameObject.cpp" />
     <ClCompile Include="..\Shared\Transform.cpp" />
+    <ClCompile Include="Cloud.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Moveable.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="..\Shared\GameObject.h" />
     <ClInclude Include="..\Shared\PriorityMutex.h" />
     <ClInclude Include="..\Shared\Transform.h" />
+    <ClInclude Include="Cloud.h" />
     <ClInclude Include="Moveable.h" />
     <ClInclude Include="NetworkServer.h" />
     <ClInclude Include="GameLogicServer.h" />
