@@ -3,7 +3,14 @@
 
 #include "Transform.h"
 
-enum class ObjectType : uint16_t { Default, Player, Enemy, Projectile, Tower };
+enum class ObjectType : uint16_t {
+  Default,
+  Player,
+  Enemy,
+  Projectile,
+  Tower,
+  Cloud
+};
 
 #define NUM_KEYS 6
 #define NAME_LEN 8
@@ -37,6 +44,7 @@ class GameObject {
   bool isPlayer() const;
   bool isEnemy() const;
   bool isTower() const;
+  bool isCloud() const;
   bool isProjectile() const;
   bool isDead() const;
   bool shouldDelete() const;
@@ -50,13 +58,15 @@ class GameObject {
   void virtual update() {}
   bool virtual shouldNotCollide(GameObject* obj) {
     return obj->getName() == "root0000" || obj->isDead() ||
-           obj->getObjectType() == getObjectType() || obj->isDefault();
+           obj->getObjectType() == getObjectType() || obj->isDefault() ||
+           obj->isCloud();
   }
 
   // Returns null terminated name
   std::string getName();
   int getHealth();
   bool hasHealth() const;
+  bool isModifiable() const;
 
   ObjectType getObjectType();
 

@@ -62,6 +62,7 @@ bool GameObject::isDefault() const {
 bool GameObject::isPlayer() const { return mObjectType == ObjectType::Player; }
 bool GameObject::isEnemy() const { return mObjectType == ObjectType::Enemy; }
 bool GameObject::isTower() const { return mObjectType == ObjectType::Tower; }
+bool GameObject::isCloud() const { return mObjectType == ObjectType::Cloud; }
 bool GameObject::isProjectile() const {
   return mObjectType == ObjectType::Projectile;
 }
@@ -74,4 +75,8 @@ bool GameObject::shouldDelete() const {
 
 bool GameObject::hasHealth() const {
   return (isPlayer() || isEnemy() || isTower()) && !isDead();
+}
+
+bool GameObject::isModifiable() const {
+  return isPlayer() || isEnemy() || isProjectile() || isTower() || isCloud();
 }
