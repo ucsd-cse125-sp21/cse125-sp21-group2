@@ -154,6 +154,7 @@
     <ClCompile Include="..\Shared\Transform.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Moveable.cpp" />
+    <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ServerGraphNode.cpp" />
     <ClCompile Include="ServerLoader.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="NetworkServer.h" />
     <ClInclude Include="GameLogicServer.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Pickup.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="ServerGraphNode.h" />

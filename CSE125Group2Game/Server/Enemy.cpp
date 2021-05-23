@@ -3,6 +3,7 @@
 #include <glm/gtx/euler_angles.hpp>
 
 #include "GameLogicServer.h"
+#include "Pickup.h"
 
 #define STEP 12
 #define MAX_ANGLE 360
@@ -102,5 +103,20 @@ Enemy* Enemy::spawnEnemy() {
       Enemy::makeName(), DEFAULT_HEALTH);
   enemy->move(glm::vec3(0));  // hack to fix world position
 
+  unsigned int randomChance = rand() % 2;
+  enemy->mSpawnPickup = randomChance == PICKUP_CHANCE;
+
   return enemy;
+}
+
+void Enemy::setHealth(int amt) {
+  GameObject::setHealth(amt);
+
+  // If enemy dies and should spawn a pickup, create one
+  if (isDead() && mSpawnPickup) {
+    Transform* pickupTransform =
+        new Transform(mTransform->getTranslation(), mTransform->getRotation(),
+                      mTransform->getScale());
+    Pickup::spawnPickup(pickupTransform, PickupType::DamageBoost);
+  }
 }

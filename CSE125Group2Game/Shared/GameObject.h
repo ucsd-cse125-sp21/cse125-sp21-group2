@@ -9,7 +9,8 @@ enum class ObjectType : uint16_t {
   Enemy,
   Projectile,
   Tower,
-  Cloud
+  Cloud,
+  Pickup
 };
 
 #define NUM_KEYS 6
@@ -47,6 +48,7 @@ class GameObject {
   bool isCloud() const;
   bool isProjectile() const;
   bool isDead() const;
+  bool isPickup() const;
   bool shouldDelete() const;
 
   void setTransform(Transform* transform);

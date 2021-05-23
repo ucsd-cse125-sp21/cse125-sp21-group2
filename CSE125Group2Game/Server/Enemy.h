@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Moveable.h"
 #define ENEMY_PROJ_DAMAGE 40
+#define PICKUP_CHANCE 1
 
 class Enemy : public Moveable {
  public:
@@ -11,6 +12,8 @@ class Enemy : public Moveable {
   void update();
 
   static std::string makeName();
+
+  void setHealth(int amt);
 
   static Enemy* spawnEnemy();
 
@@ -23,4 +26,6 @@ class Enemy : public Moveable {
   int mTicksPerUpdate = 3;
 
   int mTicksTillUpdate = mTicksPerUpdate;
+
+  bool mSpawnPickup = false;
 };

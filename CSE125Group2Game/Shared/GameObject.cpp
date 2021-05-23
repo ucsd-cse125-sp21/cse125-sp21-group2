@@ -63,6 +63,7 @@ bool GameObject::isPlayer() const { return mObjectType == ObjectType::Player; }
 bool GameObject::isEnemy() const { return mObjectType == ObjectType::Enemy; }
 bool GameObject::isTower() const { return mObjectType == ObjectType::Tower; }
 bool GameObject::isCloud() const { return mObjectType == ObjectType::Cloud; }
+bool GameObject::isPickup() const { return mObjectType == ObjectType::Pickup; }
 bool GameObject::isProjectile() const {
   return mObjectType == ObjectType::Projectile;
 }

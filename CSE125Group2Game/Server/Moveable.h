@@ -13,6 +13,11 @@ class Moveable : public GameObject {
     initPivotModel(transform);
   }
 
+  ~Moveable() {
+    delete mPivot;
+    delete mModelTransform;
+  }
+
   void move(glm::vec3 angle);
   void resetModel();
 
