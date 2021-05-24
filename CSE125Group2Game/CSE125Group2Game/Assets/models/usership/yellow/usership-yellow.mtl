@@ -1,0 +1,68 @@
+# Blender MTL File: 'enemyship-triangulated.blend'
+# Material Count: 6
+
+newmtl Cockpit-body
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.553424 0.705925 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/usership/yellow/usership-uv-yellow.png
+
+newmtl Flame
+Ns 323.999994
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd models/usership/yellow/usership-uv-yellow.png
+
+newmtl Headplate
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.685647 0.302509 0.107668
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/usership/yellow/usership-uv-yellow.png
+
+newmtl Material.004
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.230711 0.008952
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/usership/yellow/usership-uv-yellow.png
+
+newmtl Material.007
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.230711 0.008952
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/usership/yellow/usership-uv-yellow.png
+
+newmtl Wings
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.983241 1.000000 0.114849
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/usership/yellow/usership-uv-yellow.png
