@@ -11,6 +11,7 @@ Player::Player(Transform* transform, std::string name, int health, int id)
   mPlayerId = id;
   Projectile::mTickLastSpawn[name] = 0;
   numPlayers++;
+  mPickup = PickupType::None;
 }
 
 Player::~Player() { numPlayers--; }
@@ -23,9 +24,8 @@ void Player::update() {
     return;
   }
 
-  if (mPickup && (mPickupEndTime < GetTickCount())) {
-    delete mPickup;
-    mPickup = nullptr;
+  if (!Pickup::isNone(mPickup) && (mPickupEndTime < GetTickCount())) {
+    removePickup();
   }
   // player healing code
   healPlayer();
@@ -106,4 +106,32 @@ int Player::getEnemiesKilled() { return mEnemiesKilled; }
 
 void Player::setEnemiesKilled(int enemiesKilled) {
   mEnemiesKilled = enemiesKilled;
+}
+
+void Player::addPickup(Pickup* pickup) {
+  if (!Pickup::isNone(mPickup)) {
+    removePickup();
+  }
+  mPickup = pickup->mPickupType;
+  // so that pickup gets deleted!!
+  pickup->setHealth(0);
+  mPickupEndTime = GetTickCount() + PLAYER_PICKUP_LENGTH;
+
+  switch (mPickup) {
+    case PickupType::DamageBoost:
+      mDamageMultiplier = 3;
+      break;
+  }
+}
+
+void Player::removePickup() {
+  switch (mPickup) {
+    case PickupType::DamageBoost:
+      mDamageMultiplier = 1;
+      break;
+
+    default:
+      break;
+  }
+  mPickup = PickupType::None;
 }

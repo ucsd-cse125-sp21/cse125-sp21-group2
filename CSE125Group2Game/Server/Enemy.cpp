@@ -117,7 +117,11 @@ void Enemy::setHealth(int amt) {
   if (isDead() && mSpawnPickup) {
     Transform* pickupTransform =
         new Transform(mTransform->getTranslation(), mTransform->getRotation(),
-                      mTransform->getScale());
+                      mTransform->getScale(), mTransform->getBBox());
     Pickup::spawnPickup(pickupTransform, PickupType::DamageBoost);
   }
+}
+bool Enemy::shouldNotCollide(GameObject* obj) {
+  return GameObject::shouldNotCollide(obj) ||  // Call super method
+         obj->isPickup();
 }

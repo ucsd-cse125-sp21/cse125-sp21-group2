@@ -2,18 +2,18 @@
 #include "GameObject.h"
 
 #define NUM_PICKUPS 1
-enum class PickupType { DamageBoost };
+enum class PickupType { None, DamageBoost };
 
-class Pickup : GameObject {
+class Pickup : public GameObject {
  public:
   static int pickupCount;
 
-  Pickup(Transform* transform, PickupType type)
-      : GameObject(transform, GameObject::makeName("pick", pickupCount++), DEFAULT_HEALTH,
-                   ObjectType::Pickup),
-        mPickupType(type) {}
+  Pickup(Transform* transform, PickupType type);
 
   static void spawnPickup(Transform* transform, PickupType type);
 
   PickupType mPickupType;
+  std::string makeName();
+
+  static bool isNone(PickupType pickupType);
 };

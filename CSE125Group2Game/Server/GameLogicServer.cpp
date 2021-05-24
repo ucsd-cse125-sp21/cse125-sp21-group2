@@ -206,15 +206,17 @@ void GameLogicServer::updateProjectiles() {
     if (mWorld[i]->isProjectile()) {
       Projectile* proj = (Projectile*)mWorld[i];
       GameObject* collider = getCollidingObject(mWorld[i]);
+      Player* parent = (Player*)proj->getParent();
 
       // Currently only collides with enemies
       if (collider != nullptr && collider->isEnemy()) {
         proj->setHealth(0);
         ((Enemy*)collider)
-            ->setHealth(collider->getHealth() - ENEMY_PROJ_DAMAGE);
+            ->setHealth(collider->getHealth() -
+                        (ENEMY_PROJ_DAMAGE * parent->mDamageMultiplier));
 
         if (collider->isDead()) {
-          ((Player*)proj->getParent())->incrementEnemiesKilled();
+          parent->incrementEnemiesKilled();
         }
         continue;
       }
@@ -264,6 +266,7 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
     player->incrementEnemiesKilled();
     player->setHealth(player->getHealth() - PLAYER_DAMAGE);
   } else if (collidedObj->isPickup()) {
+    player->addPickup((Pickup*)collidedObj);
   }
 }
 

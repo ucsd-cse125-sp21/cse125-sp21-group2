@@ -16,6 +16,7 @@ class Enemy : public Moveable {
   void setHealth(int amt);
 
   static Enemy* spawnEnemy();
+  bool shouldNotCollide(GameObject* obj);
 
  private:
   GameObject* GetNearestPlayer();

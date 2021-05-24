@@ -5,8 +5,10 @@
 #define PLAYER_DAMAGE 20
 #define PLAYER_HEAL_RATE_MS 5000
 #define PLAYER_HEAL_AMT 10
+#define PLAYER_PICKUP_LENGTH 10000
 
 class Pickup;
+enum class PickupType;
 
 class Player : public Moveable {
  public:
@@ -45,7 +47,7 @@ class Player : public Moveable {
 
   bool forceDelete = false;
 
-  Pickup* mPickup = nullptr;
+  PickupType mPickup;
 
   unsigned long mPickupEndTime = 0;
 
@@ -53,6 +55,9 @@ class Player : public Moveable {
 
   void healPlayer();
   void setRespawn();
+  void removePickup();
+
+  int mDamageMultiplier = 1;
 
  private:
   glm::vec3 mRotationSpeed = glm::vec3(-0.0225, -0.10, 0);

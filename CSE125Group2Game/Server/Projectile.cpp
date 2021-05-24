@@ -72,7 +72,8 @@ bool Projectile::shouldNotCollide(GameObject* obj) {
   // projectiles???? interesting question
   return GameObject::shouldNotCollide(obj) ||  // Call super method
          obj->getName() == mParent->getName() || obj->isProjectile() ||
-         obj->isPlayer() || obj->isTower() || obj->isDefault();
+         obj->isPlayer() || obj->isTower() || obj->isDefault() ||
+         obj->isPickup();
 }
 
 GameObject* Projectile::getParent() { return mParent; }

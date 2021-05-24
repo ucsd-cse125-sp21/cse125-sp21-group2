@@ -52,5 +52,5 @@ bool Tower::shouldNotCollide(GameObject* obj) {
   // TODO: Perhaps would be worth making more complex... enemies with
   // projectiles???? interesting question
   return GameObject::shouldNotCollide(obj) ||  // Call super method
-         obj->isPlayer();
+         obj->isPlayer() || obj->isPickup();
 }
