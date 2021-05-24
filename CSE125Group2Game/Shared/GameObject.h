@@ -54,7 +54,7 @@ class GameObject {
   void setTransform(Transform* transform);
   void addTranslation(glm::vec3 translation);
   void setName(const std::string& name);
-  void setHealth(int health);
+  void virtual setHealth(int health);
   Transform* getTransform();
 
   void virtual update() {}

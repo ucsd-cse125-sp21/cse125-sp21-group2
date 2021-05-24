@@ -98,6 +98,7 @@ void GameLogicServer::update() {
     // printKeyPresses();
     WaveManager::getWaveManager()->update();
     updatePlayers();  // Update player locations
+    updatePickups();  // Update player locations
     updateEnemies();
     updateTowers();
     updateClouds();
@@ -163,6 +164,14 @@ void GameLogicServer::restartGame() {
 void GameLogicServer::updateEnemies() {
   for (int i = 0; i < mWorld.size(); i++) {
     if (mWorld[i]->isEnemy()) {
+      // call enemy update
+      mWorld[i]->update();
+    }
+  }
+}
+void GameLogicServer::updatePickups() {
+  for (int i = 0; i < mWorld.size(); i++) {
+    if (mWorld[i]->isPickup()) {
       // call enemy update
       mWorld[i]->update();
     }

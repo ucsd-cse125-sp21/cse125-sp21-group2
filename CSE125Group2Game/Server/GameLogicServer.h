@@ -66,6 +66,7 @@ class GameLogicServer {
   void resetKeyPresses();
   char* marshalInfo(GameObject* obj);
   void updatePlayers();
+  void updatePickups();
   void handlePlayerCollision(int playerIndex);
   void updateEnemies();
   void updateTowers();

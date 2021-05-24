@@ -2,6 +2,7 @@
 #include "GameObject.h"
 
 #define NUM_PICKUPS 1
+#define PICKUP_LENGTH 15000
 enum class PickupType { None, DamageBoost };
 
 class Pickup : public GameObject {
@@ -16,4 +17,8 @@ class Pickup : public GameObject {
   std::string makeName();
 
   static bool isNone(PickupType pickupType);
+
+  unsigned long mPickupDeleteTime;
+
+  void update();
 };
