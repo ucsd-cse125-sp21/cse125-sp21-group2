@@ -105,6 +105,7 @@ Enemy* Enemy::spawnEnemy() {
 
   unsigned int randomChance = rand() % 2;
   enemy->mSpawnPickup = randomChance == PICKUP_CHANCE;
+  // enemy->mSpawnPickup = true;
 
   return enemy;
 }

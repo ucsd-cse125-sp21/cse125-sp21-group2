@@ -7,11 +7,15 @@ GameObject::GameObject(Transform* transform, const std::string& name,
     : mTransform(transform),
       mHealth(health),
       mObjectType(ObjectType::Default),
-      mName(name) {}
+      mName(name) {
+  mIsModified = true;
+}
 
 GameObject::GameObject(Transform* transform, const std::string& name,
                        int health, ObjectType type)
-    : mTransform(transform), mHealth(health), mObjectType(type), mName(name) {}
+    : mTransform(transform), mHealth(health), mObjectType(type), mName(name) {
+  mIsModified = true;
+}
 
 GameObject::~GameObject() { delete mTransform; }
 
@@ -79,5 +83,6 @@ bool GameObject::hasHealth() const {
 }
 
 bool GameObject::isModifiable() const {
-  return isPlayer() || isEnemy() || isProjectile() || isTower() || isCloud();
+  return isPlayer() || isEnemy() || isProjectile() || isTower() || isCloud() ||
+         isPickup();
 }

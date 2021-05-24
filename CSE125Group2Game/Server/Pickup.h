@@ -9,7 +9,7 @@ class Pickup : GameObject {
   static int pickupCount;
 
   Pickup(Transform* transform, PickupType type)
-      : GameObject(transform, GameObject::makeName("pick", pickupCount++), 1,
+      : GameObject(transform, GameObject::makeName("pick", pickupCount++), DEFAULT_HEALTH,
                    ObjectType::Pickup),
         mPickupType(type) {}
 

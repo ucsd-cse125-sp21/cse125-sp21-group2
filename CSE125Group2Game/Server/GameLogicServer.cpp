@@ -152,6 +152,11 @@ void GameLogicServer::restartGame() {
     mWorld.push_back(mTowers[i]);
   }
 
+  for (int i = 0; i < mClouds.size(); i++) {
+    mClouds[i]->setHealth(DEFAULT_HEALTH);
+    mWorld.push_back(mClouds[i]);
+  }
+
   WaveManager::getWaveManager()->reset();
 }
 
@@ -177,7 +182,7 @@ void GameLogicServer::updateTowers() {
     if (collider != nullptr && collider->isEnemy()) {
       tower->setHealth(tower->getHealth() - TOWER_DAMAGE);
       // Kill the enemy!
-      collider->setHealth(0);
+      ((Enemy*)collider)->setHealth(0);
 
       continue;
     }
@@ -203,11 +208,12 @@ void GameLogicServer::updateProjectiles() {
       GameObject* collider = getCollidingObject(mWorld[i]);
 
       // Currently only collides with enemies
-      if (collider != nullptr) {
+      if (collider != nullptr && collider->isEnemy()) {
         proj->setHealth(0);
-        collider->setHealth(collider->getHealth() - ENEMY_PROJ_DAMAGE);
+        ((Enemy*)collider)
+            ->setHealth(collider->getHealth() - ENEMY_PROJ_DAMAGE);
 
-        if (collider->isDead() && collider->isEnemy()) {
+        if (collider->isDead()) {
           ((Player*)proj->getParent())->incrementEnemiesKilled();
         }
         continue;
@@ -254,7 +260,7 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
   // std::cout << "Collision with: " << collidedObj->getName() << std::endl;
 
   if (collidedObj->isEnemy()) {
-    collidedObj->setHealth(0);
+    ((Enemy*)collidedObj)->setHealth(0);
     player->incrementEnemiesKilled();
     player->setHealth(player->getHealth() - PLAYER_DAMAGE);
   } else if (collidedObj->isDefault()) {
@@ -441,21 +447,19 @@ void GameLogicServer::addGameObject(GameObject* obj) {
 void GameLogicServer::sendInfo() {
   for (int i = 0; i < mWorld.size(); i++) {
     // Only send info for moving objects
-    if (mWorld[i]->isModifiable()) {
-      if (!mWorld[i]->mIsModified) {
-        continue;
-      }
+    if (!mWorld[i]->isModifiable() || !mWorld[i]->mIsModified) {
+      continue;
+    }
 
-      char* data = marshalInfo(mWorld[i]);  // Marshal data
-      // data >> mSendingBuffer;               // Add message to queue
-      mTestBuffer.push_back(data);
+    char* data = marshalInfo(mWorld[i]);  // Marshal data
+    // data >> mSendingBuffer;               // Add message to queue
+    mTestBuffer.push_back(data);
 
-      // If the enemy has health 0, remove it from the world
-      // Allow player to be deleted if they disconnected
-      if ((mWorld[i]->isDead() && !mWorld[i]->isPlayer()) ||
-          (mWorld[i]->isPlayer() && ((Player*)mWorld[i])->forceDelete)) {
-        deleteObject(i);
-      }
+    // If the enemy has health 0, remove it from the world
+    // Allow player to be deleted if they disconnected
+    if ((mWorld[i]->isDead() && !mWorld[i]->isPlayer()) ||
+        (mWorld[i]->isPlayer() && ((Player*)mWorld[i])->forceDelete)) {
+      deleteObject(i);
     }
   }
 }
