@@ -263,8 +263,7 @@ void GameLogicServer::handlePlayerCollision(int playerIndex) {
     ((Enemy*)collidedObj)->setHealth(0);
     player->incrementEnemiesKilled();
     player->setHealth(player->getHealth() - PLAYER_DAMAGE);
-  } else if (collidedObj->isDefault()) {
-    // movePlayerToBoundary(player);
+  } else if (collidedObj->isPickup()) {
   }
 }
 

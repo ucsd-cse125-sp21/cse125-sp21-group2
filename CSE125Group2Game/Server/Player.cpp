@@ -1,6 +1,7 @@
 ﻿//#include "Player.h"
 
 #include "GameLogicServer.h"
+#include "Pickup.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -16,21 +17,22 @@ Player::~Player() { numPlayers--; }
 
 void Player::update() {
   // If the player is dead,
-  if (mHealth <= 0) {
+  if (isDead()) {
     // ... and time to spawn has not been set,
-    if (mTimeToSpawn == 0) {
-      // set it
-      mTimeToSpawn = GetTickCount() + mRespawnTimeMS;
-    } else if (mTimeToSpawn < GetTickCount()) {
-      // Todo: spawn player in new location potentially or possible ...
-      // interesting question!
-      mTimeToSpawn = 0;
-      mHealth = DEFAULT_HEALTH;
-    }
-
+    setRespawn();
     return;
   }
 
+  if (mPickup && (mPickupEndTime < GetTickCount())) {
+    delete mPickup;
+    mPickup = nullptr;
+  }
+  // player healing code
+  healPlayer();
+  // std::cout << "Player healed: " << mHealth << std::endl;
+}
+
+void Player::healPlayer() {
   if (mHealth >= DEFAULT_HEALTH ||
       GetTickCount() - mLastHeal < PLAYER_HEAL_RATE_MS) {
     return;
@@ -43,8 +45,18 @@ void Player::update() {
   if (mHealth > DEFAULT_HEALTH) {
     mHealth = DEFAULT_HEALTH;
   }
+}
 
-  std::cout << "Player healed: " << mHealth << std::endl;
+void Player::setRespawn() {
+  if (mTimeToSpawn == 0) {
+    // set it
+    mTimeToSpawn = GetTickCount() + mRespawnTimeMS;
+  } else if (mTimeToSpawn < GetTickCount()) {
+    // Todo: spawn player in new location potentially or possible ...
+    // interesting question!
+    mTimeToSpawn = 0;
+    mHealth = DEFAULT_HEALTH;
+  }
 }
 
 int Player::getId() { return mPlayerId; }
