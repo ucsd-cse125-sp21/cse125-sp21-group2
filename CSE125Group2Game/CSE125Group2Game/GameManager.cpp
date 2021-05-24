@@ -75,6 +75,16 @@ void GameManager::Update() {
   ParticleEmitter testEmitter(tex);
   float last = glfwGetTime();
 
+  // setup bearl different models
+  SceneGraphNode* node = mScene.getByName("towrbear");
+  node->getObject()->setModelIndexCallback([](const GameObject& obj) {
+    if (obj.getHealth() > 50) {
+      return 0;
+    } else {
+      return 1;
+    }
+  });
+
   while (!glfwWindowShouldClose(mWindow)) {
     // 1) Update local states (use key logger to update gameobject)
     float now = glfwGetTime();

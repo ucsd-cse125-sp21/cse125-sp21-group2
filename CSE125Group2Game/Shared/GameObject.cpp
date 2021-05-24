@@ -38,7 +38,7 @@ void GameObject::setHealth(int health) {
 
 Transform* GameObject::getTransform() { return mTransform; }
 std::string GameObject::getName() { return mName; }
-int GameObject::getHealth() { return mHealth; }
+int GameObject::getHealth() const { return mHealth; }
 ObjectType GameObject::getObjectType() { return mObjectType; }
 
 std::string GameObject::makeName(std::string prefix, int count) {

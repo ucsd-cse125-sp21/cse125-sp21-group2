@@ -150,16 +150,26 @@ SceneGraph SceneGraph::FromFile(const std::string& fileName, MeshLoader& loader,
     // Only assign mesh if this is client code
     // Assign the mesh
     nlohmann::json& objectFile = object["obj_file"];
-    std::string test = objectFile;
-    Model* mesh = NULL;
+    std::vector<Model*> models;
+    auto loadModel = [&](const std::string& objFile) {
+      if (objFile == "cube" || objFile == "Cube") {
+        models.emplace_back(Model::Cube(loader));
+      } else {
+        models.emplace_back(
+            mMLoader.LoadModel(ASSET(objFile), loader, tloader));
+      }
+    };
 
-    // Object is a cube
-    if (!objectFile.is_null() &&
-        (objectFile == "cube" || objectFile == "Cube")) {
-      mesh = Model::Cube(loader);
-    } else if (!objectFile.is_null()) {
-      // Object is a obj file
-      mesh = mMLoader.LoadModel(ASSET(test), loader, tloader);
+    if (!objectFile.is_null()) {
+      if (objectFile.is_array()) {
+        for (auto objFile : objectFile.items()) {
+          loadModel(objFile.value());
+        }
+      } else if (objectFile.is_string()) {
+        loadModel(objectFile);
+      } else {
+        CRASH("Invalid object file path in scene.json!");
+      }
     }
 
     nlohmann::json& isTowerS = object["isTower"];
@@ -172,7 +182,7 @@ SceneGraph SceneGraph::FromFile(const std::string& fileName, MeshLoader& loader,
     std::cout << "Added " << name << std::endl;
 
     // add node into the graph
-    scene.addChild(obj, mesh, parentNode);
+    scene.addChild(obj, std::move(models), parentNode);
   }
 
   return scene;
@@ -192,6 +202,18 @@ SceneGraphNode* SceneGraph::addChild(GameObject* obj, Model* model) {
 SceneGraphNode* SceneGraph::addChild(GameObject* obj, Model* model,
                                      SceneGraphNode* parent) {
   SceneGraphNode* child = new SceneGraphNode(parent, obj, model);
+  parent->addChild(child);
+
+  // register the child in the name -> node map
+  mNameMapping.emplace(obj->getName(), child);
+
+  return child;
+}
+
+SceneGraphNode* SceneGraph::addChild(GameObject* obj,
+                                     std::vector<Model*>&& models,
+                                     SceneGraphNode* parent) {
+  SceneGraphNode* child = new SceneGraphNode(parent, obj, std::move(models));
   parent->addChild(child);
 
   // register the child in the name -> node map
