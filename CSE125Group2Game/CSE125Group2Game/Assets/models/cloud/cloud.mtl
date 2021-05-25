@@ -10,4 +10,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd models/cloud/cloud-v.png
+map_Kd models\cloud\cloud-diffuse.png
+bump models\cloud\cloud-normal.png
