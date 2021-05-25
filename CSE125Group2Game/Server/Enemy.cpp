@@ -1,7 +1,6 @@
-﻿#include "Enemy.h"
+﻿#include <glm/gtx/euler_angles.hpp>
 
-#include <glm/gtx/euler_angles.hpp>
-
+#include "Enemy.h"
 #include "GameLogicServer.h"
 #include "Pickup.h"
 

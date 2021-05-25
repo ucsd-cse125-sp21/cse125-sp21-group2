@@ -11,7 +11,10 @@
 #include "Sound.h"
 #include "Transform.h"
 
-#define PLAYER_MODEL "Assets/models/enemy/mainEnemyShip/enemyShip.obj"
+#define PLAYER_MODEL_RED "Assets/models/usership/red/usership-red.obj"
+#define PLAYER_MODEL_GREEN "Assets/models/usership/green/usership-green.obj"
+#define PLAYER_MODEL_BLUE "Assets/models/usership/blue/usership-blue.obj"
+#define PLAYER_MODEL_YELLOW "Assets/models/usership/yellow/usership-yellow.obj"
 #define ENEMY_MODEL "Assets/models/usership/geisel/geisel.obj"
 #define BEARL_MODEL "Assets/models/enemy/mainEnemyShip/enemyShip.obj"
 #define STONEHENGE_MODEL "Assets/models/towers/stonehenge/stonehenge.obj"
@@ -41,6 +44,11 @@ class GameManager {
 
   void UpdateObject(GameObject* obj);
 
+  void updateSound(GameObject* foundObject);
+
+  void spawnObject(GameObject* obj, GameObject*& foundObject,
+                   SceneGraphNode*& foundNode);
+
   void setClientID(int id);
 
   bool mKeyPresses[NUM_KEYS];
@@ -54,8 +62,9 @@ class GameManager {
   int mClientId;
 
   int mWaveTimer = 0;
-
   int mWavesCompleted = 0;
+
+  static std::string playerModels[];
 
  private:
   // TODO: fix formatting on this...
