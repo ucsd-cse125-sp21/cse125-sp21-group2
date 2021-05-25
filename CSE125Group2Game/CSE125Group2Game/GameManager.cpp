@@ -8,6 +8,9 @@
   "client couldn't read config file, using default values"
 // Predefinitions to make compiler happy
 GameManager* GameManager::mManager;
+std::string GameManager::playerModels[] = {PLAYER_MODEL_RED, PLAYER_MODEL_GREEN,
+                                           PLAYER_MODEL_BLUE,
+                                           PLAYER_MODEL_YELLOW};
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   GameManager::getManager()->ResizeCallback(width, height);
@@ -154,7 +157,8 @@ void GameManager::UpdateObject(GameObject* obj) {
     if (obj->isEnemy()) {
       model = mMLoader.LoadModel(ENEMY_MODEL, *mLoader, mTLoader);
     } else if (obj->isPlayer()) {
-      model = mMLoader.LoadModel(PLAYER_MODEL, *mLoader, mTLoader);
+      int playerId = obj->getIdFromName();
+      model = mMLoader.LoadModel(playerModels[playerId], *mLoader, mTLoader);
 
       // If this is the first time a player connects, add it!
       if (obj->getName() == GameObject::makeName("play", mClientId)) {

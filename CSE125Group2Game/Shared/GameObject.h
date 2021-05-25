@@ -72,6 +72,8 @@ class GameObject {
 
   ObjectType getObjectType();
 
+  int getIdFromName();
+
   bool mIsModified = true;
   bool mShouldRender = true;
 
