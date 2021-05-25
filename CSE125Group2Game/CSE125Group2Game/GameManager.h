@@ -44,6 +44,11 @@ class GameManager {
 
   void UpdateObject(GameObject* obj);
 
+  void updateSound(GameObject* foundObject);
+
+  void spawnObject(GameObject* obj, GameObject*& foundObject,
+                   SceneGraphNode*& foundNode);
+
   void setClientID(int id);
 
   bool mKeyPresses[NUM_KEYS];

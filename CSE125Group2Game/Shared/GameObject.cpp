@@ -36,7 +36,7 @@ void GameObject::setHealth(int health) {
   mIsModified = true;
 }
 
-int GameObject::getIdFromName() {
+int GameObject::getPlayerId() {
   int id = getName()[NAME_LEN - 1] - '0';
   return id;
 }

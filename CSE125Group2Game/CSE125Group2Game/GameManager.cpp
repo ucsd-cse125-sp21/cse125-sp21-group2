@@ -142,40 +142,7 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Object does not exist, create it
   if (!foundNode) {
-    Transform* transform = new Transform(obj->getTransform()->getTranslation(),
-                                         obj->getTransform()->getRotation(),
-                                         obj->getTransform()->getScale(),
-                                         obj->getTransform()->getBBox());
-
-    transform->setModel(obj->getTransform()->getModel());
-    // std::cout << "creating new  object" << std::endl;
-
-    foundObject = new GameObject(transform, obj->getName(), obj->getHealth(),
-                                 obj->getObjectType());
-
-    Model* model = nullptr;
-    if (obj->isEnemy()) {
-      model = mMLoader.LoadModel(ENEMY_MODEL, *mLoader, mTLoader);
-    } else if (obj->isPlayer()) {
-      int playerId = obj->getIdFromName();
-      model = mMLoader.LoadModel(playerModels[playerId], *mLoader, mTLoader);
-
-      // If this is the first time a player connects, add it!
-      if (obj->getName() == GameObject::makeName("play", mClientId)) {
-        mPlayer = foundObject;
-
-        SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
-
-        // attach the camera to the player
-        Camera& camera = mScene.addCamera(playerNode);
-        camera.setPosition(glm::vec3(0, 30.0f, 0));
-        camera.setFacing(glm::vec3(0, 0, 0));
-        camera.setUp(glm::vec3(0.0f, 0, -1.0f));
-      }
-    } else if (!obj->isTower()) {
-      model = Model::Cube(*mLoader);
-    }
-    foundNode = mScene.addChild(foundObject, model);
+    spawnObject(obj, foundObject, foundNode);
   }
 
   // Update object
@@ -212,14 +179,56 @@ void GameManager::UpdateObject(GameObject* obj) {
     foundObject->mShouldRender = true;
   }
 
+  updateSound(foundObject);
+
+  foundObject->getTransform()->setModel(obj->getTransform()->getModel());
+  foundObject->setHealth(obj->getHealth());
+}
+
+void GameManager::updateSound(GameObject* foundObject) {
   // Update sound listener position on player update
   if (mPlayer && (foundObject == mPlayer)) {
     // 3) Update sound listener position
     mSound->setListenerPosition(mPlayer->getTransform());
   }
+}
 
-  foundObject->getTransform()->setModel(obj->getTransform()->getModel());
-  foundObject->setHealth(obj->getHealth());
+void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
+                              SceneGraphNode*& foundNode) {
+  Transform* transform = new Transform(
+      obj->getTransform()->getTranslation(), obj->getTransform()->getRotation(),
+      obj->getTransform()->getScale(), obj->getTransform()->getBBox());
+
+  transform->setModel(obj->getTransform()->getModel());
+  // std::cout << "creating new  object" << std::endl;
+
+  foundObject = new GameObject(transform, obj->getName(), obj->getHealth(),
+                               obj->getObjectType());
+
+  Model* model = nullptr;
+  if (obj->isEnemy()) {
+    model = mMLoader.LoadModel(ENEMY_MODEL, *mLoader, mTLoader);
+  } else if (obj->isPlayer()) {
+    model = mMLoader.LoadModel(playerModels[obj->getPlayerId()], *mLoader,
+                               mTLoader);
+
+    // If this is the first time a player connects, add it!
+    if (obj->getName() == GameObject::makeName("play", mClientId)) {
+      mPlayer = foundObject;
+
+      SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
+
+      // attach the camera to the player
+      Camera& camera = mScene.addCamera(playerNode);
+      camera.setPosition(glm::vec3(0, 30.0f, 0));
+      camera.setFacing(glm::vec3(0, 0, 0));
+      camera.setUp(glm::vec3(0.0f, 0, -1.0f));
+    }
+  } else if (!obj->isTower()) {
+    model = Model::Cube(*mLoader);
+  }
+
+  foundNode = mScene.addChild(foundObject, model);
 }
 
 GameObject* GameManager::unmarshalInfo(char* data) {
