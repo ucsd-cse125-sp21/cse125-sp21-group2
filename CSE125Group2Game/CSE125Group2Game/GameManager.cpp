@@ -152,7 +152,7 @@ void GameManager::UpdateObject(GameObject* obj) {
     Transform* transform = new Transform(obj->getTransform()->getTranslation(),
                                          obj->getTransform()->getRotation(),
                                          obj->getTransform()->getScale(),
-                                         obj->getTransform()->getBBox());
+                                         obj->getTransform()->getBBoxLens());
 
     transform->setModel(obj->getTransform()->getModel());
     // std::cout << "creating new  object" << std::endl;

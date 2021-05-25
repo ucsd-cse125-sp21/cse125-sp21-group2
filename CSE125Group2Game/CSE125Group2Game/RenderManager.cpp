@@ -428,7 +428,7 @@ void RenderManager::drawBoundingBox(const SceneGraphNode& node,
                                     const glm::mat4& currTransform,
                                     const glm::mat4& view,
                                     const glm::vec3& viewPos) {
-  auto bb = node.getObject()->getTransform()->getBBox();
+  auto bb = node.getObject()->getTransform()->getBBoxLens();
 
   glm::mat4 model =
       currTransform *

@@ -4,6 +4,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <vector>
 
+#include "AABB.h"
+
 class Transform {
  public:
   Transform() : mTranslation(0.0f), mRotation(), mScale(1.0f) { updateModel(); }
@@ -34,7 +36,8 @@ class Transform {
   glm::quat getRotation();
   glm::vec3 getScale();
   glm::mat4 getModel() const;
-  glm::vec3 getBBox();
+  glm::vec3 getBBoxLens() const;
+  AABB getBBox() const;
 
  private:
   glm::vec3 mTranslation;
@@ -42,7 +45,7 @@ class Transform {
   glm::vec3 mScale;
 
   // Length, height, width
-  glm::vec3 mBoundingBox;
+  glm::vec3 mBoundingBoxLens;
 
   glm::mat4 mModel;
 

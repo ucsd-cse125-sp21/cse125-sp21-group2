@@ -97,12 +97,13 @@ void GameLogicServer::update() {
   if (!isGameOver() || Player::numPlayers < MIN_PLAYERS) {
     // printKeyPresses();
     WaveManager::getWaveManager()->update();
-    updatePlayers();  // Update player locations
+    mOctree.update();
     updatePickups();  // Update player locations
-    updateEnemies();
+    updatePlayers();  // Update player locations
     updateTowers();
     updateClouds();
     updateProjectiles();
+    updateEnemies();
   } else {
     for (int i = 0; i < MAX_PLAYERS; i++) {
       if (players[i] == NULL || !mKeyPresses[i][RESTART]) {
@@ -151,6 +152,7 @@ void GameLogicServer::restartGame() {
   for (int i = 0; i < mTowers.size(); i++) {
     mTowers[i]->setHealth(DEFAULT_HEALTH);
     mWorld.push_back(mTowers[i]);
+    mOctree.insert(mTowers[i]);
   }
 
   for (int i = 0; i < mClouds.size(); i++) {
@@ -293,122 +295,24 @@ void GameLogicServer::movePlayerToBoundary(Player* player) {
 
 GameObject* GameLogicServer::getCollidingObject(GameObject* obj) {
   // get 8 points of A in world space
-  std::vector<glm::vec3> A = getCorners(obj);
 
   // For every gameobject in the world, check if this object collides with
   // anything
-  for (int i = 0; i < mWorld.size(); i++) {
+  for (auto iterator = mOctree.begin(obj); iterator != mOctree.end();
+       iterator++) {
     // If this object is the root, or has 0 health, or is itself, do not
     // collide
-    if (obj->shouldNotCollide(mWorld[i])) {
+    if (obj->shouldNotCollide(*iterator)) {
       continue;
     }
 
-    std::vector<float> B = getMinMax(mWorld[i]);
-
-    // For every point of A, is it in B?
-    for (int j = 0; j < 8; j++) {
-      if ((A[j].x >= B[MIN_X] && A[j].x <= B[MAX_X]) &&
-          (A[j].y >= B[MIN_Y] && A[j].y <= B[MAX_Y]) &&
-          (A[j].z >= B[MIN_Z] && A[j].z <= B[MAX_Z])) {
-        // A intersects B
-        return mWorld[i];
-      }
+    if (obj->getTransform()->getBBox().collides(
+            (*iterator)->getTransform()->getBBox())) {
+      return *iterator;
     }
   }
 
   return nullptr;
-}
-
-std::vector<float> GameLogicServer::getMinMax(GameObject* obj) {
-  std::vector<glm::vec3> vertices = getCorners(obj);
-
-  float minX = FLT_MAX, minY = FLT_MAX, minZ = FLT_MAX;
-  float maxX = -FLT_MAX, maxY = -FLT_MAX, maxZ = -FLT_MAX;
-
-  for (int j = 0; j < 8; j++) {
-    if (vertices[j].x < minX) {
-      minX = vertices[j].x;
-    }
-
-    if (vertices[j].y < minY) {
-      minY = vertices[j].y;
-    }
-
-    if (vertices[j].z < minZ) {
-      minZ = vertices[j].z;
-    }
-
-    if (vertices[j].x > maxX) {
-      maxX = vertices[j].x;
-    }
-
-    if (vertices[j].y > maxY) {
-      maxY = vertices[j].y;
-    }
-
-    if (vertices[j].z > maxZ) {
-      maxZ = vertices[j].z;
-    }
-  }
-
-  std::vector<float> result = {minX, minY, minZ, maxX, maxY, maxZ};
-
-  return result;
-}
-
-std::vector<glm::vec3> GameLogicServer::getCorners(GameObject* obj) {
-  glm::vec3 center = obj->getTransform()->getTranslation();
-  // L,H,W
-  glm::vec3 boundingBox = -1.0f * obj->getTransform()->getBBox();
-
-  std::vector<glm::vec3> vertices;
-  vertices.push_back(
-      glm::vec3(obj->getTransform()->getModel() *
-                glm::vec4(boundingBox.x, boundingBox.y, boundingBox.z, 1.0f)));
-  vertices.push_back(
-      glm::vec3(obj->getTransform()->getModel() *
-                glm::vec4(-boundingBox.x, boundingBox.y, boundingBox.z, 1.0f)));
-  vertices.push_back(
-      glm::vec3(obj->getTransform()->getModel() *
-                glm::vec4(boundingBox.x, -boundingBox.y, boundingBox.z, 1.0f)));
-  vertices.push_back(glm::vec3(
-      obj->getTransform()->getModel() *
-      glm::vec4(-boundingBox.x, -boundingBox.y, boundingBox.z, 1.0f)));
-  vertices.push_back(
-      glm::vec3(obj->getTransform()->getModel() *
-                glm::vec4(boundingBox.x, boundingBox.y, -boundingBox.z, 1.0f)));
-  vertices.push_back(glm::vec3(
-      obj->getTransform()->getModel() *
-      glm::vec4(-boundingBox.x, boundingBox.y, -boundingBox.z, 1.0f)));
-  vertices.push_back(glm::vec3(
-      obj->getTransform()->getModel() *
-      glm::vec4(boundingBox.x, -boundingBox.y, -boundingBox.z, 1.0f)));
-  vertices.push_back(glm::vec3(
-      obj->getTransform()->getModel() *
-      glm::vec4(-boundingBox.x, -boundingBox.y, -boundingBox.z, 1.0f)));
-
-  // smol bbs
-  /*
-  vertices.push_back(center -
-                     glm::vec3(boundingBox.x, boundingBox.y, boundingBox.z));
-  vertices.push_back(center -
-                     glm::vec3(boundingBox.x, -boundingBox.y, boundingBox.z));
-  vertices.push_back(center -
-                     glm::vec3(-boundingBox.x, -boundingBox.y,
-  boundingBox.z)); vertices.push_back(center - glm::vec3(boundingBox.x,
-  boundingBox.y, -boundingBox.z)); vertices.push_back(center -
-                     glm::vec3(-boundingBox.x, boundingBox.y, boundingBox.z));
-  vertices.push_back(center -
-                     glm::vec3(-boundingBox.x, boundingBox.y,
-  -boundingBox.z)); vertices.push_back(center - glm::vec3(boundingBox.x,
-  -boundingBox.y, -boundingBox.z)); vertices.push_back(center -
-                     glm::vec3(-boundingBox.x, -boundingBox.y,
-  -boundingBox.z));
-
-   */
-
-  return vertices;
 }
 
 void GameLogicServer::printWorld() {
@@ -448,6 +352,9 @@ void GameLogicServer::resetKeyPresses() {
 
 void GameLogicServer::addGameObject(GameObject* obj) {
   mWorld.push_back(obj);
+  if (!obj->isDefault()) {
+    mOctree.insert(obj);
+  }
   if (obj->isTower()) {
     mTowers.push_back((Tower*)obj);
   } else if (obj->isCloud()) {
@@ -485,6 +392,7 @@ void GameLogicServer::deleteObject(int worldIndex) {
     players[((Player*)tmpObj)->getId()] = NULL;
   }
 
+  mOctree.remove(mWorld[worldIndex]);
   mWorld.erase(mWorld.begin() + worldIndex);
 
   // Don't delete towers
@@ -519,7 +427,7 @@ char* GameLogicServer::marshalInfo(GameObject* obj) {
   memcpy(tmpInfo, &(health), INT_SIZE);
   tmpInfo += INT_SIZE;
 
-  glm::vec3 bb = obj->getTransform()->getBBox();
+  glm::vec3 bb = obj->getTransform()->getBBoxLens();
   memcpy(tmpInfo, &(bb.x), FLOAT_SIZE);
   tmpInfo += FLOAT_SIZE;
   memcpy(tmpInfo, &(bb.y), FLOAT_SIZE);

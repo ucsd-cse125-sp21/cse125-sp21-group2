@@ -30,7 +30,7 @@ class Projectile : public Moveable {
   std::vector<glm::vec3> mPath;  // pre compute path on creation and just check
                                  // for collisions as we go ahead
   int mProjectileMaxTicks =
-      15;  // how many ticks a projectile should last for unless it collides
+      50;  // how many ticks a projectile should last for unless it collides
   int mProjectileNextTick;
 
   float rotationSpeed = -0.1;

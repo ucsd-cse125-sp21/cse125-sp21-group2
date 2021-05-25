@@ -64,7 +64,7 @@ std::vector<GameObject*> ServerGraphNode::makeWorld(glm::vec3 cPosition,
   Transform* transform =
       new Transform(cPosition + mTransform->getTranslation(),
                     cRotation * mTransform->getRotation(),
-                    cScale * mTransform->getScale(), mTransform->getBBox());
+                    cScale * mTransform->getScale(), mTransform->getBBoxLens());
 
   // Only add objects which are not tower
   result.push_back(new GameObject(transform, mName, 10));

@@ -17,7 +17,7 @@ Transform::Transform(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale,
       mRotation(glm::quat(glm::radians(rotation))),
       mScale(scale),
       mModel(glm::mat4(1)),
-      mBoundingBox(boundingBox) {
+      mBoundingBoxLens(boundingBox) {
   updateModel();
 }
 
@@ -26,7 +26,7 @@ Transform::Transform(glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
       mRotation(rotation),
       mScale(scale),
       mModel(glm::mat4(1)),
-      mBoundingBox(NULL) {
+      mBoundingBoxLens(NULL) {
   updateModel();
 }
 
@@ -36,7 +36,7 @@ Transform::Transform(glm::vec3 translation, glm::quat rotation, glm::vec3 scale,
       mRotation(rotation),
       mScale(scale),
       mModel(glm::mat4(1)),
-      mBoundingBox(boundingBox) {
+      mBoundingBoxLens(boundingBox) {
   updateModel();
 }
 
@@ -89,7 +89,11 @@ glm::vec3 Transform::getScale() { return mScale; }
 
 glm::mat4 Transform::getModel() const { return mModel; }
 
-glm::vec3 Transform::getBBox() { return mBoundingBox; }
+glm::vec3 Transform::getBBoxLens() const { return mBoundingBoxLens; }
+
+AABB Transform::getBBox() const {
+  return AABB::FromPosLen(mTranslation, mBoundingBoxLens);
+}
 
 void Transform::updateModel() {
   mModel = glm::translate(glm::mat4(1.0f), mTranslation) *

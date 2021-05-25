@@ -177,8 +177,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Shared\AABB.cpp" />
     <ClCompile Include="..\Shared\GameObject.cpp" />
     <ClCompile Include="..\Shared\Transform.cpp" />
+    <ClCompile Include="..\Shared\Utils.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="glad\src\glad.c" />
@@ -198,7 +200,6 @@
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="UI.cpp" />
-    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shared\scene.json" />
@@ -223,9 +224,11 @@
     <None Include="texture_vert.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Shared\AABB.h" />
     <ClInclude Include="..\Shared\GameObject.h" />
     <ClInclude Include="..\Shared\json.hpp" />
     <ClInclude Include="..\Shared\Transform.h" />
+    <ClInclude Include="..\Shared\Utils.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="GameManager.h" />
@@ -244,7 +247,6 @@
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="UI.h" />
-    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

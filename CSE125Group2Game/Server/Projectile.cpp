@@ -58,6 +58,10 @@ std::string Projectile::makeName() {
 void Projectile::update() {
   mIsModified = true;
 
+  if (isDead()) {
+    return;
+  }
+
   // projectile is dead
   if (++mProjectileNextTick >= mProjectileMaxTicks) {
     setHealth(0);
