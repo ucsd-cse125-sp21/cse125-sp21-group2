@@ -76,6 +76,7 @@ void GameManager::Update() {
   float last = glfwGetTime();
 
   // setup bearl different models
+  // TODO(evan): make event based?
   SceneGraphNode* node = mScene.getByName("towrbear");
   node->getObject()->setModelIndexCallback([](const GameObject& obj) {
     if (obj.getHealth() > 50) {
