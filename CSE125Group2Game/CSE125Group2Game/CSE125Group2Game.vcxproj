@@ -184,12 +184,14 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="glad\src\glad.c" />
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
+    <ClCompile Include="Rect.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
     <ClCompile Include="SceneGraphNode.cpp" />
@@ -199,7 +201,7 @@
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
-    <ClCompile Include="UI.cpp" />
+    <ClCompile Include="Font.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shared\scene.json" />
@@ -210,6 +212,8 @@
     <None Include="color_frag.glsl" />
     <None Include="font_frag.glsl" />
     <None Include="font_vert.glsl" />
+    <None Include="image_frag.glsl" />
+    <None Include="image_vert.glsl" />
     <None Include="normal_frag.glsl" />
     <None Include="normal_vert.glsl" />
     <None Include="packages.config" />
@@ -218,6 +222,8 @@
     <None Include="particle_vert.glsl" />
     <None Include="rainbow_frag.glsl" />
     <None Include="rainbow_vert.glsl" />
+    <None Include="rect_frag.glsl" />
+    <None Include="rect_vert.glsl" />
     <None Include="skybox_frag.glsl" />
     <None Include="skybox_vert.glsl" />
     <None Include="texture_frag.glsl" />
@@ -230,6 +236,7 @@
     <ClInclude Include="..\Shared\Transform.h" />
     <ClInclude Include="..\Shared\Utils.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Model.h" />
@@ -237,6 +244,7 @@
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="net_client.hpp" />
     <ClInclude Include="ParticleEmitter.h" />
+    <ClInclude Include="Rect.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="SceneGraphNode.h" />
@@ -246,7 +254,7 @@
     <ClInclude Include="Sound.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="TextureLoader.h" />
-    <ClInclude Include="UI.h" />
+    <ClInclude Include="Font.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

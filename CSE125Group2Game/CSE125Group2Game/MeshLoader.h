@@ -41,6 +41,7 @@ class Mesh {
   unsigned int vbo() const;
   unsigned int ibo() const;
   unsigned int indexCount() const;
+  bool isValid() const { return mHandle != -1; }
 
  private:
   Mesh(int handle, MeshLoader* loader) : mHandle(handle), mpLoader(loader) {}
@@ -74,10 +75,15 @@ class MeshLoader {
                 const std::vector<glm::uvec3>& indices);
   Mesh loadMesh(const aiMesh* mesh);
 
+  Mesh Square();
+  Mesh Cube();
+
   const GLMesh& getRaw(const Mesh& mesh);
 
  private:
   // for simplicity, lets not do instancing, and lets assume objects live
   // forever...
   std::vector<GLMesh> mMeshes;
+  Mesh mSquare;
+  Mesh mCube;
 };

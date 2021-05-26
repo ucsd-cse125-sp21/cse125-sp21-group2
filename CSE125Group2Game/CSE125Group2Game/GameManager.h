@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Camera.h"
+#include "Font.h"
 #include "Model.h"
 #include "ModelLoader.h"
 #include "RenderManager.h"
@@ -26,6 +27,7 @@
 #define RIGHT_KEY GLFW_KEY_D
 #define PROJECTILE_KEY GLFW_KEY_SPACE
 #define RESTART_KEY GLFW_KEY_R
+#define EASTER_KEY GLFW_KEY_LEFT_BRACKET
 
 class GameManager {
  public:
@@ -78,9 +80,11 @@ class GameManager {
   Camera* mCamera;
   SceneGraph mScene;
   GLFWwindow* mWindow;
-  UI* mpUI;
+  Font* mpFont;
 
   static GameManager* mManager;
 
   Sound* mSound;
+
+  bool mEasterMode;
 };

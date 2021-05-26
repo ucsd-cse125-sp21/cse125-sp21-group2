@@ -30,7 +30,7 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   mSound = new Sound();
   mSound->playBackgroundMusic(mSound->backgroundMusicPath);
 
-  mpUI = new UI(ASSET("fonts/galaxy.otf"), mTLoader);
+  mpFont = new Font(ASSET("fonts/galaxy.otf"), mTLoader);
 }
 
 GameManager* GameManager::getManager() {
@@ -122,20 +122,68 @@ void GameManager::Update() {
 }
 
 void GameManager::renderUI() {
+  // render rects first,
+  Rect rect(*mLoader, glm::vec2(0, 0), glm::vec2(800, 600),
+            glm::vec4(1.0, 0, 0, 0.5));
+  // mpRenderManager->drawRect(rect);
+
+  mpRenderManager->drawText("GAME OVER", 290.0f, 300.0f, 1.0f,
+                            glm::vec3(1.0f, 0, 0), *mpFont);
+
+  // render images second
+  Texture tex = mTLoader.loadTexture(ASSET("leet.png"));
+  Image image(*mLoader, glm::vec2(500, 500), glm::vec2(100, 50), tex);
+  mpRenderManager->drawImage(image);
+
+  // I <3 lambdas - Evan :)
+  auto drawHealthBar = [&](const std::string& towerName,
+                           const std::string& readableName, int offset) {
+    // render tower health bars
+    const unsigned int y_offset_amt = 20;
+    GameObject* obj = mScene.getByName(towerName)->getObject();
+    glm::vec3 textColor;
+    if (obj->isDead()) {
+      textColor = glm::vec3(1.0, 0, 0);
+    } else {
+      Rect healthBar(
+          *mLoader, glm::vec2(80, 25 + y_offset_amt * offset),
+          glm::vec2(((float)obj->getHealth() / (float)DEFAULT_HEALTH) * 150, 5),
+          glm::vec4(1.0, 0, 0, 1.));
+      mpRenderManager->drawRect(healthBar);
+      textColor = glm::vec3(0.7);
+    }
+    mpRenderManager->drawText(readableName, 5.0f,
+                              25 + y_offset_amt * offset - 3, 0.3f, textColor,
+                              *mpFont);
+  };
+
+  drawHealthBar("towrbear", "Bearl", 0);
+  drawHealthBar("towrstar", "Falling Star", 1);
+  drawHealthBar("towrston", "Stone Henge", 2);
+  drawHealthBar("towrsung", "Sun God", 3);
+
+  // easter egg
+  if (mEasterMode) {
+    tex = mTLoader.loadTexture(ASSET("voelker.png"));
+    Image voelker(*mLoader, glm::vec2(575, 20), glm::vec2(50, 50), tex);
+    mpRenderManager->drawImage(voelker);
+  }
+
+  // render text third
   if (mPlayer) {
     mpRenderManager->drawText(
         "Health: " + std::to_string(mPlayer->getHealth()) + " / " +
             std::to_string(DEFAULT_HEALTH),
-        25.f, 550.0f, 0.5f, glm::vec3(0.7f), *mpUI);
+        25.f, 550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
   }
 
   if (mWaveTimer) {
     mpRenderManager->drawText("Next Wave: " + std::to_string(mWaveTimer),
-                              650.0f, 25.0f, 0.5f, glm::vec3(0.7f), *mpUI);
+                              650.0f, 25.0f, 0.5f, glm::vec3(0.7f), *mpFont);
   }
 
   mpRenderManager->drawText("Wave: " + std::to_string(mWavesCompleted), 650.0f,
-                            550.0f, 0.5f, glm::vec3(0.7f), *mpUI);
+                            550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
 }
 
 void GameManager::updateKeyPresses(bool* keysPressed) {
@@ -145,6 +193,8 @@ void GameManager::updateKeyPresses(bool* keysPressed) {
   keysPressed[RIGHT] = glfwGetKey(mWindow, RIGHT_KEY);
   keysPressed[SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
   keysPressed[RESTART] = glfwGetKey(mWindow, RESTART_KEY);
+  mEasterMode = glfwGetKey(mWindow, EASTER_KEY) == GLFW_PRESS ||
+                glfwGetKey(mWindow, EASTER_KEY) == GLFW_REPEAT;
 }
 
 void GameManager::UpdateObject(GameObject* obj) {
@@ -161,6 +211,7 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Health is 0, delete object
   if (obj->isDead()) {
+    foundObject->setHealth(0);
     // Don't render the player if they die
     if (foundObject->isPlayer()) {
       foundObject->mShouldRender = false;
