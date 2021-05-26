@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <thread>
+#include <Windows.h>
 
 #include "Player.h"
 #include "PriorityMutex.h"
@@ -52,6 +53,7 @@ class GameLogicServer {
 
   void sendInfo();
   void sendWaveTimer(int seconds);
+  bool isGameOver();
 
   msd::channel<char*> mSendingBuffer;  // Queue for storing events to send
   std::vector<char*> mTestBuffer;
@@ -80,11 +82,15 @@ class GameLogicServer {
   int getHorizontalInput(int playerId);
   void movePlayerToBoundary(Player* player);
   void updatePlayerPosition(int playerId);
-  bool isGameOver();
   void restartGame();
+  void sendEndGame();
 
   std::vector<GameObject*> mWorld;
   uint16_t mTick_ms;
+
+  DWORD mGameStartTick;
+  bool mPostGameInfoSent;
+
 
   std::vector<bool*> mKeyPresses;  // Queue for storing events before each
                                    // tick for each player

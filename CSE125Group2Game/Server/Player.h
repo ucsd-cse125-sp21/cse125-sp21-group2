@@ -58,6 +58,7 @@ class Player : public Moveable {
   void removePickup();
 
   int mDamageMultiplier = 1;
+  int mEnemiesKilled;
 
  private:
   glm::vec3 mRotationSpeed = glm::vec3(-0.0225, -0.10, 0);
@@ -69,7 +70,6 @@ class Player : public Moveable {
   unsigned long mRespawnTimeMS = 5000;
   unsigned long mTimeToSpawn;
   unsigned long mLastHeal;
-  int mEnemiesKilled;
 };
 
 const std::string player_prefix = "play";

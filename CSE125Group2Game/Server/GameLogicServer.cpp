@@ -15,6 +15,7 @@
 
 GameLogicServer* GameLogicServer::mLogicServer;
 int Player::numPlayers = 0;
+void sendEndGameInfo(char* data);
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
                                  ServerLoader scene, uint16_t tick_ms)
@@ -30,6 +31,8 @@ GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
 
     players[i] = NULL;
   }
+  mGameStartTick = GetTickCount();
+  mPostGameInfoSent = false;
 }
 
 std::string server_read_config2(std::string field, std::string filename) {
@@ -103,7 +106,13 @@ void GameLogicServer::update() {
     updateTowers();
     updateClouds();
     updateProjectiles();
-  } else {
+  }
+   else {
+      if (!mPostGameInfoSent) {
+        sendEndGame();
+        mPostGameInfoSent = true;
+      }
+
     for (int i = 0; i < MAX_PLAYERS; i++) {
       if (players[i] == NULL || !mKeyPresses[i][RESTART]) {
         continue;
@@ -159,6 +168,9 @@ void GameLogicServer::restartGame() {
   }
 
   WaveManager::getWaveManager()->reset();
+
+  mGameStartTick = GetTickCount();
+  mPostGameInfoSent = false;
 }
 
 void GameLogicServer::updateEnemies() {
@@ -570,4 +582,59 @@ int GameLogicServer::getVerticalInput(int playerId) {
 }
 int GameLogicServer::getHorizontalInput(int playerId) {
   return mKeyPresses[playerId][RIGHT] - mKeyPresses[playerId][LEFT];
+}
+
+void GameLogicServer::sendEndGame() {
+    // 1) 4 byte DWORD timeEllapse - done
+    // 2) 4 byte int highScore
+    // 3) 4 byte totalEnemyKilled
+    // 4) 8 byte MVP name
+    // 5) 4 byte enemyKilled by MVP
+
+    char* info = (char*)malloc(END_GAME_MESSAGE_SIZE);
+    char* tmpInfo = info;
+
+    DWORD timeSurvived = GetTickCount() - mGameStartTick;
+
+    char timeSurvivedChar[4];
+    sprintf(timeSurvivedChar, "%d", timeSurvived);
+
+    memcpy(tmpInfo, timeSurvivedChar, DWORD_SIZE);  // Copy name into data
+
+    tmpInfo += DWORD_SIZE;
+
+    int highScore = WaveManager::getWaveManager()->mWavesCompleted * 100;
+    memcpy(tmpInfo, &(highScore), INT_SIZE);
+    tmpInfo += INT_SIZE;
+
+    int totalEnemyKilled = 0;
+    
+
+    
+    int mvpIndex = 0;
+    int maxEnemiesKilled = 0;
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        if (players[i] == NULL) {
+            continue;
+        }
+
+        totalEnemyKilled += players[i]->mEnemiesKilled;
+
+        if (players[i]->mEnemiesKilled > maxEnemiesKilled) {
+            maxEnemiesKilled = players[i]->mEnemiesKilled;
+            mvpIndex = i;
+        }
+    }
+
+    memcpy(tmpInfo, &(totalEnemyKilled), INT_SIZE);
+    tmpInfo += INT_SIZE;
+
+    memcpy(tmpInfo, players[mvpIndex]->getName().c_str(), NAME_LEN);
+    tmpInfo += NAME_LEN;
+
+    memcpy(tmpInfo, &(players[mvpIndex]->mEnemiesKilled), INT_SIZE);
+    tmpInfo += INT_SIZE;
+
+    sendEndGameInfo(info);
+
 }

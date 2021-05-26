@@ -22,6 +22,18 @@ void sendWaveTimer(int seconds, int wavesCompleted) {
   NetworkServer::GetNetworkServer()->MessageAllClients(msg);
 }
 
+void sendEndGameInfo(char* data) {
+    olc::net::message<CustomMsgTypes> msg;
+    msg.header.id = CustomMsgTypes::EndGame;
+
+    for (int i = 0; i < END_GAME_MESSAGE_SIZE; i++) {
+        msg << data[i];
+    }
+;
+
+    NetworkServer::GetNetworkServer()->MessageAllClients(msg);
+}
+
 int main() {
   DWORD before, after, diff;
 

@@ -16,6 +16,7 @@ enum class ObjectType : uint16_t {
 #define NUM_KEYS 6
 #define NAME_LEN 8
 #define FLOAT_SIZE 4
+#define DWORD_SIZE 4
 #define INT_SIZE sizeof(int)
 #define TYPE_SIZE sizeof(ObjectType)
 #define MESSAGE_SIZE NAME_LEN + (19 * FLOAT_SIZE) + INT_SIZE + TYPE_SIZE
