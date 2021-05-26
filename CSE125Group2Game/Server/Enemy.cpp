@@ -118,7 +118,7 @@ void Enemy::setHealth(int amt) {
     Transform* pickupTransform =
         new Transform(mTransform->getTranslation(), mTransform->getRotation(),
                       mTransform->getScale(), mTransform->getBBox());
-    Pickup::spawnPickup(pickupTransform, PickupType::DamageBoost);
+    Pickup::spawnPickup(pickupTransform);
   }
 }
 bool Enemy::shouldNotCollide(GameObject* obj) {

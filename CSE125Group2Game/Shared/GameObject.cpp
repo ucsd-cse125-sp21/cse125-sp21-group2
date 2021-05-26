@@ -36,6 +36,11 @@ void GameObject::setHealth(int health) {
   mIsModified = true;
 }
 
+int GameObject::getPlayerId() {
+  int id = getName()[NAME_LEN - 1] - '0';
+  return id;
+}
+
 Transform* GameObject::getTransform() { return mTransform; }
 std::string GameObject::getName() { return mName; }
 int GameObject::getHealth() { return mHealth; }

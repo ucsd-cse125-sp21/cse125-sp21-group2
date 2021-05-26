@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include "GameObject.h"
 
-#define NUM_PICKUPS 1
+#define NUM_PICKUPS 2
 #define PICKUP_LENGTH 15000
-enum class PickupType { None, DamageBoost };
+enum class PickupType { None, DamageBoost, SpeedBoost };
 
 class Pickup : public GameObject {
  public:
@@ -12,6 +12,8 @@ class Pickup : public GameObject {
   Pickup(Transform* transform, PickupType type);
 
   static void spawnPickup(Transform* transform, PickupType type);
+  // Spawn a random pickup
+  static void spawnPickup(Transform* transform);
 
   PickupType mPickupType;
   std::string makeName();

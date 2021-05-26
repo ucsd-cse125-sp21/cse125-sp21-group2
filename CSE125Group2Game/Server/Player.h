@@ -15,6 +15,7 @@ class Player : public Moveable {
   static int numPlayers;
 
   Player(Transform* transform, std::string name, int health, int id);
+  ~Player();
 
   void update();
 
@@ -29,36 +30,30 @@ class Player : public Moveable {
 
   glm::vec3 getRotationSpeed();
 
-  static const std::string player_prefix;
-
   static Player* spawnPlayer(int playerId);
 
   bool shouldNotCollide(GameObject* obj);
 
   void setHealth(int amt);
-
-  void incrementEnemiesKilled();
-
-  int getEnemiesKilled();
-
-  void setEnemiesKilled(int enemiesKilled);
-
-  ~Player();
-
-  bool forceDelete = false;
-
-  PickupType mPickup;
-
-  unsigned long mPickupEndTime = 0;
-
-  void addPickup(Pickup* pickup);
-
   void healPlayer();
   void setRespawn();
+  void reset();
+
+  void incrementEnemiesKilled();
+  int getEnemiesKilled();
+  void setEnemiesKilled(int enemiesKilled);
+
+  void addPickup(Pickup* pickup);
   void removePickup();
 
+  PickupType mPickup;
+  unsigned long mPickupEndTime = 0;
   int mDamageMultiplier = 1;
   int mEnemiesKilled;
+  float mSpeedMultiplier = 1;
+
+  bool forceDelete = false;
+  static const std::string player_prefix;
 
  private:
   glm::vec3 mRotationSpeed = glm::vec3(-0.0225, -0.10, 0);

@@ -18,6 +18,12 @@ void Pickup::spawnPickup(Transform* transform, PickupType type) {
   GameLogicServer::getLogicServer()->addGameObject(pickup);
 }
 
+void Pickup::spawnPickup(Transform* transform) {
+  int pickupIndex = (rand() % NUM_PICKUPS) + 1;  // Plus 1 to avoid none
+  PickupType type = static_cast<PickupType>(pickupIndex);
+  spawnPickup(transform, type);
+}
+
 std::string Pickup::makeName() {
   std::string name = GameObject::makeName("pick", pickupCount);
 

@@ -71,7 +71,10 @@ std::string Player::makeName(int id) {
   return GameObject::makeName("play", id);
 }
 
-glm::vec3 Player::getRotationSpeed() { return mRotationSpeed; }
+glm::vec3 Player::getRotationSpeed() {
+  return glm::vec3(mSpeedMultiplier * mRotationSpeed.x, mRotationSpeed.y,
+                   mRotationSpeed.z);
+}
 
 Player* Player::spawnPlayer(int playerId) {
   Transform* transform =
@@ -121,13 +124,31 @@ void Player::addPickup(Pickup* pickup) {
     case PickupType::DamageBoost:
       mDamageMultiplier = 3;
       break;
+
+    case PickupType::SpeedBoost:
+      mSpeedMultiplier = 2;
+      break;
+
+    default:
+      break;
   }
+}
+
+void Player::reset() {
+  removePickup();
+  resetModel();
+  setHealth(DEFAULT_HEALTH);
+  setEnemiesKilled(0);
 }
 
 void Player::removePickup() {
   switch (mPickup) {
     case PickupType::DamageBoost:
       mDamageMultiplier = 1;
+      break;
+
+    case PickupType::SpeedBoost:
+      mSpeedMultiplier = 1;
       break;
 
     default:

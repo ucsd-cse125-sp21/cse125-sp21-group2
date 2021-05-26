@@ -152,9 +152,7 @@ void GameLogicServer::restartGame() {
 
     std::cout << "enemies killed: " << players[i]->getEnemiesKilled();
 
-    players[i]->resetModel();
-    players[i]->setHealth(DEFAULT_HEALTH);
-    players[i]->setEnemiesKilled(0);
+    players[i]->reset();
   }
 
   for (int i = 0; i < mTowers.size(); i++) {
@@ -573,8 +571,6 @@ void GameLogicServer::updatePlayerPosition(int playerId) {
     velocity = players[playerId]->getRotationSpeed() * glm::normalize(velocity);
     players[playerId]->move(velocity);
   }
-
-  // players[playerId]->setVelocity(velocity);
 }
 
 int GameLogicServer::getVerticalInput(int playerId) {
