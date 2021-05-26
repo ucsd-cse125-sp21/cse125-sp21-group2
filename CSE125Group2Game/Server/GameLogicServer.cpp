@@ -15,7 +15,7 @@
 
 GameLogicServer* GameLogicServer::mLogicServer;
 int Player::numPlayers = 0;
-void sendEndGameInfo(char* data);
+void sendEndGameInfo(char* data, int size);
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
                                  ServerLoader scene, uint16_t tick_ms)
@@ -581,40 +581,36 @@ int GameLogicServer::getHorizontalInput(int playerId) {
 }
 
 void GameLogicServer::sendEndGame() {
-    // 1) 4 byte DWORD timeEllapse - done
-    // 2) 4 byte int highScore
-    // 3) 4 byte totalEnemyKilled
-    // 4) 8 byte MVP name
-    // 5) 4 byte enemyKilled by MVP
+    /*
+    * 1) 4 byte DWORD timeEllapse
+    * 2) 4 byte int highScore
+    * 3) 4 byte int totalEnemyKilled
+    * 4) 4 byte int MVP player id
+    * 5) 4 byte int numPlayers
+    * 6) numPlayers * 4 byte ints enemiesKilledPerPlayer
+    * 7) numPlayers * 4 byte ints timesDiedDuringTheGame
+    */
 
-    char* info = (char*)malloc(END_GAME_MESSAGE_SIZE);
-    char* tmpInfo = info;
-
-    DWORD timeSurvived = GetTickCount() - mGameStartTick;
-
-    char timeSurvivedChar[4];
-    sprintf(timeSurvivedChar, "%d", timeSurvived);
-
-    memcpy(tmpInfo, timeSurvivedChar, DWORD_SIZE);  // Copy name into data
-
-    tmpInfo += DWORD_SIZE;
-
-    int highScore = WaveManager::getWaveManager()->mWavesCompleted * 100;
-    memcpy(tmpInfo, &(highScore), INT_SIZE);
-    tmpInfo += INT_SIZE;
-
+    int numPlayers = 0;
     int totalEnemyKilled = 0;
-    
-
-    
     int mvpIndex = 0;
     int maxEnemiesKilled = 0;
+
+    std::vector<int> enemiesKilledPerPlayer;
+    std::vector<int> numRespawnedPerPlayer;
+
+
+
     for (int i = 0; i < MAX_PLAYERS; i++) {
         if (players[i] == NULL) {
             continue;
         }
 
+        numPlayers++;
         totalEnemyKilled += players[i]->mEnemiesKilled;
+
+        enemiesKilledPerPlayer.push_back(players[i]->mEnemiesKilled);
+        numRespawnedPerPlayer.push_back(players[i]->mNumRespawned);
 
         if (players[i]->mEnemiesKilled > maxEnemiesKilled) {
             maxEnemiesKilled = players[i]->mEnemiesKilled;
@@ -622,15 +618,44 @@ void GameLogicServer::sendEndGame() {
         }
     }
 
+    int message_size = DWORD_SIZE + 4 * INT_SIZE + 2 * numPlayers * INT_SIZE;
+
+    char* info = (char*)malloc(message_size);
+    char* tmpInfo = info;
+
+    DWORD timeSurvived = GetTickCount() - mGameStartTick;
+
+    memcpy(tmpInfo, &timeSurvived, DWORD_SIZE);
+
+    tmpInfo += DWORD_SIZE;
+
+    // TODO: determine a better way to calculate score?
+    int highScore = WaveManager::getWaveManager()->mWavesCompleted * 100;
+    memcpy(tmpInfo, &(highScore), INT_SIZE);
+    tmpInfo += INT_SIZE;
+
     memcpy(tmpInfo, &(totalEnemyKilled), INT_SIZE);
     tmpInfo += INT_SIZE;
 
-    memcpy(tmpInfo, players[mvpIndex]->getName().c_str(), NAME_LEN);
-    tmpInfo += NAME_LEN;
+    int mvpPlayerID = players[mvpIndex]->getPlayerId();
 
-    memcpy(tmpInfo, &(players[mvpIndex]->mEnemiesKilled), INT_SIZE);
+    memcpy(tmpInfo, &(mvpPlayerID), INT_SIZE);
     tmpInfo += INT_SIZE;
 
-    sendEndGameInfo(info);
+    std::cout << "numPlayers " << numPlayers << std::endl;
+    memcpy(tmpInfo, &(numPlayers), INT_SIZE);
+    tmpInfo += INT_SIZE;
+
+    for (int i = 0; i < enemiesKilledPerPlayer.size(); i++) {
+        memcpy(tmpInfo, &(enemiesKilledPerPlayer[i]), INT_SIZE);
+        tmpInfo += INT_SIZE;
+    }
+
+    for (int i = 0; i < numRespawnedPerPlayer.size(); i++) {
+        memcpy(tmpInfo, &(numRespawnedPerPlayer[i]), INT_SIZE);
+        tmpInfo += INT_SIZE;
+    }
+
+    sendEndGameInfo(info, message_size);
 
 }

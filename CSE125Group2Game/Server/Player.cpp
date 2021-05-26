@@ -12,6 +12,7 @@ Player::Player(Transform* transform, std::string name, int health, int id)
   Projectile::mTickLastSpawn[name] = 0;
   numPlayers++;
   mPickup = PickupType::None;
+  mNumRespawned = 0;
 }
 
 Player::~Player() { numPlayers--; }
@@ -54,6 +55,7 @@ void Player::setRespawn() {
   } else if (mTimeToSpawn < GetTickCount()) {
     // Todo: spawn player in new location potentially or possible ...
     // interesting question!
+      mNumRespawned++;
     mTimeToSpawn = 0;
     mHealth = DEFAULT_HEALTH;
   }
