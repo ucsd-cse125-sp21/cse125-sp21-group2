@@ -62,6 +62,8 @@ class GameLogicServer {
   std::vector<Cloud*> mClouds;
   ServerLoader mScene;
   PriorityMutex mMtx;
+  float mLastTime = 0;
+  float mDeltaTime;
 
  private:
   void resetKeyPresses();

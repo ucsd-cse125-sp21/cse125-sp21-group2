@@ -3,7 +3,10 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <iostream>
 
+#include "GameLogicServer.h"
+
 void Moveable::move(glm::vec3 angle) {
+  angle = (GameLogicServer::getLogicServer()->mDeltaTime) * angle;
   mPivot->setModel(mPivot->getModel() *
                    glm::eulerAngleXYZ(angle.x, angle.y, angle.z));
 

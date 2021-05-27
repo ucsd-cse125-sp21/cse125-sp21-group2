@@ -30,14 +30,14 @@ void Projectile::spawnProjectile(GameObject* parent) {
 
   // create projectile
   Projectile* projectile = new Projectile(
-      new Transform(spawnPos, glm::vec3(0), glm::vec3(.5), glm::vec3(0.25)),
+      new Transform(spawnPos, glm::vec3(0), glm::vec3(50), glm::vec3(0.25)),
       Projectile::makeName(), 15, parent);
 
   // Update projectiles model/pivot
   projectile->mPivot->setModel(((Player*)parent)->mPivot->getModel());
   projectile->mModelTransform->setModel(
       ((Player*)parent)->mModelTransform->getModel() *
-      glm::scale(glm::mat4(1), glm::vec3(.5)));
+      glm::scale(glm::mat4(1), glm::vec3(2)));
 
   // add to game world
   GameLogicServer::getLogicServer()->addGameObject(projectile);
@@ -58,7 +58,7 @@ void Projectile::spawnProjectileAngle(GameObject* parent, float angle,
   projectile->mPivot->setModel(((Player*)parent)->mPivot->getModel());
   projectile->mModelTransform->setModel(
       ((Player*)parent)->mModelTransform->getModel() *
-      glm::scale(glm::mat4(1), glm::vec3(.5)));
+      glm::scale(glm::mat4(1), glm::vec3(2)));
 
   projectile->move(glm::vec3(0, angle, 0));
   projectile->rotationSpeed *= speedMultiplier;

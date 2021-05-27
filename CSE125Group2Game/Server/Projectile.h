@@ -25,7 +25,7 @@ class Projectile : public Moveable {
   bool shouldNotCollide(GameObject* obj);
 
   GameObject* getParent();
-  float rotationSpeed = -0.1;
+  float rotationSpeed = SPEED_MULTIPLIER * (-0.1);
   int mProjectileMaxTicks =
       15;  // how many ticks a projectile should last for unless it collides
 

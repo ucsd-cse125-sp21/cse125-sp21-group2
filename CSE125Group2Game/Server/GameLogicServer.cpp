@@ -93,6 +93,12 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 void GameLogicServer::update() {
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
+  float currTime = ((float)GetTickCount()) / 1000;
+
+  mDeltaTime = currTime - mLastTime;
+
+  mLastTime = currTime;
+
   // Only update game state if game isn't over
   if (!isGameOver() || Player::numPlayers < MIN_PLAYERS) {
     // printKeyPresses();
@@ -292,7 +298,7 @@ void GameLogicServer::movePlayerToBoundary(Player* player) {
 void GameLogicServer::spawnPlayerExplosion(Player* player) {
   float step = 22.5;
   for (float angle = 0; angle < 360; angle += step) {
-    Projectile::spawnProjectileAngle(player, angle, 0.5);
+    Projectile::spawnProjectileAngle(player, angle, 0.20);
   }
 }
 

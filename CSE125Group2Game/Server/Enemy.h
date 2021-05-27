@@ -22,7 +22,7 @@ class Enemy : public Moveable {
   GameObject* GetNearestPlayer();
 
   glm::vec3 mMoveDirection;
-  float rotationSpeed = 0.02;
+  float rotationSpeed = SPEED_MULTIPLIER * 0.02;
 
   int mTicksPerUpdate = 3;
 

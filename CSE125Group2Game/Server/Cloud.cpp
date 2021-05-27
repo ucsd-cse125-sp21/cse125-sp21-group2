@@ -4,9 +4,10 @@
 
 Cloud::Cloud(Transform* transform, std::string name, int health)
     : Moveable(transform, name, health, ObjectType::Cloud) {
-  mRotationAngle.x = ((rand() % 10) + 1.0) / 1500.0;
-  mRotationAngle.y = ((rand() % 10) + 1.0) / 1500.0;
-  mRotationAngle.z = ((rand() % 10) + 1.0) / 1500.0;
+  // TODO: rotate around y and one of x or z
+  mRotationAngle.x = ((rand() % 10) + 1.0) / 20000.0;
+  mRotationAngle.y = ((rand() % 10) + 1.0) / 20000.0;
+  mRotationAngle.z = ((rand() % 10) + 1.0) / 20000.0;
 
   if ((rand() % 2)) {
     mRotationAngle.x = -mRotationAngle.x;
@@ -17,6 +18,8 @@ Cloud::Cloud(Transform* transform, std::string name, int health)
   if ((rand() % 2)) {
     mRotationAngle.z = -mRotationAngle.z;
   }
+
+  mRotationAngle = SPEED_MULTIPLIER * mRotationAngle;
 }
 
 void Cloud::update() {

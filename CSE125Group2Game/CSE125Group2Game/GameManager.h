@@ -20,6 +20,7 @@
 #define STONEHENGE_MODEL "Assets/models/towers/stonehenge/stonehenge.obj"
 #define FALLEN_STAR_MODEL "Assets/models/towers/fallenstar/fallenstar.obj"
 #define CLOUD_MODEL "Assets/models/cloud/cloud.obj"
+#define PROJECTILE_MODEL "Assets/models/bullet/bullet.obj"
 
 #define FORWARD_KEY GLFW_KEY_W
 #define LEFT_KEY GLFW_KEY_A
