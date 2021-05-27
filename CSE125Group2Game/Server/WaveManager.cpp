@@ -48,9 +48,10 @@ void WaveManager::update() {
 }
 
 void WaveManager::startWave() {
+    mWavesCompleted++;
   // Make game harder as time goes on
   if (mMaxWaveSize < MAX_ENEMIES) {
-    mMaxWaveSize += mWavesCompleted++;
+    mMaxWaveSize += mWavesCompleted;
   }
 
   for (int i = 0; i < mMaxWaveSize; i++) {
