@@ -14,10 +14,10 @@ map_Kd models\planet\planet-diffuse.png
 bump models\planet\planet-normal.png
 
 newmtl Ocean-material
-Ns 50.000000
+Ns 900.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.146025 0.576660 0.800000
-Ks 0.250000 0.250000 0.250000
+Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
