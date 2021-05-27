@@ -1,4 +1,4 @@
-#include "Cloud.h"
+﻿#include "Cloud.h"
 
 #include "GameLogicServer.h"
 
@@ -35,9 +35,7 @@ void Cloud::spawn() {
   for (int i = 0; i < logicServer->mScene.mClouds.size(); i++) {
     Transform* transform = logicServer->mScene.mClouds[i]->getTransform();
     Cloud* cloud = new Cloud(
-        new Transform(transform->getTranslation(), glm::vec3(0, 0, 90),
-                      transform->getScale(), transform->getBBox()),
-        logicServer->mScene.mClouds[i]->getName(), DEFAULT_HEALTH);
+        transform, logicServer->mScene.mClouds[i]->getName(), DEFAULT_HEALTH);
 
     logicServer->addGameObject(cloud);
   }
