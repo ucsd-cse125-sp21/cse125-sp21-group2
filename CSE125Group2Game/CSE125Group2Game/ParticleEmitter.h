@@ -7,9 +7,13 @@
 #include "Camera.h"
 #include "TextureLoader.h"
 
+#define RAND_FLOAT_NORM() \
+  static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+
 // for now, just a point basically
 struct Particle {
   glm::vec3 position;
+  glm::vec3 color = glm::vec3(1.0f);
   // TODO: might be better to do mark and sweep style, moving alive particles to
   // front,
   //       then saying "hey only render blah" number particles
@@ -30,8 +34,8 @@ class ParticleEmitter {
   ParticleEmitter(Texture particleTexture, size_t numParticles);
 
   // these will be virtual/overriden
-  void InitializeParticle(Particle& particle);
-  void UpdateParticle(Particle& particle, float delta);
+  virtual void InitializeParticle(Particle& particle);
+  virtual void UpdateParticle(Particle& particle, float delta);
 
   void Update(float delta);
 
@@ -55,6 +59,8 @@ class ParticleEmitter {
   bool mIsContinuous = false;
   bool mAnealSize = true;
   float mParticleSize = 4.0f;
+  bool isRainbow = true;
+  float mParticleSpeed = 5.0f;
 
   bool isDone() const;
 };

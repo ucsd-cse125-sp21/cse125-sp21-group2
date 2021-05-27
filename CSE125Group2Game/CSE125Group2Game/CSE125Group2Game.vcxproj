@@ -182,6 +182,7 @@
     <ClCompile Include="..\Shared\Transform.cpp" />
     <ClCompile Include="..\Shared\Utils.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ConeParticleEmitter.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="glad\src\glad.c" />
     <ClCompile Include="Image.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="..\Shared\Transform.h" />
     <ClInclude Include="..\Shared\Utils.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ConeParticleEmitter.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="GameManager.h" />

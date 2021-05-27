@@ -111,6 +111,9 @@
     <ClCompile Include="Image.cpp">
       <Filter>Source Files\render\ui</Filter>
     </ClCompile>
+    <ClCompile Include="ConeParticleEmitter.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -257,6 +260,9 @@
     </ClInclude>
     <ClInclude Include="Image.h">
       <Filter>Header Files\render\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ConeParticleEmitter.h">
+      <Filter>Header Files\render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

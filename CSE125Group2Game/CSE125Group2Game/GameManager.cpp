@@ -1,5 +1,6 @@
 ﻿#include "GameManager.h"
 
+#include "ConeParticleEmitter.h"
 #include "Utils.h"
 #include "client_helper.h"
 
@@ -226,7 +227,6 @@ void GameManager::UpdateObject(GameObject* obj) {
 
       return;
     } else if (foundObject->isEnemy()) {
-      // TODO: we never clean tehse up ... .causes big lag
       foundObject->mShouldRender = false;
       Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
       foundNode->emitter = new ParticleEmitter(flameTexture);
@@ -285,6 +285,19 @@ void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
       camera.setPosition(glm::vec3(0, 30.0f, 0));
       camera.setFacing(glm::vec3(0, 0, 0));
       camera.setUp(glm::vec3(0.0f, 0, -1.0f));
+
+      // attach emitters to player
+      GameObject* bsObj1 =
+          new GameObject(new Transform(glm::vec3(2.0, 0.0, 3.0), glm::vec3(0),
+                                       glm::vec3(0.2, 0.2, 0.2)),
+                         "bsObj1", 100);
+      SceneGraphNode* emitter1 = mScene.addChild(bsObj1, nullptr, playerNode);
+      Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
+      emitter1->emitter =
+          new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 30, 200);
+      emitter1->emitter->mIsContinuous = true;
+      emitter1->emitter->mParticleSize = 1.0;
+      emitter1->emitter->mParticleSpeed = 3.0;
     }
   } else if (!obj->isTower()) {
     model = Model::Cube(*mLoader);

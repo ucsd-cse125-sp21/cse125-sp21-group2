@@ -350,6 +350,7 @@ void RenderManager::draw(ParticleEmitter& emitter, const glm::mat4& model,
   glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(mProjection));
   glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(view));
   glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(model));
+  glUniform1i(5, emitter.isRainbow);  // set is only color or not
 
   glUniform1i(glGetUniformLocation(mpParticleProgram->getID(), "tex"), 0);
   glActiveTexture(GL_TEXTURE0);
