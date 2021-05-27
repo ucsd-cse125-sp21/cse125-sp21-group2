@@ -307,21 +307,31 @@ void GameLogicServer::spawnPlayerExplosion(Player* player) {
 GameObject* GameLogicServer::getCollidingObject(GameObject* obj) {
   // get 8 points of A in world space
 
+  return mOctree.getCollidingObject(obj);
+
   // For every gameobject in the world, check if this object collides with
   // anything
-  for (auto iterator = mOctree.begin(obj); iterator != mOctree.end();
-       iterator++) {
+  // for (auto iterator = mOctree.begin(obj); iterator != mOctree.end();
+  // iterator++) {
+  /*for (int i = 0; i < mWorld.size(); i++) {
     // If this object is the root, or has 0 health, or is itself, do not
     // collide
-    if (obj->shouldNotCollide(*iterator)) {
+    if (obj->shouldNotCollide(mWorld[i])) {
       continue;
     }
 
     if (obj->getTransform()->getBBox().collides(
-            (*iterator)->getTransform()->getBBox())) {
-      return *iterator;
+            (mWorld[i])->getTransform()->getBBox())) {
+      return mWorld[i];
     }
-  }
+    /* if (obj->shouldNotCollide(*iterator)) {
+       continue;
+     }
+
+     if (obj->getTransform()->getBBox().collides(
+             (*iterator)->getTransform()->getBBox())) {
+       return *iterator;
+     }*/
 
   return nullptr;
 }

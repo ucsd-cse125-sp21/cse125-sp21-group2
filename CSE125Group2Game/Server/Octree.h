@@ -14,11 +14,12 @@ class OctreeNode {
   void insert(GameObject* object, int depth);
   void remove(GameObject* object, int depth);
   void update(OctreeNode* root);
+  GameObject* getCollidingObject(GameObject* object);
   OctreeNode* getChild(GameObject* object, bool insert);
 
   OctreeNode* mChildren[8];
-  // objects that are minimally contained by this node, i.e. they don't fit into
-  // a smaller child node
+  // objects that are minimally contained by this node, i.e. they don't fit
+  // into a smaller child node
   std::vector<GameObject*> mObjects;
   AABB mBox;
 
@@ -32,8 +33,8 @@ class OctreeNode {
 // lets just do this recursively for now:
 // Meh kinda annoying, cause going to have to remove objects from here when
 // deleted... something automatic would be much nicer
-// TODO: define an iterator that will go down tree to give collisions. Should be
-// pretty simple
+// TODO: define an iterator that will go down tree to give collisions. Should
+// be pretty simple
 class Octree {
  public:
   class iterator {
@@ -46,8 +47,9 @@ class Octree {
 
     explicit iterator(GameObject* object, OctreeNode* node)
         : mpCollider(object), mpCurrentNode(node), mCurrIndex(-1) {
+      mToVisit.reserve(100);
       if (node) {
-        mToVisit.push(node);
+        mToVisit.push_back(node);
         ++(*this);
       }
     }
@@ -67,8 +69,8 @@ class Octree {
         }
 
         mCurrIndex = 0;
-        mpCurrentNode = mToVisit.top();
-        mToVisit.pop();
+        mpCurrentNode = mToVisit.back();
+        mToVisit.pop_back();
 
         // put all intersecting children into visit queue
         for (size_t i = 0; i < 8; i++) {
@@ -77,7 +79,7 @@ class Octree {
           // check it
           if (child &&
               mpCollider->getTransform()->getBBox().collides(child->mBox)) {
-            mToVisit.push(child);
+            mToVisit.push_back(child);
           }
         }
       } while (mpCurrentNode->mObjects.empty());
@@ -111,8 +113,7 @@ class Octree {
     int mCurrIndex;
 
     // new gameplan
-    std::stack<OctreeNode*> mToVisit;
-    std::stack<GameObject*> mObjs;
+    std::vector<OctreeNode*> mToVisit;
   };
 
   Octree();
@@ -121,6 +122,7 @@ class Octree {
   void insert(GameObject* object);
   void update();
   void remove(GameObject* object);
+  GameObject* getCollidingObject(GameObject* object);
 
   // iterator stuff
   iterator begin(GameObject* object) { return iterator(object, &mRoot); }
@@ -128,7 +130,7 @@ class Octree {
 
   // TODO: collision stuff
 
-  static const int MAX_RECURSION_DEPTH = 7;
+  static const int MAX_RECURSION_DEPTH = 5;
 
  private:
   friend OctreeNode;
@@ -136,8 +138,8 @@ class Octree {
   // invariant: must always be 8 in size
   // invariant: box of child must be 1/2 length box of parent!
   OctreeNode mRoot;
-  AABB mBox;  // TODO: best way? we could also just divide the box as we recurse
-              // down
+  AABB mBox;  // TODO: best way? we could also just divide the box as we
+              // recurse down
 
   // todo(evan): kinda hacky
   std::unordered_map<GameObject*, OctreeNode*> nodeMap;
