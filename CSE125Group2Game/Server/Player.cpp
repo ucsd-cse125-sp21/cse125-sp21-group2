@@ -2,6 +2,7 @@
 
 #include "GameLogicServer.h"
 #include "Pickup.h"
+#include "Tower.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -12,6 +13,7 @@ Player::Player(Transform* transform, std::string name, int health, int id)
   Projectile::mTickLastSpawn[name] = 0;
   numPlayers++;
   mPickup = PickupType::None;
+  mShouldHeal = false;
 }
 
 Player::~Player() { numPlayers--; }
@@ -24,11 +26,27 @@ void Player::update() {
     return;
   }
 
+  GameLogicServer* logicServer = GameLogicServer::getLogicServer();
+
+  for (int i = 0; i < logicServer->mTowers.size(); i++) {
+    if (glm::distance(
+            mTransform->getTranslation(),
+            logicServer->mTowers[i]->getTransform()->getTranslation()) <
+        TOWER_HEAL_RADIUS) {
+      mShouldHeal = true;
+      break;
+    }
+    mShouldHeal = false;
+  }
+
   if (!Pickup::isNone(mPickup) && (mPickupEndTime < GetTickCount())) {
     removePickup();
   }
   // player healing code
-  healPlayer();
+  if (mShouldHeal) {
+    // std::cout << "Player healable!!\n";
+    healPlayer();
+  }
   // std::cout << "Player healed: " << mHealth << std::endl;
 }
 

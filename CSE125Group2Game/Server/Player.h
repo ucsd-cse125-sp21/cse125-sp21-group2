@@ -53,6 +53,7 @@ class Player : public Moveable {
 
   bool forceDelete = false;
   static const std::string player_prefix;
+  bool mShouldHeal;
 
  private:
   glm::vec3 mRotationSpeed = glm::vec3(-0.0225, -0.10, 0);

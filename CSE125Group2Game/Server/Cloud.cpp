@@ -17,12 +17,9 @@ Cloud::Cloud(Transform* transform, std::string name, int health)
   if ((rand() % 2)) {
     mRotationAngle.z = -mRotationAngle.z;
   }
-
-  // std::cout << "je;llo\n";
 }
 
 void Cloud::update() {
-  // glm::vec3 rotate(0.0, 0.01, 0.01);
   move(mRotationAngle);
   mIsModified = true;
 }
