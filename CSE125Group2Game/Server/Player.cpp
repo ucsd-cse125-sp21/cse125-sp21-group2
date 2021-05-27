@@ -14,6 +14,7 @@ Player::Player(Transform* transform, std::string name, int health, int id)
   numPlayers++;
   mPickup = PickupType::None;
   mShouldHeal = false;
+  mNumRespawned = 0;
 }
 
 Player::~Player() { numPlayers--; }
@@ -72,6 +73,7 @@ void Player::setRespawn() {
   } else if (mTimeToSpawn < GetTickCount()) {
     // Todo: spawn player in new location potentially or possible ...
     // interesting question!
+    mNumRespawned++;
     mTimeToSpawn = 0;
     mHealth = DEFAULT_HEALTH;
   }
@@ -155,6 +157,7 @@ void Player::addPickup(Pickup* pickup) {
       GameLogicServer::getLogicServer()->spawnPlayerExplosion(this);
       mPickupEndTime = GetTickCount();
       mPickup = PickupType::None;
+      break;
 
     default:
       break;

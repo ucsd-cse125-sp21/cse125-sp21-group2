@@ -64,6 +64,7 @@ class GameManager {
   void ResizeCallback(int width, int height);
 
   int mClientId;
+  bool mGameOver = false;
 
   int mWaveTimer = 0;
   int mWavesCompleted = 0;

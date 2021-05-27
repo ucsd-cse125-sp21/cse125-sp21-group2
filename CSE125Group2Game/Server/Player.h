@@ -49,11 +49,13 @@ class Player : public Moveable {
   PickupType mPickup;
   unsigned long mPickupEndTime = 0;
   int mDamageMultiplier = 1;
+  int mEnemiesKilled;
   float mSpeedMultiplier = 1;
 
   bool forceDelete = false;
   static const std::string player_prefix;
   bool mShouldHeal;
+  int mNumRespawned;
 
  private:
   glm::vec3 mRotationSpeed = SPEED_MULTIPLIER * glm::vec3(-0.0225, -0.10, 0);
@@ -65,7 +67,6 @@ class Player : public Moveable {
   unsigned long mRespawnTimeMS = 5000;
   unsigned long mTimeToSpawn;
   unsigned long mLastHeal;
-  int mEnemiesKilled;
 };
 
 const std::string player_prefix = "play";

@@ -123,13 +123,16 @@ void GameManager::Update() {
 }
 
 void GameManager::renderUI() {
-  // render rects first,
-  Rect rect(*mLoader, glm::vec2(0, 0), glm::vec2(800, 600),
-            glm::vec4(1.0, 0, 0, 0.5));
-  // mpRenderManager->drawRect(rect);
+  // Show game over screen
+  if (mGameOver) {
+    // render rects first,
+    Rect rect(*mLoader, glm::vec2(0, 0), glm::vec2(800, 600),
+              glm::vec4(1.0, 0, 0, 0.5));
+    mpRenderManager->drawRect(rect);
 
-  // mpRenderManager->drawText("GAME OVER", 290.0f, 300.0f, 1.0f,
-  //                           glm::vec3(1.0f, 0, 0), *mpFont);
+    mpRenderManager->drawText("GAME OVER", 290.0f, 300.0f, 1.0f,
+                              glm::vec3(1.0f, 0, 0), *mpFont);
+  }
 
   // render images second
   Texture tex = mTLoader.loadTexture(ASSET("leet.png"));
