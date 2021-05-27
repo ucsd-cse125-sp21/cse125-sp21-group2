@@ -97,6 +97,10 @@ bool Player::shouldNotCollide(GameObject* obj) {
 void Player::setHealth(int amt) {
   // reset timer if taking damage
   if (amt < mHealth) {
+    if (mPickup == PickupType::Invincibility) {
+      return;
+    }
+
     mLastHeal = GetTickCount();
   }
 

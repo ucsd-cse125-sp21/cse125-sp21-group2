@@ -3,7 +3,7 @@
 
 #define NUM_PICKUPS 2
 #define PICKUP_LENGTH 15000
-enum class PickupType { None, DamageBoost, SpeedBoost };
+enum class PickupType { None, DamageBoost, SpeedBoost, Invincibility };
 
 class Pickup : public GameObject {
  public:
