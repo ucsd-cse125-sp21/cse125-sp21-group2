@@ -224,6 +224,8 @@ void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
       camera.setFacing(glm::vec3(0, 0, 0));
       camera.setUp(glm::vec3(0.0f, 0, -1.0f));
     }
+  } else if (obj->isCloud()) {
+    model = mMLoader.LoadModel(CLOUD_MODEL, *mLoader, mTLoader);
   } else if (!obj->isTower()) {
     model = Model::Cube(*mLoader);
   }

@@ -3,11 +3,27 @@
 #include "GameLogicServer.h"
 
 Cloud::Cloud(Transform* transform, std::string name, int health)
-    : Moveable(transform, name, health, ObjectType::Cloud) {}
+    : Moveable(transform, name, health, ObjectType::Cloud) {
+  mRotationAngle.x = ((rand() % 10) + 1.0) / 1500.0;
+  mRotationAngle.y = ((rand() % 10) + 1.0) / 1500.0;
+  mRotationAngle.z = ((rand() % 10) + 1.0) / 1500.0;
+
+  if ((rand() % 2)) {
+    mRotationAngle.x = -mRotationAngle.x;
+  }
+  if ((rand() % 2)) {
+    mRotationAngle.y = -mRotationAngle.y;
+  }
+  if ((rand() % 2)) {
+    mRotationAngle.z = -mRotationAngle.z;
+  }
+
+  // std::cout << "je;llo\n";
+}
 
 void Cloud::update() {
-  glm::vec3 rotate(0.0125);
-  move(rotate);
+  // glm::vec3 rotate(0.0, 0.01, 0.01);
+  move(mRotationAngle);
   mIsModified = true;
 }
 
