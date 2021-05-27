@@ -97,6 +97,10 @@ bool Player::shouldNotCollide(GameObject* obj) {
 void Player::setHealth(int amt) {
   // reset timer if taking damage
   if (amt < mHealth) {
+    if (mPickup == PickupType::Invincibility) {
+      return;
+    }
+
     mLastHeal = GetTickCount();
   }
 
@@ -128,6 +132,11 @@ void Player::addPickup(Pickup* pickup) {
     case PickupType::SpeedBoost:
       mSpeedMultiplier = 2;
       break;
+
+    case PickupType::Explosion:
+      GameLogicServer::getLogicServer()->spawnPlayerExplosion(this);
+      mPickupEndTime = GetTickCount();
+      mPickup = PickupType::None;
 
     default:
       break;
