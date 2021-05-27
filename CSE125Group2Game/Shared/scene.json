@@ -224,6 +224,24 @@
       "bb_height": 3.0,
       "bb_width": 2.35,
       "obj_file": "tree.obj"
+    },
+    {
+      "name": "cloud",
+      "parent_name": "root",
+      "xPos": -9.5087,
+      "yPos": 9.44142,
+      "zPos": -22.493,
+      "xRot": -90,
+      "yRot": 0.151,
+      "zRot": 0.0,
+      "xScale": 0.5,
+      "yScale": 0.4,
+      "zScale": 0.5,
+      "bb_length": 4,
+      "bb_height": 5.3,
+      "bb_width": 3,
+      "obj_file": "models/cloud/cloud.obj",
+      "isTower": true
     }
   ]
 }
