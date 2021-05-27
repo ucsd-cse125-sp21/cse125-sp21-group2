@@ -7,13 +7,15 @@
 #include <memory>
 
 #include "Camera.h"
+#include "Font.h"
+#include "Image.h"
 #include "MeshLoader.h"
 #include "Model.h"
 #include "ParticleEmitter.h"
+#include "Rect.h"
 #include "SceneGraph.h"
 #include "ShaderProgram.h"
 #include "Skybox.h"
-#include "UI.h"
 
 // singleton
 /* Responsibilities:
@@ -46,7 +48,9 @@ class RenderManager {
 
   // TODO: refactor into UI class
   void drawText(const std::string text, float x, float y, float scale,
-                const glm::vec3& color, const UI& ui);
+                const glm::vec3& color, const Font& ui);
+  void drawRect(const Rect& rect);
+  void drawImage(const Image& image);
   void drawHealthBar(const glm::mat4& prev, const glm::mat4& view,
                      const glm::vec3& viewPos, float health);
 
@@ -78,10 +82,13 @@ class RenderManager {
   std::unique_ptr<ShaderProgram> mpSkyboxProgram;
   std::unique_ptr<ShaderProgram> mpFontProgram;
   std::unique_ptr<ShaderProgram> mpBillboardProgram;
+  std::unique_ptr<ShaderProgram> mpRectProgram;
+  std::unique_ptr<ShaderProgram> mpImageProgram;
 
   bool mUseNormalShading = false;
 
   glm::mat4 mProjection = glm::mat4(1.0f);
+  glm::mat4 mUIProjection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
 
   bool mRenderBoundingBoxes = false;
   Model* cubeboi;

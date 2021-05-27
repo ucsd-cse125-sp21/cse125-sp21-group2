@@ -7,9 +7,6 @@
 
 #include "Camera.h"
 
-#define RAND_FLOAT_NORM() \
-  static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
-
 ParticleEmitter::ParticleEmitter(Texture particleTexture, size_t numParticles)
     : mParticleTexture(particleTexture),
       mNumParticles(numParticles),
@@ -56,6 +53,11 @@ ParticleEmitter::ParticleEmitter(Texture particleTexture, size_t numParticles)
   glVertexAttribDivisor(2, 1);
   glEnableVertexAttribArray(2);
 
+  glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Particle),
+                        (void*)offsetof(Particle, color));
+  glVertexAttribDivisor(3, 1);
+  glEnableVertexAttribArray(3);
+
   glBindVertexArray(0);
 }
 
@@ -83,10 +85,13 @@ void ParticleEmitter::Update(float delta) {
 void ParticleEmitter::InitializeParticle(Particle& particle) {
   float theta = RAND_FLOAT_NORM() * 360;
   float phi = RAND_FLOAT_NORM() * 360;
-  float speed = RAND_FLOAT_NORM() * 5.0f;
+  float speed = RAND_FLOAT_NORM() * mParticleSpeed;
   float life = RAND_FLOAT_NORM() * 1.0f;
 
-  particle.position = glm::vec3(0.0);
+  particle.position = glm::vec3(RAND_FLOAT_NORM() * 2, RAND_FLOAT_NORM() * 2,
+                                RAND_FLOAT_NORM() * 2);
+  particle.color = glm::vec3(RAND_FLOAT_NORM(), RAND_FLOAT_NORM(),
+                             RAND_FLOAT_NORM());  // TODO: colors less random
   particle.angle = glm::vec2(theta, phi);
   particle.speed = speed;
   particle.life = life;

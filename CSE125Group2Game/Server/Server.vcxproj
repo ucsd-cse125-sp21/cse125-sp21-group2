@@ -150,11 +150,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Shared\AABB.cpp" />
     <ClCompile Include="..\Shared\GameObject.cpp" />
     <ClCompile Include="..\Shared\Transform.cpp" />
+    <ClCompile Include="..\Shared\Utils.cpp" />
     <ClCompile Include="Cloud.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Moveable.cpp" />
+    <ClCompile Include="Octree.cpp" />
     <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ServerGraphNode.cpp" />
@@ -166,14 +169,17 @@
     <ClCompile Include="WaveManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Shared\AABB.h" />
     <ClInclude Include="..\Shared\GameObject.h" />
     <ClInclude Include="..\Shared\PriorityMutex.h" />
     <ClInclude Include="..\Shared\Transform.h" />
+    <ClInclude Include="..\Shared\Utils.h" />
     <ClInclude Include="Cloud.h" />
     <ClInclude Include="Moveable.h" />
     <ClInclude Include="NetworkServer.h" />
     <ClInclude Include="GameLogicServer.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Octree.h" />
     <ClInclude Include="Pickup.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />

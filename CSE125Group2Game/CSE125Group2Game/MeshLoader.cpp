@@ -169,6 +169,28 @@ Mesh MeshLoader::loadMesh(const aiMesh* mesh) {
   return loadMesh(vertices, indices);
 }
 
+Mesh MeshLoader::Square() {
+  if (mSquare.isValid()) {
+    return mSquare;
+  }
+
+  std::vector<Vertex> verts = {
+      Vertex(glm::vec3(0, 0, 0), glm::vec3(0), glm::vec2(0, 0)),
+      Vertex(glm::vec3(0, 1, 0), glm::vec3(0), glm::vec2(0, 1)),
+      Vertex(glm::vec3(1, 0, 0), glm::vec3(0), glm::vec2(1, 0)),
+      Vertex(glm::vec3(1, 1, 0), glm::vec3(0), glm::vec2(1, 1)),
+  };
+  std::vector<glm::uvec3> inds = {glm::uvec3(3, 1, 0), glm::uvec3(3, 0, 2)};
+
+  mSquare = loadMesh(verts, inds);
+
+  return mSquare;
+}
+Mesh MeshLoader::Cube() {
+  // TODOO;
+  return mSquare;
+}
+
 const MeshLoader::GLMesh& MeshLoader::getRaw(const Mesh& mesh) {
   return mMeshes[mesh.mHandle];
 }

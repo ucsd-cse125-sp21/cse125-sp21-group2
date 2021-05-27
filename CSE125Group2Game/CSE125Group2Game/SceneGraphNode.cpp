@@ -3,11 +3,17 @@
 // TODO: This interface is kinda weird. It isn't very clear that this ctor also
 // adds the new node into the child list of the parent.
 SceneGraphNode::SceneGraphNode(SceneGraphNode* parent, GameObject* object)
-    : mParent(parent), mObject(object), mModel(NULL) {}
+    : mParent(parent), mObject(object), mpModels(0) {}
 
 SceneGraphNode::SceneGraphNode(SceneGraphNode* parent, GameObject* object,
                                Model* model)
-    : mParent(parent), mObject(object), mModel(model) {}
+    : mParent(parent), mObject(object), mpModels(0) {
+  mpModels.emplace_back(model);
+}
+
+SceneGraphNode::SceneGraphNode(SceneGraphNode* parent, GameObject* object,
+                               std::vector<Model*>&& models)
+    : mParent(parent), mObject(object), mpModels(std::move(models)) {}
 
 void SceneGraphNode::addChild(SceneGraphNode* child) {
   mChildren.push_back(child);
@@ -28,7 +34,17 @@ void SceneGraphNode::removeChild(SceneGraphNode* child) {
 
 GameObject* SceneGraphNode::getObject() const { return mObject; }
 
-Model* SceneGraphNode::getModel() const { return mModel; }
+const Model* SceneGraphNode::getModel() const {
+  if (!mObject) {
+    return nullptr;
+  }
+
+  if (mObject->getModelIndex() >= mpModels.size()) {
+    return nullptr;
+  }
+
+  return mpModels[mObject->getModelIndex()];
+}
 
 std::vector<SceneGraphNode*> SceneGraphNode::getChildren() const {
   return mChildren;

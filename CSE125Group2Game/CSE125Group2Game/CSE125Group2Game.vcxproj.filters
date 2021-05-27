@@ -75,9 +75,6 @@
     <ClCompile Include="..\Shared\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SceneGraph.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
@@ -99,8 +96,23 @@
     <ClCompile Include="Skybox.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
-    <ClCompile Include="UI.cpp">
+    <ClCompile Include="Font.cpp">
       <Filter>Source Files\render\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\AABB.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rect.cpp">
+      <Filter>Source Files\render\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Source Files\render\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ConeParticleEmitter.cpp">
+      <Filter>Source Files\render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +172,18 @@
     <None Include="billboard_frag.glsl">
       <Filter>Source Files\render\shaders</Filter>
     </None>
+    <None Include="rect_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="rect_frag.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="image_frag.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
+    <None Include="image_vert.glsl">
+      <Filter>Source Files\render\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderManager.h">
@@ -192,9 +216,6 @@
     <ClInclude Include="net_client.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SceneGraph.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
@@ -225,8 +246,23 @@
     <ClInclude Include="Skybox.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
-    <ClInclude Include="UI.h">
+    <ClInclude Include="Font.h">
       <Filter>Header Files\render\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\AABB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect.h">
+      <Filter>Header Files\render\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Header Files\render\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ConeParticleEmitter.h">
+      <Filter>Header Files\render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

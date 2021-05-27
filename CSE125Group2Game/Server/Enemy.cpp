@@ -22,6 +22,10 @@ void Enemy::update() {
   mIsModified = true;
   mTicksTillUpdate = mTicksPerUpdate;
 
+  if (isDead()) {
+    return;
+  }
+
   GameObject* nearestPlayer = GetNearestPlayer();
   if (!nearestPlayer) {
     // Spin to "seek" out new player
@@ -104,8 +108,8 @@ Enemy* Enemy::spawnEnemy() {
   enemy->move(glm::vec3(0));  // hack to fix world position
 
   unsigned int randomChance = rand() % 2;
-  enemy->mSpawnPickup = randomChance == PICKUP_CHANCE;
-  // enemy->mSpawnPickup = true;
+  // enemy->mSpawnPickup = randomChance == PICKUP_CHANCE;
+  enemy->mSpawnPickup = true;
 
   return enemy;
 }
@@ -117,7 +121,7 @@ void Enemy::setHealth(int amt) {
   if (isDead() && mSpawnPickup) {
     Transform* pickupTransform =
         new Transform(mTransform->getTranslation(), mTransform->getRotation(),
-                      mTransform->getScale(), mTransform->getBBox());
+                      mTransform->getScale(), mTransform->getBBoxLens());
     Pickup::spawnPickup(pickupTransform);
   }
 }

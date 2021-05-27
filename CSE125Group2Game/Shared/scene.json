@@ -32,7 +32,7 @@
       "bb_length": 4,
       "bb_height": 5.3,
       "bb_width": 3,
-      "obj_file": "models/towers/bearl/bearl.obj",
+      "obj_file": [ "models/towers/bearl/bearl.obj", "models/towers/bearl/bearl-state1/bearl-state1.obj" ],
       "isTower": true
     },
     {

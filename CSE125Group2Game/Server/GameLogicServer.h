@@ -6,6 +6,7 @@
 #include <string>
 #include <thread>
 
+#include "Octree.h"
 #include "Player.h"
 #include "PriorityMutex.h"
 #include "ServerLoader.h"
@@ -87,6 +88,7 @@ class GameLogicServer {
   void restartGame();
 
   std::vector<GameObject*> mWorld;
+  Octree mOctree;
   uint16_t mTick_ms;
 
   std::vector<bool*> mKeyPresses;  // Queue for storing events before each

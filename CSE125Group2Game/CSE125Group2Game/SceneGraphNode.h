@@ -16,7 +16,7 @@ class SceneGraphNode {
   // static SceneGraphNode* getRoot();
 
   GameObject* getObject() const;
-  Model* getModel() const;
+  const Model* getModel() const;
   std::vector<SceneGraphNode*> getChildren() const;
   SceneGraphNode* getParent();
 
@@ -26,6 +26,8 @@ class SceneGraphNode {
  private:
   SceneGraphNode(SceneGraphNode* parent, GameObject* object);
   SceneGraphNode(SceneGraphNode* parent, GameObject* object, Model* mesh);
+  SceneGraphNode(SceneGraphNode* parent, GameObject* object,
+                 std::vector<Model*>&& models);
 
   void addChild(SceneGraphNode* child);
   void removeChild(SceneGraphNode* child);
@@ -33,7 +35,10 @@ class SceneGraphNode {
   void update(float delta);
 
   GameObject* mObject;
-  Model* mModel;
+
+  // todo(evan): this is gross, maybe refactor somehow
+  // Model* mModel;
+  std::vector<Model*> mpModels;
 
   std::vector<SceneGraphNode*> mChildren;
   SceneGraphNode* mParent;

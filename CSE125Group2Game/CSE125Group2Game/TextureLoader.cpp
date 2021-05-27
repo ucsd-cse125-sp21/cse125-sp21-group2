@@ -18,6 +18,7 @@ TextureLoader::GLTexture::GLTexture(unsigned char* data, int width,
   glGenTextures(1, &mId);
   glBindTexture(GL_TEXTURE_2D, mId);
   GLenum error;
+  error = glGetError();
 
   // set it to repeat on wrap, shouldn't really matter in the end
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -27,14 +28,14 @@ TextureLoader::GLTexture::GLTexture(unsigned char* data, int width,
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+  error = glGetError();
   // copy the image data into the texture buffer
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
                GL_UNSIGNED_BYTE, data);
+  error = glGetError();
 
   // generate mipmaps for the texture
-  // glGenerateMipmap(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glBindTexture(GL_TEXTURE_2D, 1);
+  glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 // TODO:
@@ -53,6 +54,13 @@ Texture TextureLoader::loadTexture(const std::string& filePath) {
 
   if (!data) {
     CRASH("Couln't load texture " + filePath + "!");
+  }
+
+  if (nrChannels != 4) {
+    CRASH(
+        "we only support 4 channel textures... make sure it was exported with "
+        "an alpha! for " +
+        filePath + "!");
   }
 
   mTextures.push_back(GLTexture(data, width, height));

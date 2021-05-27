@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <functional>
 #include <string>
 
 #include "Transform.h"
@@ -67,7 +68,7 @@ class GameObject {
 
   // Returns null terminated name
   std::string getName();
-  int getHealth();
+  int getHealth() const;
   bool hasHealth() const;
   bool isModifiable() const;
 
@@ -79,6 +80,16 @@ class GameObject {
   bool mShouldRender = true;
 
   static std::string makeName(std::string prefix, int count);
+
+  // evan added this :D
+  size_t getModelIndex() const { return modelIndexCallback(*this); }
+  void setModelIndexCallback(std::function<size_t(const GameObject&)> fnc) {
+    modelIndexCallback = fnc;
+  }
+
+  static size_t defaultModelIndexCallback(const GameObject&) { return 0; }
+  std::function<size_t(const GameObject&)> modelIndexCallback =
+      defaultModelIndexCallback;
 
  protected:
   Transform* mTransform;

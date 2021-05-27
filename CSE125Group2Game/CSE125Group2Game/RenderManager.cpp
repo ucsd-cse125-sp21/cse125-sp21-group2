@@ -70,6 +70,10 @@ RenderManager::RenderManager(GLFWwindow* window, MeshLoader& loader,
       std::make_unique<ShaderProgram>("font_vert.glsl", "font_frag.glsl");
   mpBillboardProgram = std::make_unique<ShaderProgram>("billboard_vert.glsl",
                                                        "billboard_frag.glsl");
+  mpRectProgram =
+      std::make_unique<ShaderProgram>("rect_vert.glsl", "rect_frag.glsl");
+  mpImageProgram =
+      std::make_unique<ShaderProgram>("image_vert.glsl", "image_frag.glsl");
 
   mProjection =
       glm::perspective(glm::radians(FOVY), static_cast<float>(width) / height,
@@ -346,6 +350,7 @@ void RenderManager::draw(ParticleEmitter& emitter, const glm::mat4& model,
   glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(mProjection));
   glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(view));
   glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(model));
+  glUniform1i(5, emitter.isRainbow);  // set is only color or not
 
   glUniform1i(glGetUniformLocation(mpParticleProgram->getID(), "tex"), 0);
   glActiveTexture(GL_TEXTURE0);
@@ -382,12 +387,12 @@ void RenderManager::draw(ParticleEmitter& emitter, const glm::mat4& model,
 
 void RenderManager::drawText(const std::string text, float x, float y,
                              float scale, const glm::vec3& color,
-                             const UI& ui) {
+                             const Font& ui) {
   // lots of this taken from https://learnopengl.com/In-Practice/Text-Rendering
   mpFontProgram->use();
 
   glUniform3fv(1, 1, glm::value_ptr(color));
-  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(ui.mProjection));
+  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mUIProjection));
   glActiveTexture(GL_TEXTURE0);
   glBindVertexArray(ui.mVao);
 
@@ -424,11 +429,42 @@ void RenderManager::drawText(const std::string text, float x, float y,
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+// TODO: refactor
+void RenderManager::drawRect(const Rect& rect) {
+  mpRectProgram->use();
+
+  glBindVertexArray(rect.mMesh.vao());
+
+  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(rect.getModelMatrix()));
+  glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(mUIProjection));
+  glUniform4fv(2, 1, glm::value_ptr(rect.mColor));
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rect.mMesh.ibo());
+  glDrawElements(GL_TRIANGLES, rect.mMesh.indexCount(), GL_UNSIGNED_INT,
+                 nullptr);
+}
+
+void RenderManager::drawImage(const Image& image) {
+  mpImageProgram->use();
+
+  glBindVertexArray(image.mMesh.vao());
+
+  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(image.getModelMatrix()));
+  glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(mUIProjection));
+
+  glActiveTexture(GL_TEXTURE0);
+  mTexLoader->use(image.mTexture);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, image.mMesh.ibo());
+  glDrawElements(GL_TRIANGLES, image.mMesh.indexCount(), GL_UNSIGNED_INT,
+                 nullptr);
+}
+
 void RenderManager::drawBoundingBox(const SceneGraphNode& node,
                                     const glm::mat4& currTransform,
                                     const glm::mat4& view,
                                     const glm::vec3& viewPos) {
-  auto bb = node.getObject()->getTransform()->getBBox();
+  auto bb = node.getObject()->getTransform()->getBBoxLens();
 
   glm::mat4 model =
       currTransform *
