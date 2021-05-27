@@ -4,7 +4,6 @@
 #include "Moveable.h"
 
 #define PROJ_SPAWN_RATE_MS 100
-#define PROJ_DAMAGE 4
 
 class Projectile : public Moveable {
  public:
@@ -19,22 +18,24 @@ class Projectile : public Moveable {
              GameObject* parent);
 
   static void spawnProjectile(GameObject* parent);
+  static void spawnProjectileAngle(GameObject* parent, float angle,
+                                   float speedMultiplier = 1);
 
   void update();
   bool shouldNotCollide(GameObject* obj);
 
   GameObject* getParent();
+  float rotationSpeed = SPEED_MULTIPLIER * (-0.1);
+  int mProjectileMaxTicks =
+      15;  // how many ticks a projectile should last for unless it collides
 
  protected:
   static std::string makeName();
   // honestly not sure if we would need this / if we wanna change it
   std::vector<glm::vec3> mPath;  // pre compute path on creation and just check
                                  // for collisions as we go ahead
-  int mProjectileMaxTicks =
-      15;  // how many ticks a projectile should last for unless it collides
-  int mProjectileNextTick;
 
-  float rotationSpeed = -0.1;
+  int mProjectileNextTick;
 
   GameObject* mParent;
 };

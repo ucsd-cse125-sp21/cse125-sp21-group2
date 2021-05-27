@@ -3,9 +3,11 @@
 #include <glm/gtx/euler_angles.hpp>
 
 #include "GameLogicServer.h"
+#include "Pickup.h"
 
 #define STEP 12
 #define MAX_ANGLE 360
+
 Enemy::Enemy(Transform* transform, std::string name, int health)
     : Moveable(transform, name, health, ObjectType::Enemy) {
   mIsModified = true;
@@ -19,6 +21,10 @@ void Enemy::update() {
 
   mIsModified = true;
   mTicksTillUpdate = mTicksPerUpdate;
+
+  if (isDead()) {
+    return;
+  }
 
   GameObject* nearestPlayer = GetNearestPlayer();
   if (!nearestPlayer) {
@@ -101,5 +107,25 @@ Enemy* Enemy::spawnEnemy() {
       Enemy::makeName(), DEFAULT_HEALTH);
   enemy->move(glm::vec3(0));  // hack to fix world position
 
+  unsigned int randomChance = rand() % 2;
+  // enemy->mSpawnPickup = randomChance == PICKUP_CHANCE;
+  enemy->mSpawnPickup = true;
+
   return enemy;
+}
+
+void Enemy::setHealth(int amt) {
+  GameObject::setHealth(amt);
+
+  // If enemy dies and should spawn a pickup, create one
+  if (isDead() && mSpawnPickup) {
+    Transform* pickupTransform =
+        new Transform(mTransform->getTranslation(), mTransform->getRotation(),
+                      mTransform->getScale(), mTransform->getBBoxLens());
+    Pickup::spawnPickup(pickupTransform);
+  }
+}
+bool Enemy::shouldNotCollide(GameObject* obj) {
+  return GameObject::shouldNotCollide(obj) ||  // Call super method
+         obj->isPickup();
 }

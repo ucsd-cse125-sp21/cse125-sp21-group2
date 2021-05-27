@@ -5,13 +5,16 @@
 #include <sstream>
 #include <string>
 #include <thread>
+#include <Windows.h>
 
+#include "Octree.h"
 #include "Player.h"
 #include "PriorityMutex.h"
 #include "ServerLoader.h"
 #include "msd/channel.hpp"
 
 class Tower;
+class Cloud;
 
 /*
   http://www.cplusplus.com/reference/mutex/unique_lock/#:~:text=A%20unique%20lock%20is%20an%20object%20that%20manages,The%20object%20supports%20both%20states%3A%20locked%20and%20unlocked.
@@ -27,7 +30,6 @@ class Tower;
 #define MAX_X 3
 #define MAX_Y 4
 #define MAX_Z 5
-#define DEFAULT_HEALTH 10
 #define MIN_PLAYERS 1
 
 class GameLogicServer {
@@ -49,25 +51,32 @@ class GameLogicServer {
   void addGameObject(GameObject* obj);
 
   GameObject* getCollidingObject(GameObject* obj);
+  void spawnPlayerExplosion(Player* player);
 
   void sendInfo();
   void sendWaveTimer(int seconds);
+  bool isGameOver();
 
   msd::channel<char*> mSendingBuffer;  // Queue for storing events to send
   std::vector<char*> mTestBuffer;
 
   Player* players[MAX_PLAYERS];
   std::vector<Tower*> mTowers;
+  std::vector<Cloud*> mClouds;
   ServerLoader mScene;
   PriorityMutex mMtx;
+  float mLastTime = 0;
+  float mDeltaTime;
 
  private:
   void resetKeyPresses();
   char* marshalInfo(GameObject* obj);
   void updatePlayers();
+  void updatePickups();
   void handlePlayerCollision(int playerIndex);
   void updateEnemies();
   void updateTowers();
+  void updateClouds();
   void updateProjectiles();
   std::vector<glm::vec3> getCorners(GameObject* obj);
   std::vector<float> getMinMax(GameObject* obj);
@@ -77,11 +86,16 @@ class GameLogicServer {
   int getHorizontalInput(int playerId);
   void movePlayerToBoundary(Player* player);
   void updatePlayerPosition(int playerId);
-  bool isGameOver();
   void restartGame();
+  void sendEndGame();
 
   std::vector<GameObject*> mWorld;
+  Octree mOctree;
   uint16_t mTick_ms;
+
+  DWORD mGameStartTick;
+  bool mPostGameInfoSent;
+
 
   std::vector<bool*> mKeyPresses;  // Queue for storing events before each
                                    // tick for each player

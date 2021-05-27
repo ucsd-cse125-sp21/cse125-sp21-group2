@@ -1,5 +1,6 @@
 ﻿#include "GameManager.h"
 
+#include "ConeParticleEmitter.h"
 #include "Utils.h"
 #include "client_helper.h"
 
@@ -8,6 +9,9 @@
   "client couldn't read config file, using default values"
 // Predefinitions to make compiler happy
 GameManager* GameManager::mManager;
+std::string GameManager::playerModels[] = {PLAYER_MODEL_RED, PLAYER_MODEL_GREEN,
+                                           PLAYER_MODEL_BLUE,
+                                           PLAYER_MODEL_YELLOW};
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   GameManager::getManager()->ResizeCallback(width, height);
@@ -27,7 +31,7 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   mSound = new Sound();
   mSound->playBackgroundMusic(mSound->backgroundMusicPath);
 
-  mpUI = new UI(ASSET("fonts/arial.ttf"), mTLoader);
+  mpFont = new Font(ASSET("fonts/galaxy.otf"), mTLoader);
 }
 
 GameManager* GameManager::getManager() {
@@ -75,6 +79,17 @@ void GameManager::Update() {
   ParticleEmitter testEmitter(tex);
   float last = glfwGetTime();
 
+  // setup bearl different models
+  // TODO(evan): make event based?
+  SceneGraphNode* node = mScene.getByName("towrbear");
+  node->getObject()->setModelIndexCallback([](const GameObject& obj) {
+    if (obj.getHealth() > 50) {
+      return 0;
+    } else {
+      return 1;
+    }
+  });
+
   while (!glfwWindowShouldClose(mWindow)) {
     // 1) Update local states (use key logger to update gameobject)
     float now = glfwGetTime();
@@ -99,13 +114,80 @@ void GameManager::Update() {
     mScene.Update(delta);
 
     // render text ui
-    mpRenderManager->drawText("Howdy", 25.0f, 25.0f, 1.0f,
-                              glm::vec3(0.5f, 0.8f, 0.2f), *mpUI);
+    renderUI();
 
     glfwSwapBuffers(mWindow);
   }
 
   glfwTerminate();
+}
+
+void GameManager::renderUI() {
+  // Show game over screen
+  if (mGameOver) {
+    // render rects first,
+    Rect rect(*mLoader, glm::vec2(0, 0), glm::vec2(800, 600),
+              glm::vec4(1.0, 0, 0, 0.5));
+    mpRenderManager->drawRect(rect);
+
+    mpRenderManager->drawText("GAME OVER", 290.0f, 300.0f, 1.0f,
+                              glm::vec3(1.0f, 0, 0), *mpFont);
+  }
+
+  // render images second
+  Texture tex = mTLoader.loadTexture(ASSET("leet.png"));
+  Image image(*mLoader, glm::vec2(500, 500), glm::vec2(100, 50), tex);
+  // mpRenderManager->drawImage(image);
+
+  // I <3 lambdas - Evan :)
+  auto drawHealthBar = [&](const std::string& towerName,
+                           const std::string& readableName, int offset) {
+    // render tower health bars
+    const unsigned int y_offset_amt = 20;
+    GameObject* obj = mScene.getByName(towerName)->getObject();
+    glm::vec3 textColor;
+    if (obj->isDead()) {
+      textColor = glm::vec3(1.0, 0, 0);
+    } else {
+      Rect healthBar(
+          *mLoader, glm::vec2(80, 25 + y_offset_amt * offset),
+          glm::vec2(((float)obj->getHealth() / (float)DEFAULT_HEALTH) * 150, 5),
+          glm::vec4(1.0, 0, 0, 1.));
+      mpRenderManager->drawRect(healthBar);
+      textColor = glm::vec3(0.7);
+    }
+    mpRenderManager->drawText(readableName, 5.0f,
+                              25 + y_offset_amt * offset - 3, 0.3f, textColor,
+                              *mpFont);
+  };
+
+  drawHealthBar("towrbear", "Bearl", 0);
+  drawHealthBar("towrstar", "Falling Star", 1);
+  drawHealthBar("towrston", "Stone Henge", 2);
+  drawHealthBar("towrsung", "Sun God", 3);
+
+  // easter egg
+  if (mEasterMode) {
+    tex = mTLoader.loadTexture(ASSET("voelker.png"));
+    Image voelker(*mLoader, glm::vec2(575, 20), glm::vec2(50, 50), tex);
+    mpRenderManager->drawImage(voelker);
+  }
+
+  // render text third
+  if (mPlayer) {
+    mpRenderManager->drawText(
+        "Health: " + std::to_string(mPlayer->getHealth()) + " / " +
+            std::to_string(DEFAULT_HEALTH),
+        25.f, 550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
+  }
+
+  if (mWaveTimer) {
+    mpRenderManager->drawText("Next Wave: " + std::to_string(mWaveTimer),
+                              650.0f, 25.0f, 0.5f, glm::vec3(0.7f), *mpFont);
+  }
+
+  mpRenderManager->drawText("Wave: " + std::to_string(mWavesCompleted), 650.0f,
+                            550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
 }
 
 void GameManager::updateKeyPresses(bool* keysPressed) {
@@ -115,48 +197,17 @@ void GameManager::updateKeyPresses(bool* keysPressed) {
   keysPressed[RIGHT] = glfwGetKey(mWindow, RIGHT_KEY);
   keysPressed[SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
   keysPressed[RESTART] = glfwGetKey(mWindow, RESTART_KEY);
+  mEasterMode = glfwGetKey(mWindow, EASTER_KEY) == GLFW_PRESS ||
+                glfwGetKey(mWindow, EASTER_KEY) == GLFW_REPEAT;
 }
 
 void GameManager::UpdateObject(GameObject* obj) {
-  // SceneGraphNode* foundNode = findNode(obj, mScene.getRoot());
   SceneGraphNode* foundNode = mScene.getByName(obj->getName());
   GameObject* foundObject;
 
   // Object does not exist, create it
   if (!foundNode) {
-    Transform* transform = new Transform(obj->getTransform()->getTranslation(),
-                                         obj->getTransform()->getRotation(),
-                                         obj->getTransform()->getScale(),
-                                         obj->getTransform()->getBBox());
-
-    transform->setModel(obj->getTransform()->getModel());
-    // std::cout << "creating new  object" << std::endl;
-
-    foundObject = new GameObject(transform, obj->getName(), obj->getHealth(),
-                                 obj->getObjectType());
-
-    Model* model = nullptr;
-    if (obj->isEnemy()) {
-      model = mMLoader.LoadModel(ENEMY_MODEL, *mLoader, mTLoader);
-    } else if (obj->isPlayer()) {
-      model = mMLoader.LoadModel(PLAYER_MODEL, *mLoader, mTLoader);
-
-      // If this is the first time a player connects, add it!
-      if (obj->getName() == GameObject::makeName("play", mClientId)) {
-        mPlayerTransform = foundObject->getTransform();
-
-        SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
-
-        // attach the camera to the player
-        Camera& camera = mScene.addCamera(playerNode);
-        camera.setPosition(glm::vec3(0, 30.0f, 0));
-        camera.setFacing(glm::vec3(0, 0, 0));
-        camera.setUp(glm::vec3(0.0f, 0, -1.0f));
-      }
-    } else if (!obj->isTower()) {
-      model = Model::Cube(*mLoader);
-    }
-    foundNode = mScene.addChild(foundObject, model);
+    spawnObject(obj, foundObject, foundNode);
   }
 
   // Update object
@@ -164,6 +215,7 @@ void GameManager::UpdateObject(GameObject* obj) {
 
   // Health is 0, delete object
   if (obj->isDead()) {
+    foundObject->setHealth(0);
     // Don't render the player if they die
     if (foundObject->isPlayer()) {
       foundObject->mShouldRender = false;
@@ -178,7 +230,6 @@ void GameManager::UpdateObject(GameObject* obj) {
 
       return;
     } else if (foundObject->isEnemy()) {
-      // TODO: we never clean tehse up ... .causes big lag
       foundObject->mShouldRender = false;
       Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
       foundNode->emitter = new ParticleEmitter(flameTexture);
@@ -193,14 +244,72 @@ void GameManager::UpdateObject(GameObject* obj) {
     foundObject->mShouldRender = true;
   }
 
-  // Update sound listener position on player update
-  if (foundObject->getTransform() == mPlayerTransform) {
-    // 3) Update sound listener position
-    mSound->setListenerPosition(mPlayerTransform);
-  }
+  updateSound(foundObject);
 
   foundObject->getTransform()->setModel(obj->getTransform()->getModel());
   foundObject->setHealth(obj->getHealth());
+}
+
+void GameManager::updateSound(GameObject* foundObject) {
+  // Update sound listener position on player update
+  if (mPlayer && (foundObject == mPlayer)) {
+    // 3) Update sound listener position
+    mSound->setListenerPosition(mPlayer->getTransform());
+  }
+}
+
+void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
+                              SceneGraphNode*& foundNode) {
+  Transform* transform = new Transform(
+      obj->getTransform()->getTranslation(), obj->getTransform()->getRotation(),
+      obj->getTransform()->getScale(), obj->getTransform()->getBBoxLens());
+
+  transform->setModel(obj->getTransform()->getModel());
+  // std::cout << "creating new  object" << std::endl;
+
+  foundObject = new GameObject(transform, obj->getName(), obj->getHealth(),
+                               obj->getObjectType());
+
+  Model* model = nullptr;
+  if (obj->isEnemy()) {
+    model = mMLoader.LoadModel(ENEMY_MODEL, *mLoader, mTLoader);
+  } else if (obj->isPlayer()) {
+    model = mMLoader.LoadModel(playerModels[obj->getPlayerId()], *mLoader,
+                               mTLoader);
+
+    // If this is the first time a player connects, add it!
+    if (obj->getName() == GameObject::makeName("play", mClientId)) {
+      mPlayer = foundObject;
+
+      SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
+
+      // attach the camera to the player
+      Camera& camera = mScene.addCamera(playerNode);
+      camera.setPosition(glm::vec3(0, 30.0f, 0));
+      camera.setFacing(glm::vec3(0, 0, 0));
+      camera.setUp(glm::vec3(0.0f, 0, -1.0f));
+
+      // attach emitters to player
+      GameObject* bsObj1 =
+          new GameObject(new Transform(glm::vec3(2.0, 0.0, 3.0), glm::vec3(0),
+                                       glm::vec3(0.2, 0.2, 0.2)),
+                         "bsObj1", 100);
+      SceneGraphNode* emitter1 = mScene.addChild(bsObj1, nullptr, playerNode);
+      Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
+      emitter1->emitter =
+          new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 30, 200);
+      emitter1->emitter->mIsContinuous = true;
+      emitter1->emitter->mParticleSize = 1.0;
+      emitter1->emitter->mParticleSpeed = 3.0;
+    }
+  } else if (obj->isProjectile()) {
+    model = mMLoader.LoadModel(PROJECTILE_MODEL, *mLoader, mTLoader);
+    // model = Model::Cube(*mLoader);
+  } else if (!obj->isTower()) {
+    model = Model::Cube(*mLoader);
+  }
+
+  foundNode = mScene.addChild(foundObject, model);
 }
 
 GameObject* GameManager::unmarshalInfo(char* data) {

@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Camera.h"
+#include "Font.h"
 #include "Model.h"
 #include "ModelLoader.h"
 #include "RenderManager.h"
@@ -11,11 +12,16 @@
 #include "Sound.h"
 #include "Transform.h"
 
-#define PLAYER_MODEL "Assets/models/enemy/mainEnemyShip/enemyShip.obj"
+#define PLAYER_MODEL_RED "Assets/models/usership/red/usership-red.obj"
+#define PLAYER_MODEL_GREEN "Assets/models/usership/green/usership-green.obj"
+#define PLAYER_MODEL_BLUE "Assets/models/usership/blue/usership-blue.obj"
+#define PLAYER_MODEL_YELLOW "Assets/models/usership/yellow/usership-yellow.obj"
 #define ENEMY_MODEL "Assets/models/usership/geisel/geisel.obj"
 #define BEARL_MODEL "Assets/models/enemy/mainEnemyShip/enemyShip.obj"
 #define STONEHENGE_MODEL "Assets/models/towers/stonehenge/stonehenge.obj"
 #define FALLEN_STAR_MODEL "Assets/models/towers/fallenstar/fallenstar.obj"
+#define CLOUD_MODEL "Assets/models/cloud/cloud.obj"
+#define PROJECTILE_MODEL "Assets/models/bullet/bullet.obj"
 
 #define FORWARD_KEY GLFW_KEY_W
 #define LEFT_KEY GLFW_KEY_A
@@ -23,6 +29,7 @@
 #define RIGHT_KEY GLFW_KEY_D
 #define PROJECTILE_KEY GLFW_KEY_SPACE
 #define RESTART_KEY GLFW_KEY_R
+#define EASTER_KEY GLFW_KEY_LEFT_BRACKET
 
 class GameManager {
  public:
@@ -30,6 +37,8 @@ class GameManager {
   ~GameManager();
 
   void Update();
+
+  void renderUI();
 
   void updateKeyPresses(bool keysPressed[5]);
 
@@ -39,17 +48,28 @@ class GameManager {
 
   void UpdateObject(GameObject* obj);
 
-  bool mKeyPresses[NUM_KEYS];
+  void updateSound(GameObject* foundObject);
+
+  void spawnObject(GameObject* obj, GameObject*& foundObject,
+                   SceneGraphNode*& foundNode);
 
   void setClientID(int id);
 
+  bool mKeyPresses[NUM_KEYS];
+
   MeshLoader* mLoader;
 
-  Transform* mPlayerTransform;
+  GameObject* mPlayer;
 
   void ResizeCallback(int width, int height);
 
   int mClientId;
+  bool mGameOver = false;
+
+  int mWaveTimer = 0;
+  int mWavesCompleted = 0;
+
+  static std::string playerModels[];
 
  private:
   // TODO: fix formatting on this...
@@ -63,9 +83,11 @@ class GameManager {
   Camera* mCamera;
   SceneGraph mScene;
   GLFWwindow* mWindow;
-  UI* mpUI;
+  Font* mpFont;
 
   static GameManager* mManager;
 
   Sound* mSound;
+
+  bool mEasterMode;
 };

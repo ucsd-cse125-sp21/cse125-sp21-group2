@@ -1,4 +1,5 @@
-﻿#include <olc_net.h>
+﻿#include <Windows.h>
+#include <olc_net.h>
 
 #include <iostream>
 #include <set>
@@ -53,12 +54,15 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
           } break;
 
           case CustomMsgTypes::WaveTimer: {
-            int currentWaveTimer;
+            GameManager::getManager()->mGameOver =
+                false;  // TODO: FIX THIS HACK
+
+            int currentWaveTimer, wavesCompleted;
+            msg >> wavesCompleted;
             msg >> currentWaveTimer;
 
-            std::cout << "Wave Timer: " << currentWaveTimer << std::endl;
-
-            // TODO: Update current wave timer in GameManager
+            GameManager::getManager()->mWaveTimer = currentWaveTimer;
+            GameManager::getManager()->mWavesCompleted = wavesCompleted;
 
           } break;
 
@@ -68,8 +72,64 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
           } break;
 
           case CustomMsgTypes::EndGame: {
-            // TODO: Bring up UI to restart game
+            GameManager::getManager()->mGameOver = true;
 
+            char* data = (char*)malloc(msg.body.size());
+            char* dataToBeFreed = data;
+
+            for (int i = 0; i < msg.body.size(); i++) {
+              data[i] = msg.body[i];
+            }
+
+            // time ellapsed in ms
+            DWORD timeEllapsed;
+            memcpy(&timeEllapsed, data, DWORD_SIZE);
+            data += DWORD_SIZE;
+
+            int highScore;
+            memcpy(&highScore, data, INT_SIZE);
+            data += INT_SIZE;
+
+            int totalEnemiesKilled;
+            memcpy(&totalEnemiesKilled, data, INT_SIZE);
+            data += INT_SIZE;
+
+            int mvpPlayerID;
+            memcpy(&mvpPlayerID, data, INT_SIZE);
+            data += INT_SIZE;
+
+            int numPlayers;
+            memcpy(&numPlayers, data, INT_SIZE);
+            data += INT_SIZE;
+
+            std::vector<int> enemiesKilledPerPlayer;
+
+            for (int i = 0; i < numPlayers; i++) {
+              int enemiesKilled;
+              memcpy(&enemiesKilled, data, INT_SIZE);
+              data += INT_SIZE;
+              enemiesKilledPerPlayer.push_back(enemiesKilled);
+            }
+
+            std::vector<int> numRespawnedPerPlayer;  // AKA NumDied
+
+            for (int i = 0; i < numPlayers; i++) {
+              int numRespawned;
+              memcpy(&numRespawned, data, INT_SIZE);
+              data += INT_SIZE;
+              numRespawnedPerPlayer.push_back(numRespawned);
+            }
+
+            std::cout << "timeEllapsed " << timeEllapsed << std::endl;
+            std::cout << "highScore " << highScore << std::endl;
+            std::cout << "totalEnemiesKilled " << totalEnemiesKilled
+                      << std::endl;
+            std::cout << "mvpPlayerID " << mvpPlayerID << std::endl;
+            std::cout << "numPlayers " << numPlayers << std::endl;
+
+            // TODO: Do something with the data
+
+            free(dataToBeFreed);
           } break;
 
           case CustomMsgTypes::ServerMessage: {
@@ -89,6 +149,10 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             }
 
             GameObject* obj = GameManager::getManager()->unmarshalInfo(data);
+
+            // if (obj->isPickup()) {
+            //  std::cout << "Pickup spawned on server.\n";
+            //}
 
             GameManager::getManager()->UpdateObject(obj);
 

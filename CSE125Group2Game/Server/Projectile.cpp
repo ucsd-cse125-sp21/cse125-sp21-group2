@@ -30,6 +30,27 @@ void Projectile::spawnProjectile(GameObject* parent) {
 
   // create projectile
   Projectile* projectile = new Projectile(
+      new Transform(spawnPos, glm::vec3(0), glm::vec3(50), glm::vec3(0.25)),
+      Projectile::makeName(), 15, parent);
+
+  // Update projectiles model/pivot
+  projectile->mPivot->setModel(((Player*)parent)->mPivot->getModel());
+  projectile->mModelTransform->setModel(
+      ((Player*)parent)->mModelTransform->getModel() *
+      glm::scale(glm::mat4(1), glm::vec3(2)));
+
+  // add to game world
+  GameLogicServer::getLogicServer()->addGameObject(projectile);
+
+  // std::cout << "Projecile spawned!";
+}
+
+void Projectile::spawnProjectileAngle(GameObject* parent, float angle,
+                                      float speedMultiplier) {
+  glm::vec3 spawnPos = parent->getTransform()->getModelTranslation();
+
+  // create projectile
+  Projectile* projectile = new Projectile(
       new Transform(spawnPos, glm::vec3(0), glm::vec3(.5), glm::vec3(0.25)),
       Projectile::makeName(), 15, parent);
 
@@ -37,12 +58,14 @@ void Projectile::spawnProjectile(GameObject* parent) {
   projectile->mPivot->setModel(((Player*)parent)->mPivot->getModel());
   projectile->mModelTransform->setModel(
       ((Player*)parent)->mModelTransform->getModel() *
-      glm::scale(glm::mat4(1), glm::vec3(.5)));
+      glm::scale(glm::mat4(1), glm::vec3(2)));
+
+  projectile->move(glm::vec3(0, angle, 0));
+  projectile->rotationSpeed *= speedMultiplier;
+  projectile->mProjectileMaxTicks /= speedMultiplier;
 
   // add to game world
   GameLogicServer::getLogicServer()->addGameObject(projectile);
-
-  // std::cout << "Projecile spawned!";
 }
 
 std::string Projectile::makeName() {
@@ -58,6 +81,10 @@ std::string Projectile::makeName() {
 void Projectile::update() {
   mIsModified = true;
 
+  if (isDead()) {
+    return;
+  }
+
   // projectile is dead
   if (++mProjectileNextTick >= mProjectileMaxTicks) {
     setHealth(0);
@@ -72,7 +99,8 @@ bool Projectile::shouldNotCollide(GameObject* obj) {
   // projectiles???? interesting question
   return GameObject::shouldNotCollide(obj) ||  // Call super method
          obj->getName() == mParent->getName() || obj->isProjectile() ||
-         obj->isPlayer() || obj->isTower() || obj->isDefault();
+         obj->isPlayer() || obj->isTower() || obj->isDefault() ||
+         obj->isPickup();
 }
 
 GameObject* Projectile::getParent() { return mParent; }

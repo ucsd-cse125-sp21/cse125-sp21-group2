@@ -1,11 +1,11 @@
 ﻿#pragma once
 #include "GameObject.h"
 
-#define TOWER_DAMAGE 0
-#define TOWER_HEALTH 10000000
+#define TOWER_DAMAGE 20
 
-#define TOWER_HEAL_RATE_MS 5000
+#define TOWER_HEAL_RATE_MS 10000
 #define TOWER_HEAL_AMT 5
+#define TOWER_HEAL_RADIUS 20
 
 class Tower : public GameObject {
  public:

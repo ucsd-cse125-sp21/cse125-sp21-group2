@@ -25,6 +25,8 @@ class SceneGraph {
   SceneGraphNode* addChild(GameObject* obj, Model* model);
   SceneGraphNode* addChild(GameObject* obj, Model* model,
                            SceneGraphNode* parent);
+  SceneGraphNode* addChild(GameObject* obj, std::vector<Model*>&& models,
+                           SceneGraphNode* parent);
 
   Camera& addCamera();
   Camera& addCamera(SceneGraphNode* node);

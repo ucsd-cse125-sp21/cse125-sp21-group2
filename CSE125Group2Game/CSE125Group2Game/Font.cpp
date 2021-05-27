@@ -1,10 +1,10 @@
-#include "UI.h"
+#include "Font.h"
 
 #include <glad/glad.h>
 
 #include "Utils.h"
 
-UI::UI(const std::string& fontPath, TextureLoader& tloader) {
+Font::Font(const std::string& fontPath, TextureLoader& tloader) {
   // init freetype library
   FT_Library ft;
   if (FT_Init_FreeType(&ft)) {
@@ -57,4 +57,4 @@ UI::UI(const std::string& fontPath, TextureLoader& tloader) {
   glBindVertexArray(0);
 }
 
-Character UI::GetCharacter(char c) const { return mCharMap.at(c); }
+Character Font::GetCharacter(char c) const { return mCharMap.at(c); }

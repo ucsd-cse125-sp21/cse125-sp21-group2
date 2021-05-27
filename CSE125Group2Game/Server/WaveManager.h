@@ -4,6 +4,8 @@
 
 #define WAVE_INTERMISSION 10000
 
+#define MAX_ENEMIES 50
+
 class WaveManager {
  public:
   WaveManager();
@@ -16,6 +18,7 @@ class WaveManager {
   void removeEnemy(Enemy* enemy);
 
   void reset();
+  int mWavesCompleted = 0;
 
  private:
   void startWave();
@@ -26,8 +29,7 @@ class WaveManager {
   static WaveManager* mWaveManager;
 
   int mEnemiesSpawnedInWave = 0;
-  int mWavesCompleted = 0;
-  int mMaxWaveSize = 10;
+  int mMaxWaveSize = 5;
   int mNextEnemyIndex = 0;
 
   unsigned long mTimeOfLastSpawn;

@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "Moveable.h"
+#define ENEMY_PROJ_DAMAGE 40
+#define PICKUP_CHANCE 1
 
 class Enemy : public Moveable {
  public:
@@ -11,15 +13,20 @@ class Enemy : public Moveable {
 
   static std::string makeName();
 
+  void setHealth(int amt);
+
   static Enemy* spawnEnemy();
+  bool shouldNotCollide(GameObject* obj);
 
  private:
   GameObject* GetNearestPlayer();
 
   glm::vec3 mMoveDirection;
-  float rotationSpeed = 0.02;
+  float rotationSpeed = SPEED_MULTIPLIER * 0.02;
 
   int mTicksPerUpdate = 3;
 
   int mTicksTillUpdate = mTicksPerUpdate;
+
+  bool mSpawnPickup = false;
 };

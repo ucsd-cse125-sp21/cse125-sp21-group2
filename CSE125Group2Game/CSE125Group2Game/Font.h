@@ -18,9 +18,9 @@ struct Character {
 };
 
 // Just allow text ui for now, other stuff can come later...
-class UI {
+class Font {
  public:
-  UI(const std::string& fontPath, TextureLoader& tloader);
+  Font(const std::string& fontPath, TextureLoader& tloader);
 
   glm::mat4 mProjection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
 

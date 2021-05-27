@@ -3,6 +3,7 @@
 layout(location = 0) in vec2 uv;
 layout(location = 1) in vec3 pos;
 layout(location = 2) in float life;
+layout(location = 3) in vec3 color;
 
 layout(location = 0) uniform mat4 model;
 layout(location = 1) uniform mat4 view;
@@ -10,6 +11,7 @@ layout(location = 2) uniform mat4 projection;
 layout(location = 3) uniform float particleSize = 0.5;
 layout(location = 4) uniform bool anealSize = true;
 
+out vec3 pColor;
 out vec2 uvu;
 out float flife;
 
@@ -25,4 +27,5 @@ void main() {
   gl_Position = projection * posViewSpace;
   flife = life;
   uvu = uv;
+  pColor = color;
 }

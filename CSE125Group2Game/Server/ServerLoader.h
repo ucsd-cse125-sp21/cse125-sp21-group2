@@ -14,6 +14,7 @@ class ServerLoader {
   ServerLoader(std::string fileName);
 
   std::vector<ServerGraphNode*> mTowers;
+  std::vector<ServerGraphNode*> mClouds;
 
   std::unordered_map<std::string, ServerGraphNode*> mObjects;
 };
