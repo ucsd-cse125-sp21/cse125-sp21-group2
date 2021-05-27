@@ -45,6 +45,29 @@ void Projectile::spawnProjectile(GameObject* parent) {
   // std::cout << "Projecile spawned!";
 }
 
+void Projectile::spawnProjectileAngle(GameObject* parent, float angle,
+                                      float speedMultiplier) {
+  glm::vec3 spawnPos = parent->getTransform()->getModelTranslation();
+
+  // create projectile
+  Projectile* projectile = new Projectile(
+      new Transform(spawnPos, glm::vec3(0), glm::vec3(.5), glm::vec3(0.25)),
+      Projectile::makeName(), 15, parent);
+
+  // Update projectiles model/pivot
+  projectile->mPivot->setModel(((Player*)parent)->mPivot->getModel());
+  projectile->mModelTransform->setModel(
+      ((Player*)parent)->mModelTransform->getModel() *
+      glm::scale(glm::mat4(1), glm::vec3(.5)));
+
+  projectile->move(glm::vec3(0, angle, 0));
+  projectile->rotationSpeed *= speedMultiplier;
+  projectile->mProjectileMaxTicks /= speedMultiplier;
+
+  // add to game world
+  GameLogicServer::getLogicServer()->addGameObject(projectile);
+}
+
 std::string Projectile::makeName() {
   if (mProjectilesSpawned >= 10000) {
     mProjectilesSpawned = 0;

@@ -21,7 +21,7 @@ void Pickup::spawnPickup(Transform* transform, PickupType type) {
 void Pickup::spawnPickup(Transform* transform) {
   int pickupIndex = (rand() % NUM_PICKUPS) + 1;  // Plus 1 to avoid none
   PickupType type = static_cast<PickupType>(pickupIndex);
-  type = PickupType::Invincibility;
+  type = PickupType::Explosion;
   spawnPickup(transform, type);
 }
 

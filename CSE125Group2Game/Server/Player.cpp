@@ -133,6 +133,11 @@ void Player::addPickup(Pickup* pickup) {
       mSpeedMultiplier = 2;
       break;
 
+    case PickupType::Explosion:
+      GameLogicServer::getLogicServer()->spawnPlayerExplosion(this);
+      mPickupEndTime = GetTickCount();
+      mPickup = PickupType::None;
+
     default:
       break;
   }

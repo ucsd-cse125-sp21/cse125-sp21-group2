@@ -289,6 +289,13 @@ void GameLogicServer::movePlayerToBoundary(Player* player) {
   player->addTranslation(glm::vec3(-0.1) * player->getVelocity());
 }
 
+void GameLogicServer::spawnPlayerExplosion(Player* player) {
+  float step = 22.5;
+  for (float angle = 0; angle < 360; angle += step) {
+    Projectile::spawnProjectileAngle(player, angle, 0.5);
+  }
+}
+
 GameObject* GameLogicServer::getCollidingObject(GameObject* obj) {
   // get 8 points of A in world space
   std::vector<glm::vec3> A = getCorners(obj);

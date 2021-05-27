@@ -49,6 +49,7 @@ class GameLogicServer {
   void addGameObject(GameObject* obj);
 
   GameObject* getCollidingObject(GameObject* obj);
+  void spawnPlayerExplosion(Player* player);
 
   void sendInfo();
   void sendWaveTimer(int seconds);
