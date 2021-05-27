@@ -128,13 +128,13 @@ void GameManager::renderUI() {
             glm::vec4(1.0, 0, 0, 0.5));
   // mpRenderManager->drawRect(rect);
 
-  mpRenderManager->drawText("GAME OVER", 290.0f, 300.0f, 1.0f,
-                            glm::vec3(1.0f, 0, 0), *mpFont);
+  // mpRenderManager->drawText("GAME OVER", 290.0f, 300.0f, 1.0f,
+  //                           glm::vec3(1.0f, 0, 0), *mpFont);
 
   // render images second
   Texture tex = mTLoader.loadTexture(ASSET("leet.png"));
   Image image(*mLoader, glm::vec2(500, 500), glm::vec2(100, 50), tex);
-  mpRenderManager->drawImage(image);
+  // mpRenderManager->drawImage(image);
 
   // I <3 lambdas - Evan :)
   auto drawHealthBar = [&](const std::string& towerName,

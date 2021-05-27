@@ -23,7 +23,7 @@ enum class ObjectType : uint16_t {
 #define MAX_PLAYERS 4
 
 #define RADIUS 25
-#define SPEED_MULTIPLIER 30.0f
+#define SPEED_MULTIPLIER 0.5f  // 30.0f
 
 #define FORWARD 0
 #define LEFT 1
