@@ -5,7 +5,9 @@
 
 #define TOWER_HEAL_RATE_MS 10000
 #define TOWER_HEAL_AMT 5
-#define TOWER_HEAL_RADIUS 20
+#define MAX_TOWER_HEAL_RADIUS 20
+#define MID_TOWER_HEAL_RADIUS 15
+#define MIN_TOWER_HEAL_RADIUS 10
 
 class Tower : public GameObject {
  public:

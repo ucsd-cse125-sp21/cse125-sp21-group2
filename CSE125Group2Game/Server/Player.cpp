@@ -15,6 +15,7 @@ Player::Player(Transform* transform, std::string name, int health, int id)
   mPickup = PickupType::None;
   mShouldHeal = false;
   mNumRespawned = 0;
+  mPlayerHealAmt = MIN_PLAYER_HEAL_AMT;
 }
 
 Player::~Player() { numPlayers--; }
@@ -30,11 +31,20 @@ void Player::update() {
   GameLogicServer* logicServer = GameLogicServer::getLogicServer();
 
   for (int i = 0; i < logicServer->mTowers.size(); i++) {
-    if (glm::distance(
-            mTransform->getTranslation(),
-            logicServer->mTowers[i]->getTransform()->getTranslation()) <
-        TOWER_HEAL_RADIUS) {
+    float distance = glm::distance(
+        mTransform->getTranslation(),
+        logicServer->mTowers[i]->getTransform()->getTranslation());
+    if (distance < MIN_TOWER_HEAL_RADIUS) {
       mShouldHeal = true;
+      mPlayerHealAmt = MAX_PLAYER_HEAL_AMT;
+      break;
+    } else if (distance < MID_TOWER_HEAL_RADIUS) {
+      mShouldHeal = true;
+      mPlayerHealAmt = MID_PLAYER_HEAL_AMT;
+      break;
+    } else if (distance < MAX_TOWER_HEAL_RADIUS) {
+      mShouldHeal = true;
+      mPlayerHealAmt = MIN_PLAYER_HEAL_AMT;
       break;
     }
     mShouldHeal = false;
@@ -58,7 +68,9 @@ void Player::healPlayer() {
   }
 
   mLastHeal = GetTickCount();
-  mHealth += PLAYER_HEAL_AMT;
+  mHealth += mPlayerHealAmt;
+
+  // std::cout << "Healing player by: " << mPlayerHealAmt << std::endl;
 
   // Ensure health never goes above max
   if (mHealth > DEFAULT_HEALTH) {
