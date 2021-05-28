@@ -130,7 +130,7 @@ void GameManager::renderUI() {
               glm::vec4(1.0, 0, 0, 0.5));
     mpRenderManager->drawRect(rect);
 
-    mpRenderManager->drawText("GAME OVER", 290.0f, 300.0f, 1.0f,
+    mpRenderManager->drawText("GAME OVER", 300.0f, 300.0f, 1.0f,
                               glm::vec3(1.0f, 0, 0), *mpFont);
   }
 

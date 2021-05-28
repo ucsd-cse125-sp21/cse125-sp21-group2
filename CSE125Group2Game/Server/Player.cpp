@@ -159,6 +159,18 @@ void Player::addPickup(Pickup* pickup) {
       mPickup = PickupType::None;
       break;
 
+    case PickupType::DamageReduction:
+      mDamageMultiplier = 0.25;
+      break;
+
+    case PickupType::SpeedReduction:
+      mSpeedMultiplier = 0.5;
+      break;
+
+    case PickupType::NoShooting:
+      mDamageMultiplier = 0;
+      break;
+
     default:
       break;
   }
@@ -172,17 +184,8 @@ void Player::reset() {
 }
 
 void Player::removePickup() {
-  switch (mPickup) {
-    case PickupType::DamageBoost:
-      mDamageMultiplier = 1;
-      break;
+  // Reset damage/speed multipliers
+  mDamageMultiplier = mSpeedMultiplier = 1;
 
-    case PickupType::SpeedBoost:
-      mSpeedMultiplier = 1;
-      break;
-
-    default:
-      break;
-  }
   mPickup = PickupType::None;
 }
