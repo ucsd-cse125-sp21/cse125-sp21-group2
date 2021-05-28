@@ -163,6 +163,8 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
               processedObjects.insert(obj->getName());
 
               GameManager::getManager()->UpdateObject(obj);
+            } else {
+              // std::cout << "Actually got here :D" << std::endl;
             }
 
             free(data);
