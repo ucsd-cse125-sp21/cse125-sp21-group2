@@ -125,24 +125,24 @@ void GameManager::Update() {
 
 void GameManager::renderUI() {
   // Show game over screen
-  // if (mGameOver) {
-  // render rects first,
-  Rect rect(*mLoader, glm::vec2(0, 0), glm::vec2(800, 600),
-            glm::vec4(1.0, 0, 0, 0.5));
-  mpRenderManager->drawRect(rect);
+  if (mGameOver) {
+    // render rects first,
+    Rect rect(*mLoader, glm::vec2(0, 0), glm::vec2(800, 600),
+              glm::vec4(1.0, 0, 0, 0.5));
+    mpRenderManager->drawRect(rect);
 
-  mpRenderManager->drawText("GAME OVER", 300.0f, 400.0f, 1.0f,
-                            glm::vec3(1.0f, 0, 0), *mpFont);
-  mpRenderManager->drawText(
-      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed), 320.0f,
-      350.0f, 0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
-  mpRenderManager->drawText(
-      "High Score: " + std::to_string(mEndInfo->highScore), 335.0f, 315.0f,
-      0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
-  mpRenderManager->drawText(
-      "MVP Player: " + std::to_string(mEndInfo->mvpPlayerID), 350.0f, 280.0f,
-      0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
-  //}
+    mpRenderManager->drawText("GAME OVER", 300.0f, 400.0f, 1.0f,
+                              glm::vec3(1.0f, 0, 0), *mpFont);
+    mpRenderManager->drawText(
+        "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed), 320.0f,
+        350.0f, 0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
+    mpRenderManager->drawText(
+        "High Score: " + std::to_string(mEndInfo->highScore), 335.0f, 315.0f,
+        0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
+    mpRenderManager->drawText(
+        "MVP Player: " + std::to_string(mEndInfo->mvpPlayerID), 350.0f, 280.0f,
+        0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
+  }
 
   // render images second
   Texture tex = mTLoader.loadTexture(ASSET("leet.png"));
