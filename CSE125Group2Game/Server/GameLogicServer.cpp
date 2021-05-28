@@ -471,6 +471,9 @@ char* GameLogicServer::marshalInfo(GameObject* obj) {
   memcpy(tmpInfo, &(type), TYPE_SIZE);
   tmpInfo += TYPE_SIZE;
 
+  memcpy(tmpInfo, &(obj->mModifier), INT_SIZE);
+  tmpInfo += INT_SIZE;
+
   return info;
 }
 

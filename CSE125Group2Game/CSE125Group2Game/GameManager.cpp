@@ -364,12 +364,17 @@ GameObject* GameManager::unmarshalInfo(char* data) {
   memcpy(&type, tmpInfo, TYPE_SIZE);
   tmpInfo += TYPE_SIZE;
 
+  int modifier;
+  memcpy(&modifier, tmpInfo, INT_SIZE);
+  tmpInfo += INT_SIZE;
+
   Transform* transform = new Transform(glm::vec3(0), glm::vec3(0), glm::vec3(0),
                                        glm::vec3(xbb, ybb, zbb));
 
   transform->setModel(model);
   // TODO: should we add forward vector on client?
   GameObject* obj = new GameObject(transform, name, health, type);
+  obj->mModifier = modifier;
 
   mSound->playAccordingToGameObject(obj);
 

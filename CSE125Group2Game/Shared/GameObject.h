@@ -20,7 +20,7 @@ enum class ObjectType : uint16_t {
 #define DWORD_SIZE 4
 #define INT_SIZE sizeof(int)
 #define TYPE_SIZE sizeof(ObjectType)
-#define MESSAGE_SIZE NAME_LEN + (19 * FLOAT_SIZE) + INT_SIZE + TYPE_SIZE
+#define MESSAGE_SIZE NAME_LEN + (19 * FLOAT_SIZE) + (2 * INT_SIZE) + TYPE_SIZE
 #define MAX_PLAYERS 4
 
 #define RADIUS 25
@@ -79,6 +79,7 @@ class GameObject {
 
   bool mIsModified = true;
   bool mShouldRender = true;
+  int mModifier = 0;
 
   static std::string makeName(std::string prefix, int count);
 

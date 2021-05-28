@@ -151,7 +151,9 @@ void Player::addPickup(Pickup* pickup) {
   if (!Pickup::isNone(mPickup)) {
     removePickup();
   }
+
   mPickup = pickup->mPickupType;
+  mModifier = (int)mPickup;
   // so that pickup gets deleted!!
   pickup->setHealth(0);
   mPickupEndTime = GetTickCount() + PLAYER_PICKUP_LENGTH;
@@ -171,6 +173,22 @@ void Player::addPickup(Pickup* pickup) {
       mPickup = PickupType::None;
       break;
 
+    case PickupType::DamageReduction:
+      mDamageMultiplier = 0.25;
+      break;
+
+    case PickupType::SpeedReduction:
+      mSpeedMultiplier = 0.5;
+      break;
+
+    case PickupType::NoShooting:
+      mDamageMultiplier = 0;
+      break;
+
+    case PickupType::Weakness:
+      mIsWeak = 0;
+      break;
+
     default:
       break;
   }
@@ -184,17 +202,10 @@ void Player::reset() {
 }
 
 void Player::removePickup() {
-  switch (mPickup) {
-    case PickupType::DamageBoost:
-      mDamageMultiplier = 1;
-      break;
+  // Reset damage/speed/weakness multipliers
+  mDamageMultiplier = mSpeedMultiplier = 1;
+  mIsWeak = false;
+  mModifier = 0;
 
-    case PickupType::SpeedBoost:
-      mSpeedMultiplier = 1;
-      break;
-
-    default:
-      break;
-  }
   mPickup = PickupType::None;
 }
