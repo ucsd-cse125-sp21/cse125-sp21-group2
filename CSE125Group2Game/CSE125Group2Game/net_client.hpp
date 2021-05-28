@@ -2,7 +2,9 @@
 #include <olc_net.h>
 
 #include <iostream>
+#include <queue>
 #include <set>
+#include <stack>
 
 #include "GameObject.h"
 
@@ -32,13 +34,19 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     this->ClientMessageSend(keysPressed);
 
     if (this->IsConnected()) {
-      // std::set<std::string> updatedObjects;
+      std::set<std::string> processedObjects;
+      std::stack<olc::net::message<CustomMsgTypes>> messageQueue;
 
+      // Reads messages in reverse order, allows us to only proccess a specfic
+      // object once per tick
       while (!this->Incoming().empty()) {
-        auto msg = this->Incoming().pop_front().msg;
-        // auto msg = this->Incoming()
-        //               .pop_back()
-        //               .msg;  // if correctness is wrong, comment this out
+        messageQueue.push(this->Incoming().pop_front().msg);
+      }
+
+      while (!messageQueue.empty()) {
+        // auto msg = this->Incoming().pop_front().msg;
+        auto msg = messageQueue.top();
+        messageQueue.pop();
 
         switch (msg.header.id) {
           case CustomMsgTypes::ServerAccept: {
@@ -151,11 +159,14 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
             GameObject* obj = GameManager::getManager()->unmarshalInfo(data);
 
-            // if (obj->isPickup()) {
-            //  std::cout << "Pickup spawned on server.\n";
-            //}
+            // Only update object if it hasn't been processed this tick yet
+            if (!processedObjects.count(obj->getName())) {
+              processedObjects.insert(obj->getName());
 
-            GameManager::getManager()->UpdateObject(obj);
+              GameManager::getManager()->UpdateObject(obj);
+            } else {
+              // std::cout << "Actually got here :D" << std::endl;
+            }
 
             free(data);
             delete obj;
