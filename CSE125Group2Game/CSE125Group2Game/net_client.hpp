@@ -73,6 +73,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
           case CustomMsgTypes::EndGame: {
             GameManager::getManager()->mGameOver = true;
+            GameEndInfo* endInfo = GameManager::getManager()->mEndInfo;
 
             char* data = (char*)malloc(msg.body.size());
             char* dataToBeFreed = data;
@@ -82,50 +83,50 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             }
 
             // time ellapsed in ms
-            DWORD timeEllapsed;
-            memcpy(&timeEllapsed, data, DWORD_SIZE);
+            // DWORD timeEllapsed;
+            memcpy(&(endInfo->timeEllapsed), data, DWORD_SIZE);
             data += DWORD_SIZE;
 
-            int highScore;
-            memcpy(&highScore, data, INT_SIZE);
+            // int highScore;
+            memcpy(&(endInfo->highScore), data, INT_SIZE);
             data += INT_SIZE;
 
-            int totalEnemiesKilled;
-            memcpy(&totalEnemiesKilled, data, INT_SIZE);
+            // int totalEnemiesKilled;
+            memcpy(&(endInfo->totalEnemiesKilled), data, INT_SIZE);
             data += INT_SIZE;
 
-            int mvpPlayerID;
-            memcpy(&mvpPlayerID, data, INT_SIZE);
+            // int mvpPlayerID;
+            memcpy(&(endInfo->mvpPlayerID), data, INT_SIZE);
             data += INT_SIZE;
 
-            int numPlayers;
-            memcpy(&numPlayers, data, INT_SIZE);
+            // int numPlayers;
+            memcpy(&(endInfo->numPlayers), data, INT_SIZE);
             data += INT_SIZE;
 
-            std::vector<int> enemiesKilledPerPlayer;
+            // std::vector<int> enemiesKilledPerPlayer;
 
-            for (int i = 0; i < numPlayers; i++) {
+            for (int i = 0; i < endInfo->numPlayers; i++) {
               int enemiesKilled;
               memcpy(&enemiesKilled, data, INT_SIZE);
               data += INT_SIZE;
-              enemiesKilledPerPlayer.push_back(enemiesKilled);
+              endInfo->mEnemiesKilledPerPlayer.push_back(enemiesKilled);
             }
 
-            std::vector<int> numRespawnedPerPlayer;  // AKA NumDied
+            // std::vector<int> numRespawnedPerPlayer;  // AKA NumDied
 
-            for (int i = 0; i < numPlayers; i++) {
+            for (int i = 0; i < endInfo->numPlayers; i++) {
               int numRespawned;
               memcpy(&numRespawned, data, INT_SIZE);
               data += INT_SIZE;
-              numRespawnedPerPlayer.push_back(numRespawned);
+              endInfo->mNumRespawnedPerPlayer.push_back(numRespawned);
             }
 
-            std::cout << "timeEllapsed " << timeEllapsed << std::endl;
-            std::cout << "highScore " << highScore << std::endl;
-            std::cout << "totalEnemiesKilled " << totalEnemiesKilled
+            std::cout << "timeEllapsed " << endInfo->timeEllapsed << std::endl;
+            std::cout << "highScore " << endInfo->highScore << std::endl;
+            std::cout << "totalEnemiesKilled " << endInfo->totalEnemiesKilled
                       << std::endl;
-            std::cout << "mvpPlayerID " << mvpPlayerID << std::endl;
-            std::cout << "numPlayers " << numPlayers << std::endl;
+            std::cout << "mvpPlayerID " << endInfo->mvpPlayerID << std::endl;
+            std::cout << "numPlayers " << endInfo->numPlayers << std::endl;
 
             // TODO: Do something with the data
 

@@ -4,6 +4,7 @@
 
 #include "Camera.h"
 #include "Font.h"
+#include "GameEndInfo.h"
 #include "Model.h"
 #include "ModelLoader.h"
 #include "RenderManager.h"
@@ -70,6 +71,7 @@ class GameManager {
   int mWavesCompleted = 0;
 
   static std::string playerModels[];
+  GameEndInfo* mEndInfo;
 
  private:
   // TODO: fix formatting on this...

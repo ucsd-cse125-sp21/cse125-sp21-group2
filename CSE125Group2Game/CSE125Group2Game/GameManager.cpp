@@ -32,6 +32,7 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   mSound->playBackgroundMusic(mSound->backgroundMusicPath);
 
   mpFont = new Font(ASSET("fonts/galaxy.otf"), mTLoader);
+  mEndInfo = new GameEndInfo();
 }
 
 GameManager* GameManager::getManager() {
