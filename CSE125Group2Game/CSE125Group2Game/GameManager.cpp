@@ -126,22 +126,7 @@ void GameManager::Update() {
 void GameManager::renderUI() {
   // Show game over screen
   if (mGameOver) {
-    // render rects first,
-    Rect rect(*mLoader, glm::vec2(0, 0), glm::vec2(800, 600),
-              glm::vec4(1.0, 0, 0, 0.5));
-    mpRenderManager->drawRect(rect);
-
-    mpRenderManager->drawText("GAME OVER", 300.0f, 400.0f, 1.0f,
-                              glm::vec3(1.0f, 0, 0), *mpFont);
-    mpRenderManager->drawText(
-        "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed), 320.0f,
-        350.0f, 0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
-    mpRenderManager->drawText(
-        "High Score: " + std::to_string(mEndInfo->highScore), 335.0f, 315.0f,
-        0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
-    mpRenderManager->drawText(
-        "MVP Player: " + std::to_string(mEndInfo->mvpPlayerID), 350.0f, 280.0f,
-        0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
+    renderGameOverUI();
   }
 
   // render images second
@@ -194,10 +179,33 @@ void GameManager::renderUI() {
   if (mWaveTimer) {
     mpRenderManager->drawText("Next Wave: " + std::to_string(mWaveTimer),
                               650.0f, 25.0f, 0.5f, glm::vec3(0.7f), *mpFont);
+  } else {
+    std::string enemiesLeft = "Enemies Left: " + std::to_string(mNumEnemies);
+    mpRenderManager->drawText(enemiesLeft, 350.0f, 555.0f, 0.4f,
+                              glm::vec3(0.7f), *mpFont);
   }
 
   mpRenderManager->drawText("Wave: " + std::to_string(mWavesCompleted), 650.0f,
                             550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
+}
+
+void GameManager::renderGameOverUI() {
+  // render rects first,
+  Rect rect(*mLoader, glm::vec2(0, 0), glm::vec2(800, 600),
+            glm::vec4(1.0, 0, 0, 0.5));
+  mpRenderManager->drawRect(rect);
+
+  mpRenderManager->drawText("GAME OVER", 300.0f, 400.0f, 1.0f,
+                            glm::vec3(1.0f, 0, 0), *mpFont);
+  mpRenderManager->drawText(
+      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed), 320.0f,
+      350.0f, 0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
+  mpRenderManager->drawText(
+      "High Score: " + std::to_string(mEndInfo->highScore), 335.0f, 315.0f,
+      0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
+  mpRenderManager->drawText(
+      "MVP Player: " + std::to_string(mEndInfo->mvpPlayerID), 350.0f, 280.0f,
+      0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
 }
 
 void GameManager::updateKeyPresses(bool* keysPressed) {
@@ -243,6 +251,7 @@ void GameManager::UpdateObject(GameObject* obj) {
       foundObject->mShouldRender = false;
       Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
       foundNode->emitter = new ParticleEmitter(flameTexture);
+      mNumEnemies--;
       return;
     }
     // std::cerr << "Deleting object: " << ((std::string)obj->getName())

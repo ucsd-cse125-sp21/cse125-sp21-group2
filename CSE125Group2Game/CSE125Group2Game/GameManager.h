@@ -42,6 +42,8 @@ class GameManager {
 
   void renderUI();
 
+  void renderGameOverUI();
+
   void updateKeyPresses(bool keysPressed[5]);
 
   static GameManager* getManager();
@@ -70,6 +72,7 @@ class GameManager {
 
   int mWaveTimer = 0;
   int mWavesCompleted = 0;
+  int mNumEnemies = 0;
 
   static std::string playerModels[];
   GameEndInfo* mEndInfo;

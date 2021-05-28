@@ -65,12 +65,14 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             GameManager::getManager()->mGameOver =
                 false;  // TODO: FIX THIS HACK
 
-            int currentWaveTimer, wavesCompleted;
+            int currentWaveTimer, wavesCompleted, numEnemies;
+            msg >> numEnemies;
             msg >> wavesCompleted;
             msg >> currentWaveTimer;
 
             GameManager::getManager()->mWaveTimer = currentWaveTimer;
             GameManager::getManager()->mWavesCompleted = wavesCompleted;
+            GameManager::getManager()->mNumEnemies = numEnemies;
 
           } break;
 

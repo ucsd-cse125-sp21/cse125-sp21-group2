@@ -12,26 +12,26 @@ using namespace std;
 
 NetworkServer *NetworkServer::mNetServer;
 
-void sendWaveTimer(int seconds, int wavesCompleted) {
+void sendWaveTimer(int seconds, int wavesCompleted, int numEnemies) {
   olc::net::message<CustomMsgTypes> msg;
   msg.header.id = CustomMsgTypes::WaveTimer;
 
   msg << seconds;
   msg << wavesCompleted;
+  msg << numEnemies;
 
   NetworkServer::GetNetworkServer()->MessageAllClients(msg);
 }
 
-void sendEndGameInfo(char* data, int size) {
-    olc::net::message<CustomMsgTypes> msg;
-    msg.header.id = CustomMsgTypes::EndGame;
+void sendEndGameInfo(char *data, int size) {
+  olc::net::message<CustomMsgTypes> msg;
+  msg.header.id = CustomMsgTypes::EndGame;
 
-    for (int i = 0; i < size; i++) {
-        msg << data[i];
-    }
-;
+  for (int i = 0; i < size; i++) {
+    msg << data[i];
+  };
 
-    NetworkServer::GetNetworkServer()->MessageAllClients(msg);
+  NetworkServer::GetNetworkServer()->MessageAllClients(msg);
 }
 
 int main() {
