@@ -11,7 +11,8 @@ enum class PickupType {
   Explosion,
   DamageReduction,
   SpeedReduction,
-  NoShooting
+  NoShooting,
+  Weakness
 };
 
 class Pickup : public GameObject {
