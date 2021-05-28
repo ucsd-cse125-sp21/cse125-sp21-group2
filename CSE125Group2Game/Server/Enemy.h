@@ -2,6 +2,7 @@
 #include "Moveable.h"
 #define ENEMY_PROJ_DAMAGE 40
 #define PICKUP_CHANCE 1
+#define MAX_ENEMY_HEALTH 350
 
 class Enemy : public Moveable {
  public:
@@ -17,6 +18,8 @@ class Enemy : public Moveable {
 
   static Enemy* spawnEnemy();
   bool shouldNotCollide(GameObject* obj);
+
+  static int currHealth;
 
  private:
   GameObject* GetNearestPlayer();

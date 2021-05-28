@@ -8,6 +8,8 @@
 #define STEP 12
 #define MAX_ANGLE 360
 
+int Enemy::currHealth = DEFAULT_HEALTH;
+
 Enemy::Enemy(Transform* transform, std::string name, int health)
     : Moveable(transform, name, health, ObjectType::Enemy) {
   mIsModified = true;
@@ -100,6 +102,7 @@ std::string Enemy::makeName() {
 }
 
 Enemy* Enemy::spawnEnemy() {
+  // currHealth += waveCounter;
   Enemy* enemy = new Enemy(
       new Transform(glm::vec3(0, RADIUS, 0),
                     glm::vec3(rand() % MAX_ANGLE, 0, rand() % MAX_ANGLE),
