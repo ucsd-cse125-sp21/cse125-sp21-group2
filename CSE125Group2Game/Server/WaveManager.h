@@ -2,7 +2,7 @@
 
 #include "Enemy.h"
 
-#define WAVE_INTERMISSION 5000
+#define WAVE_INTERMISSION 10000
 
 #define MAX_ENEMIES 50
 
