@@ -5,6 +5,8 @@
 
 #define PROJ_SPAWN_RATE_MS 100
 
+class Player;
+
 class Projectile : public Moveable {
  public:
   static int mProjectilesSpawned;
@@ -17,7 +19,7 @@ class Projectile : public Moveable {
   Projectile(Transform* transform, std::string name, int health,
              GameObject* parent);
 
-  static void spawnProjectile(GameObject* parent);
+  static void spawnProjectile(Player* parent);
   static void spawnProjectileAngle(GameObject* parent, float angle,
                                    float speedMultiplier = 1);
 

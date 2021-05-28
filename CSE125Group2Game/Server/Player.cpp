@@ -131,6 +131,12 @@ void Player::setHealth(int amt) {
   if (amt < mHealth) {
     if (mPickup == PickupType::Invincibility) {
       return;
+    } else if (mPickup == PickupType::Weakness) {
+      // Take twice as much damage
+      int damageTaken = mHealth - amt;
+      int newDamageTaken = damageTaken * 2;
+
+      amt = mHealth - newDamageTaken;
     }
 
     mLastHeal = GetTickCount();
@@ -171,6 +177,22 @@ void Player::addPickup(Pickup* pickup) {
       mPickup = PickupType::None;
       break;
 
+    case PickupType::DamageReduction:
+      mDamageMultiplier = 0.25;
+      break;
+
+    case PickupType::SpeedReduction:
+      mSpeedMultiplier = 0.5;
+      break;
+
+    case PickupType::NoShooting:
+      mDamageMultiplier = 0;
+      break;
+
+    case PickupType::Weakness:
+      mIsWeak = 0;
+      break;
+
     default:
       break;
   }
@@ -184,17 +206,9 @@ void Player::reset() {
 }
 
 void Player::removePickup() {
-  switch (mPickup) {
-    case PickupType::DamageBoost:
-      mDamageMultiplier = 1;
-      break;
+  // Reset damage/speed/weakness multipliers
+  mDamageMultiplier = mSpeedMultiplier = 1;
+  mIsWeak = false;
 
-    case PickupType::SpeedBoost:
-      mSpeedMultiplier = 1;
-      break;
-
-    default:
-      break;
-  }
   mPickup = PickupType::None;
 }

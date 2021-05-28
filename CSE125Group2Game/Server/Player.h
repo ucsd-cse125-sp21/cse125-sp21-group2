@@ -51,9 +51,10 @@ class Player : public Moveable {
 
   PickupType mPickup;
   unsigned long mPickupEndTime = 0;
-  int mDamageMultiplier = 1;
+  float mDamageMultiplier = 1;
   int mEnemiesKilled;
   float mSpeedMultiplier = 1;
+  bool mIsWeak = false;
 
   bool forceDelete = false;
   static const std::string player_prefix;

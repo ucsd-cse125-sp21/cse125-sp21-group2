@@ -17,9 +17,12 @@ Projectile::Projectile(Transform* transform, std::string name, int health,
   mParent = parent;
 };
 
-void Projectile::spawnProjectile(GameObject* parent) {
+void Projectile::spawnProjectile(Player* parent) {
+  // Limit spawn rate and prevent projectile from being spawned if powerdown is
+  // enabled
   if (GetTickCount() - Projectile::mTickLastSpawn[parent->getName()] <
-      PROJ_SPAWN_RATE_MS) {
+          PROJ_SPAWN_RATE_MS ||
+      parent->mDamageMultiplier == 0) {
     return;
   }
 
@@ -34,10 +37,9 @@ void Projectile::spawnProjectile(GameObject* parent) {
       Projectile::makeName(), 15, parent);
 
   // Update projectiles model/pivot
-  projectile->mPivot->setModel(((Player*)parent)->mPivot->getModel());
-  projectile->mModelTransform->setModel(
-      ((Player*)parent)->mModelTransform->getModel() *
-      glm::scale(glm::mat4(1), glm::vec3(2)));
+  projectile->mPivot->setModel((parent)->mPivot->getModel());
+  projectile->mModelTransform->setModel((parent)->mModelTransform->getModel() *
+                                        glm::scale(glm::mat4(1), glm::vec3(2)));
 
   // add to game world
   GameLogicServer::getLogicServer()->addGameObject(projectile);
