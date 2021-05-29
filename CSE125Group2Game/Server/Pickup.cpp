@@ -41,4 +41,7 @@ void Pickup::update() {
   if (mPickupDeleteTime < GetTickCount()) {
     setHealth(0);
   }
+
+  // Spin the pickup
+  mTransform->addRotation(SPEED_MULTIPLIER * glm::vec3(2, 2, 2));
 }
