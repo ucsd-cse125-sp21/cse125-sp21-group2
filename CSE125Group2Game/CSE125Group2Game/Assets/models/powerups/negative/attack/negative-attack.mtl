@@ -1,0 +1,46 @@
+# Blender MTL File: 'powerups.blend'
+# Material Count: 4
+
+newmtl Minus-symbol
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.587003 0.013606 0.015546
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\negative\attack\negative-attack.png
+
+newmtl Negative
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.729341 0.102053 0.123189
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\negative\attack\negative-attack.png
+
+newmtl Sword-blade
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.309469 0.327778 0.381326
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\negative\attack\negative-attack.png
+
+newmtl Sword-hilt
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.299435 0.080003 0.012272
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\negative\attack\negative-attack.png
