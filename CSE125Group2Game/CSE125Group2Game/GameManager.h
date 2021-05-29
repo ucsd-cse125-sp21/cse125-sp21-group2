@@ -24,6 +24,13 @@
 #define FALLEN_STAR_MODEL "Assets/models/towers/fallenstar/fallenstar.obj"
 #define CLOUD_MODEL "Assets/models/cloud/cloud.obj"
 #define PROJECTILE_MODEL "Assets/models/bullet/bullet.obj"
+#define DAMAGE_BOOST_MODEL \
+  "Assets/models/powerups/positive/attack/positive-attack.obj"
+// TODO: UPDATE SPEED BOOST MODEL PATH
+#define SPEED_BOOST_MODEL \
+  "Assets/models/powerups/positive/invincibility/positive-invincibility.obj"
+#define INVINCIBILITY_MODEL \
+  "Assets/models/powerups/positive/invincibility/positive-invincibility.obj"
 
 #define FORWARD_KEY GLFW_KEY_W
 #define LEFT_KEY GLFW_KEY_A
@@ -57,6 +64,8 @@ class GameManager {
   void spawnObject(GameObject* obj, GameObject*& foundObject,
                    SceneGraphNode*& foundNode);
 
+  void addPlayer(GameObject*& foundObject, Model* model);
+
   void setClientID(int id);
 
   bool mKeyPresses[NUM_KEYS];
@@ -75,6 +84,7 @@ class GameManager {
   int mNumEnemies = 0;
 
   static std::string playerModels[];
+  static std::string pickupModels[];
   GameEndInfo* mEndInfo;
 
  private:

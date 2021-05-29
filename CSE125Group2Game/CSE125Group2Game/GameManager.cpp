@@ -12,6 +12,8 @@ GameManager* GameManager::mManager;
 std::string GameManager::playerModels[] = {PLAYER_MODEL_RED, PLAYER_MODEL_GREEN,
                                            PLAYER_MODEL_BLUE,
                                            PLAYER_MODEL_YELLOW};
+std::string GameManager::pickupModels[] = {
+    DAMAGE_BOOST_MODEL, SPEED_BOOST_MODEL, INVINCIBILITY_MODEL};
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   GameManager::getManager()->ResizeCallback(width, height);
@@ -298,37 +300,48 @@ void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
 
     // If this is the first time a player connects, add it!
     if (obj->getName() == GameObject::makeName("play", mClientId)) {
-      mPlayer = foundObject;
-
-      SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
-
-      // attach the camera to the player
-      Camera& camera = mScene.addCamera(playerNode);
-      camera.setPosition(glm::vec3(0, 30.0f, 0));
-      camera.setFacing(glm::vec3(0, 0, 0));
-      camera.setUp(glm::vec3(0.0f, 0, -1.0f));
-
-      // attach emitters to player
-      GameObject* bsObj1 =
-          new GameObject(new Transform(glm::vec3(2.0, 0.0, 3.0), glm::vec3(0),
-                                       glm::vec3(0.2, 0.2, 0.2)),
-                         "bsObj1", 100);
-      SceneGraphNode* emitter1 = mScene.addChild(bsObj1, nullptr, playerNode);
-      Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
-      emitter1->emitter =
-          new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 30, 200);
-      emitter1->emitter->mIsContinuous = true;
-      emitter1->emitter->mParticleSize = 1.0;
-      emitter1->emitter->mParticleSpeed = 3.0;
+      addPlayer(foundObject, model);
     }
   } else if (obj->isProjectile()) {
     model = mMLoader.LoadModel(PROJECTILE_MODEL, *mLoader, mTLoader);
-    // model = Model::Cube(*mLoader);
+  } else if (obj->isPickup()) {
+    // TODO: remove once all powerup models added
+    if (obj->mModifier > 4) {
+      obj->mModifier = 0;
+    }
+
+    model = mMLoader.LoadModel(pickupModels[obj->mModifier - 1], *mLoader,
+                               mTLoader);
   } else if (!obj->isTower()) {
     model = Model::Cube(*mLoader);
   }
 
   foundNode = mScene.addChild(foundObject, model);
+}
+
+void GameManager::addPlayer(GameObject*& foundObject, Model* model) {
+  mPlayer = foundObject;
+
+  SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
+
+  // attach the camera to the player
+  Camera& camera = mScene.addCamera(playerNode);
+  camera.setPosition(glm::vec3(0, 30.0f, 0));
+  camera.setFacing(glm::vec3(0, 0, 0));
+  camera.setUp(glm::vec3(0.0f, 0, -1.0f));
+
+  // attach emitters to player
+  GameObject* bsObj1 =
+      new GameObject(new Transform(glm::vec3(2.0, 0.0, 3.0), glm::vec3(0),
+                                   glm::vec3(0.2, 0.2, 0.2)),
+                     "bsObj1", 100);
+  SceneGraphNode* emitter1 = mScene.addChild(bsObj1, nullptr, playerNode);
+  Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
+  emitter1->emitter =
+      new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 30, 200);
+  emitter1->emitter->mIsContinuous = true;
+  emitter1->emitter->mParticleSize = 1.0;
+  emitter1->emitter->mParticleSpeed = 3.0;
 }
 
 GameObject* GameManager::unmarshalInfo(char* data) {
