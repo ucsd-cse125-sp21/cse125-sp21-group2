@@ -10,6 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
 
 newmtl Cyan
 Ns 225.000000
@@ -20,6 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
 
 newmtl Green
 Ns 225.000000
@@ -30,6 +32,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
 
 newmtl Orange
 Ns 225.000000
@@ -40,6 +43,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
 
 newmtl Positive
 Ns 225.000000
@@ -50,6 +54,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
 
 newmtl Purple
 Ns 225.000000
@@ -60,6 +65,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
 
 newmtl Red
 Ns 225.000000
@@ -70,6 +76,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
 
 newmtl Sword-blade
 Ns 225.000000
@@ -80,6 +87,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
 
 newmtl Sword-hilt
 Ns 225.000000
@@ -90,6 +98,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
 
 newmtl Yellow
 Ns 225.000000
@@ -100,3 +109,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png

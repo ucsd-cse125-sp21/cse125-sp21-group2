@@ -1,6 +1,6 @@
 # Blender v2.92.0 OBJ File: 'powerups.blend'
 # www.blender.org
-mtllib invincibility.mtl
+mtllib positive-invincibility.mtl
 o Cube.018_Cube.045
 v 2.311478 0.124885 -0.617493
 v 2.311478 0.019579 -0.661040
