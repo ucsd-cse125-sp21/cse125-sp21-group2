@@ -216,7 +216,7 @@
     <ClInclude Include="SceneLoader.h">
       <Filter>Header Files\SceneLoader</Filter>
     </ClInclude>
-    <ClInclude Include="net_client.hpp">
+    <ClInclude Include="NetworkClient.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SceneGraph.h">

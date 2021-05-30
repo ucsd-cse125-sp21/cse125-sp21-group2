@@ -38,6 +38,7 @@
 #define RIGHT_KEY GLFW_KEY_D
 #define PROJECTILE_KEY GLFW_KEY_SPACE
 #define RESTART_KEY GLFW_KEY_R
+#define READY_KEY GLFW_KEY_ENTER
 #define EASTER_KEY GLFW_KEY_LEFT_BRACKET
 
 class GameManager {
@@ -86,6 +87,8 @@ class GameManager {
   static std::string playerModels[];
   static std::string pickupModels[];
   GameEndInfo* mEndInfo;
+  bool mStartGame = false;
+  bool mReady = false;
 
  private:
   // TODO: fix formatting on this...

@@ -34,6 +34,13 @@ void sendEndGameInfo(char *data, int size) {
   NetworkServer::GetNetworkServer()->MessageAllClients(msg);
 }
 
+void sendStartGame() {
+  olc::net::message<CustomMsgTypes> msg;
+  msg.header.id = CustomMsgTypes::StartGame;
+
+  NetworkServer::GetNetworkServer()->MessageAllClients(msg);
+}
+
 int main() {
   DWORD before, after, diff;
 

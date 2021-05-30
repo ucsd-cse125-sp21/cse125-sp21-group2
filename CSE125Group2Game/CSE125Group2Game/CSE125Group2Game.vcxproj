@@ -246,7 +246,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="ModelLoader.h" />
-    <ClInclude Include="net_client.hpp" />
+    <ClInclude Include="NetworkClient.hpp" />
     <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="RenderManager.h" />

@@ -78,6 +78,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
           case CustomMsgTypes::StartGame: {
             // TODO: Lower UI to start game
+            GameManager::getManager()->mStartGame = true;
 
           } break;
 

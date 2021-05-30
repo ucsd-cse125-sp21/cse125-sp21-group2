@@ -16,6 +16,7 @@
 GameLogicServer* GameLogicServer::mLogicServer;
 int Player::numPlayers = 0;
 void sendEndGameInfo(char* data, int size);
+void sendStartGame();
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
                                  ServerLoader scene, uint16_t tick_ms)
@@ -26,6 +27,8 @@ GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
     for (int j = 0; j < NUM_KEYS; j++) {
       keyPresses[j] = false;
     }
+
+    playerReady[i] = false;
 
     mKeyPresses.push_back(keyPresses);
 
@@ -105,14 +108,24 @@ void GameLogicServer::update() {
   // Only update game state if game isn't over
   if (!isGameOver() || Player::numPlayers < MIN_PLAYERS) {
     // printKeyPresses();
-    WaveManager::getWaveManager()->update();
+
+    // TODO: send info over to the client, but it should only be sent once.
+    // maybe use the "startGame flag? since that will be false at the beginning"
+
+    if (playersReady()) {
+      WaveManager::getWaveManager()->update();
+      updateEnemies();
+    }
     mOctree.update();
     updatePickups();  // Update player locations
     updatePlayers();  // Update player locations
     updateTowers();
     updateClouds();
     updateProjectiles();
-    updateEnemies();
+    if (!startGame && playersReady()) {
+      sendStartGame();
+      startGame = true;
+    }
   } else {
     if (!mPostGameInfoSent) {
       sendEndGame();
@@ -134,6 +147,19 @@ void GameLogicServer::update() {
   resetKeyPresses();
 }
 
+bool GameLogicServer::playersReady() {
+  bool ready = true;
+  bool noplayers = true;
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (players[i] == nullptr) {
+      continue;
+    }
+
+    noplayers = false;
+    ready = ready && playerReady[i];
+  }
+  return ready && !noplayers && Player::numPlayers >= MIN_PLAYERS;
+}
 bool GameLogicServer::isGameOver() {
   // Game is not over until all towers are destroyed
   for (int i = 0; i < mTowers.size(); i++) {
@@ -263,6 +289,10 @@ void GameLogicServer::updatePlayers() {
 
     if (players[i]->isDead()) {
       continue;
+    }
+
+    if (mKeyPresses[i][READY]) {
+      playerReady[i] = true;
     }
 
     if (mKeyPresses[i][SHOOT]) {

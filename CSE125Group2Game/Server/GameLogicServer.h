@@ -1,11 +1,12 @@
 ﻿#pragma once
 
+#include <Windows.h>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <thread>
-#include <Windows.h>
 
 #include "Octree.h"
 #include "Player.h"
@@ -30,7 +31,7 @@ class Cloud;
 #define MAX_X 3
 #define MAX_Y 4
 #define MAX_Z 5
-#define MIN_PLAYERS 1
+#define MIN_PLAYERS 2
 
 class GameLogicServer {
  public:
@@ -67,6 +68,9 @@ class GameLogicServer {
   PriorityMutex mMtx;
   float mLastTime = 0;
   float mDeltaTime;
+  bool startGame = false;
+  bool playerReady[MAX_PLAYERS];
+  bool playersReady();
 
  private:
   void resetKeyPresses();
@@ -95,7 +99,6 @@ class GameLogicServer {
 
   DWORD mGameStartTick;
   bool mPostGameInfoSent;
-
 
   std::vector<bool*> mKeyPresses;  // Queue for storing events before each
                                    // tick for each player

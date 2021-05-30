@@ -178,17 +178,27 @@ void GameManager::renderUI() {
         25.f, 550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
   }
 
-  if (mWaveTimer) {
-    mpRenderManager->drawText("Next Wave: " + std::to_string(mWaveTimer),
-                              650.0f, 25.0f, 0.5f, glm::vec3(0.7f), *mpFont);
-  } else {
-    std::string enemiesLeft = "Enemies Left: " + std::to_string(mNumEnemies);
-    mpRenderManager->drawText(enemiesLeft, 350.0f, 555.0f, 0.4f,
-                              glm::vec3(0.7f), *mpFont);
-  }
+  if (mStartGame) {
+    if (mWaveTimer) {
+      mpRenderManager->drawText("Next Wave: " + std::to_string(mWaveTimer),
+                                650.0f, 25.0f, 0.5f, glm::vec3(0.7f), *mpFont);
+    } else {
+      std::string enemiesLeft = "Enemies Left: " + std::to_string(mNumEnemies);
+      mpRenderManager->drawText(enemiesLeft, 350.0f, 555.0f, 0.4f,
+                                glm::vec3(0.7f), *mpFont);
+    }
 
-  mpRenderManager->drawText("Wave: " + std::to_string(mWavesCompleted), 650.0f,
-                            550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
+    mpRenderManager->drawText("Wave: " + std::to_string(mWavesCompleted),
+                              650.0f, 550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
+  } else {
+    if (!mReady) {
+      mpRenderManager->drawText("Press enter to start", 275.0f, 25.0f, 0.6f,
+                                glm::vec3(0.7f), *mpFont);
+    } else {
+      mpRenderManager->drawText("Waiting for players...", 275.0f, 550.0f, 0.6f,
+                                glm::vec3(0.7f), *mpFont);
+    }
+  }
 }
 
 void GameManager::renderGameOverUI() {
@@ -217,6 +227,11 @@ void GameManager::updateKeyPresses(bool* keysPressed) {
   keysPressed[RIGHT] = glfwGetKey(mWindow, RIGHT_KEY);
   keysPressed[SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
   keysPressed[RESTART] = glfwGetKey(mWindow, RESTART_KEY);
+  keysPressed[READY] = glfwGetKey(mWindow, READY_KEY);
+
+  if (keysPressed[READY]) {
+    mReady = true;
+  }
   mEasterMode = glfwGetKey(mWindow, EASTER_KEY) == GLFW_PRESS ||
                 glfwGetKey(mWindow, EASTER_KEY) == GLFW_REPEAT;
 }

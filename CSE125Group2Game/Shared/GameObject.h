@@ -14,7 +14,7 @@ enum class ObjectType : uint16_t {
   Pickup
 };
 
-#define NUM_KEYS 6
+#define NUM_KEYS 7
 #define NAME_LEN 8
 #define FLOAT_SIZE 4
 #define DWORD_SIZE 4
@@ -32,6 +32,7 @@ enum class ObjectType : uint16_t {
 #define RIGHT 3
 #define SHOOT 4
 #define RESTART 5
+#define READY 6
 
 #define DEFAULT_HEALTH 100
 
