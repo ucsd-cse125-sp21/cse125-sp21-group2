@@ -203,6 +203,9 @@ void GameManager::renderUI() {
     } else {
       mpRenderManager->drawText("Waiting for players...", 275.0f, 550.0f, 0.6f,
                                 glm::vec3(0.7f), *mpFont);
+      mpRenderManager->drawText(
+          std::to_string(mCurrPlayers) + "/" + std::to_string(mMinPlayers),
+          350.0f, 500.0f, 0.6f, glm::vec3(0.7f), *mpFont);
     }
   }
 }

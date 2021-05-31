@@ -31,7 +31,7 @@ class Cloud;
 #define MAX_X 3
 #define MAX_Y 4
 #define MAX_Z 5
-#define MIN_PLAYERS 2
+#define MIN_PLAYERS 3
 
 class GameLogicServer {
  public:
@@ -71,6 +71,7 @@ class GameLogicServer {
   bool startGame = false;
   bool playerReady[MAX_PLAYERS];
   bool playersReady();
+  int numReadyPlayers;
 
  private:
   void resetKeyPresses();

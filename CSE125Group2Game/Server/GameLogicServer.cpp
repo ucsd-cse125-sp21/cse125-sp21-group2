@@ -17,6 +17,7 @@ GameLogicServer* GameLogicServer::mLogicServer;
 int Player::numPlayers = 0;
 void sendEndGameInfo(char* data, int size);
 void sendStartGame();
+void sendWaitingGame(int currPlayers, int minPlayers);
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
                                  ServerLoader scene, uint16_t tick_ms)
@@ -106,11 +107,8 @@ void GameLogicServer::update() {
   mLastTime = currTime;
 
   // Only update game state if game isn't over
-  if (!isGameOver() || Player::numPlayers < MIN_PLAYERS) {
+  if (!isGameOver()) {
     // printKeyPresses();
-
-    // TODO: send info over to the client, but it should only be sent once.
-    // maybe use the "startGame flag? since that will be false at the beginning"
 
     if (playersReady()) {
       WaveManager::getWaveManager()->update();
@@ -122,9 +120,13 @@ void GameLogicServer::update() {
     updateTowers();
     updateClouds();
     updateProjectiles();
-    if (!startGame && playersReady()) {
-      sendStartGame();
-      startGame = true;
+    if (!startGame) {
+      if (playersReady()) {
+        sendStartGame();
+        startGame = true;
+      } else {
+        sendWaitingGame(numReadyPlayers, MIN_PLAYERS);
+      }
     }
   } else {
     if (!mPostGameInfoSent) {
@@ -150,6 +152,7 @@ void GameLogicServer::update() {
 bool GameLogicServer::playersReady() {
   bool ready = true;
   bool noplayers = true;
+  numReadyPlayers = 0;
   for (int i = 0; i < MAX_PLAYERS; i++) {
     if (players[i] == nullptr) {
       continue;
@@ -157,8 +160,12 @@ bool GameLogicServer::playersReady() {
 
     noplayers = false;
     ready = ready && playerReady[i];
+    if (playerReady[i]) {
+      numReadyPlayers++;
+    }
   }
-  return ready && !noplayers && Player::numPlayers >= MIN_PLAYERS;
+  return ready && !noplayers &&
+         /*Player::numPlayers >= MIN_PLAYERS*/ (numReadyPlayers >= MIN_PLAYERS);
 }
 bool GameLogicServer::isGameOver() {
   // Game is not over until all towers are destroyed
