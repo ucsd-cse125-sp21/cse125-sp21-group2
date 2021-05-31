@@ -101,6 +101,8 @@ class GameManager {
   bool mReady = false;
 
   bool mClientConnected = false;
+  int mCurrPlayers = 0;
+  int mMinPlayers = 0;
 
  private:
   // TODO: fix formatting on this...

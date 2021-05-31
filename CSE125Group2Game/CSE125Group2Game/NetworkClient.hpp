@@ -97,6 +97,17 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
           } break;
 
+          case CustomMsgTypes::WaitingForPlayers: {
+            // TODO: Lower UI to start game
+            int minPlayers, currPlayers;
+            msg >> minPlayers;
+            msg >> currPlayers;
+
+            GameManager::getManager()->mCurrPlayers = currPlayers;
+            GameManager::getManager()->mMinPlayers = minPlayers;
+
+          } break;
+
           case CustomMsgTypes::EndGame: {
             GameManager::getManager()->mGameOver = true;
             GameEndInfo* endInfo = GameManager::getManager()->mEndInfo;

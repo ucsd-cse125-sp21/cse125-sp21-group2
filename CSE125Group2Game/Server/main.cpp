@@ -41,6 +41,15 @@ void sendStartGame() {
   NetworkServer::GetNetworkServer()->MessageAllClients(msg);
 }
 
+void sendWaitingGame(int currPlayers, int minPlayers) {
+  olc::net::message<CustomMsgTypes> msg;
+  msg.header.id = CustomMsgTypes::WaitingForPlayers;
+
+  msg << currPlayers;
+  msg << minPlayers;
+
+  NetworkServer::GetNetworkServer()->MessageAllClients(msg);
+}
 int main() {
   DWORD before, after, diff;
 

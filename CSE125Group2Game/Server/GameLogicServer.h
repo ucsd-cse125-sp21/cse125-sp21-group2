@@ -71,6 +71,7 @@ class GameLogicServer {
   bool startGame = false;
   bool playerReady[MAX_PLAYERS];
   bool playersReady();
+  int numReadyPlayers;
 
  private:
   void resetKeyPresses();
