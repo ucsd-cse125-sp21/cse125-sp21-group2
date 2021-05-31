@@ -2,6 +2,7 @@
 
 #include "GameLogicServer.h"
 #include "Pickup.h"
+#include "Tower.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -12,6 +13,9 @@ Player::Player(Transform* transform, std::string name, int health, int id)
   Projectile::mTickLastSpawn[name] = 0;
   numPlayers++;
   mPickup = PickupType::None;
+  mShouldHeal = false;
+  mNumRespawned = 0;
+  mPlayerHealAmt = MIN_PLAYER_HEAL_AMT;
 }
 
 Player::~Player() { numPlayers--; }
@@ -24,11 +28,36 @@ void Player::update() {
     return;
   }
 
+  GameLogicServer* logicServer = GameLogicServer::getLogicServer();
+
+  for (int i = 0; i < logicServer->mTowers.size(); i++) {
+    float distance = glm::distance(
+        mTransform->getTranslation(),
+        logicServer->mTowers[i]->getTransform()->getTranslation());
+    if (distance < MIN_TOWER_HEAL_RADIUS) {
+      mShouldHeal = true;
+      mPlayerHealAmt = MAX_PLAYER_HEAL_AMT;
+      break;
+    } else if (distance < MID_TOWER_HEAL_RADIUS) {
+      mShouldHeal = true;
+      mPlayerHealAmt = MID_PLAYER_HEAL_AMT;
+      break;
+    } else if (distance < MAX_TOWER_HEAL_RADIUS) {
+      mShouldHeal = true;
+      mPlayerHealAmt = MIN_PLAYER_HEAL_AMT;
+      break;
+    }
+    mShouldHeal = false;
+  }
+
   if (!Pickup::isNone(mPickup) && (mPickupEndTime < GetTickCount())) {
     removePickup();
   }
   // player healing code
-  healPlayer();
+  if (mShouldHeal) {
+    // std::cout << "Player healable!!\n";
+    healPlayer();
+  }
   // std::cout << "Player healed: " << mHealth << std::endl;
 }
 
@@ -39,7 +68,9 @@ void Player::healPlayer() {
   }
 
   mLastHeal = GetTickCount();
-  mHealth += PLAYER_HEAL_AMT;
+  mHealth += mPlayerHealAmt;
+
+  // std::cout << "Healing player by: " << mPlayerHealAmt << std::endl;
 
   // Ensure health never goes above max
   if (mHealth > DEFAULT_HEALTH) {
@@ -54,6 +85,7 @@ void Player::setRespawn() {
   } else if (mTimeToSpawn < GetTickCount()) {
     // Todo: spawn player in new location potentially or possible ...
     // interesting question!
+    mNumRespawned++;
     mTimeToSpawn = 0;
     mHealth = DEFAULT_HEALTH;
   }
@@ -97,6 +129,10 @@ bool Player::shouldNotCollide(GameObject* obj) {
 void Player::setHealth(int amt) {
   // reset timer if taking damage
   if (amt < mHealth) {
+    if (mPickup == PickupType::Invincibility) {
+      return;
+    }
+
     mLastHeal = GetTickCount();
   }
 
@@ -115,7 +151,9 @@ void Player::addPickup(Pickup* pickup) {
   if (!Pickup::isNone(mPickup)) {
     removePickup();
   }
+
   mPickup = pickup->mPickupType;
+  mModifier = (int)mPickup;
   // so that pickup gets deleted!!
   pickup->setHealth(0);
   mPickupEndTime = GetTickCount() + PLAYER_PICKUP_LENGTH;
@@ -127,6 +165,28 @@ void Player::addPickup(Pickup* pickup) {
 
     case PickupType::SpeedBoost:
       mSpeedMultiplier = 2;
+      break;
+
+    case PickupType::Explosion:
+      GameLogicServer::getLogicServer()->spawnPlayerExplosion(this);
+      mPickupEndTime = GetTickCount();
+      mPickup = PickupType::None;
+      break;
+
+    case PickupType::DamageReduction:
+      mDamageMultiplier = 0.25;
+      break;
+
+    case PickupType::SpeedReduction:
+      mSpeedMultiplier = 0.5;
+      break;
+
+    case PickupType::NoShooting:
+      mDamageMultiplier = 0;
+      break;
+
+    case PickupType::Weakness:
+      mIsWeak = 0;
       break;
 
     default:
@@ -142,17 +202,10 @@ void Player::reset() {
 }
 
 void Player::removePickup() {
-  switch (mPickup) {
-    case PickupType::DamageBoost:
-      mDamageMultiplier = 1;
-      break;
+  // Reset damage/speed/weakness multipliers
+  mDamageMultiplier = mSpeedMultiplier = 1;
+  mIsWeak = false;
+  mModifier = 0;
 
-    case PickupType::SpeedBoost:
-      mSpeedMultiplier = 1;
-      break;
-
-    default:
-      break;
-  }
   mPickup = PickupType::None;
 }

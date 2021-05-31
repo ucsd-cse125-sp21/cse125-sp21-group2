@@ -1,9 +1,19 @@
 ﻿#pragma once
 #include "GameObject.h"
 
-#define NUM_PICKUPS 2
+#define NUM_PICKUPS 8
 #define PICKUP_LENGTH 15000
-enum class PickupType { None, DamageBoost, SpeedBoost };
+enum class PickupType {
+  None,
+  DamageBoost,
+  SpeedBoost,
+  Invincibility,
+  Explosion,
+  DamageReduction,
+  SpeedReduction,
+  NoShooting,
+  Weakness
+};
 
 class Pickup : public GameObject {
  public:

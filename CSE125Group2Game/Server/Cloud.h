@@ -9,4 +9,6 @@ class Cloud : public Moveable {
 
   static void spawn();
   bool shouldNotCollide(GameObject* obj);
+
+  glm::vec3 mRotationAngle;
 };

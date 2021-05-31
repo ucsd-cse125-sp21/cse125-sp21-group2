@@ -183,6 +183,7 @@
     <ClCompile Include="..\Shared\Utils.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ConeParticleEmitter.cpp" />
+    <ClCompile Include="GameEndInfo.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="glad\src\glad.c" />
     <ClCompile Include="Image.cpp" />
@@ -238,13 +239,14 @@
     <ClInclude Include="..\Shared\Utils.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConeParticleEmitter.h" />
+    <ClInclude Include="GameEndInfo.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="ModelLoader.h" />
-    <ClInclude Include="net_client.hpp" />
+    <ClInclude Include="NetworkClient.hpp" />
     <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="RenderManager.h" />

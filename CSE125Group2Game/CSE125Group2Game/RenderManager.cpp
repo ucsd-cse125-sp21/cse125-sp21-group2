@@ -261,7 +261,8 @@ void RenderManager::drawHealthBars(const SceneGraphNode& node,
   glm::mat4 currTransform = prev * node.getObject()->getTransform()->getModel();
   auto model = node.getModel();
 
-  if (node.getObject()->mShouldRender && node.getObject()->hasHealth()) {
+  if (node.getObject()->mShouldRender && node.getObject()->hasHealth() &&
+      node.getObject()->isEnemy()) {
     drawHealthBar(currTransform, view, viewPos, node.getObject()->getHealth());
   }
 

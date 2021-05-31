@@ -114,6 +114,9 @@
     <ClCompile Include="ConeParticleEmitter.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
+    <ClCompile Include="GameEndInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -213,7 +216,7 @@
     <ClInclude Include="SceneLoader.h">
       <Filter>Header Files\SceneLoader</Filter>
     </ClInclude>
-    <ClInclude Include="net_client.hpp">
+    <ClInclude Include="NetworkClient.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SceneGraph.h">
@@ -263,6 +266,9 @@
     </ClInclude>
     <ClInclude Include="ConeParticleEmitter.h">
       <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEndInfo.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 #include "Moveable.h"
 #define ENEMY_PROJ_DAMAGE 40
 #define PICKUP_CHANCE 1
+#define MAX_ENEMY_HEALTH 350
 
 class Enemy : public Moveable {
  public:
@@ -18,11 +19,13 @@ class Enemy : public Moveable {
   static Enemy* spawnEnemy();
   bool shouldNotCollide(GameObject* obj);
 
+  static int currHealth;
+
  private:
   GameObject* GetNearestPlayer();
 
   glm::vec3 mMoveDirection;
-  float rotationSpeed = 0.02;
+  float rotationSpeed = SPEED_MULTIPLIER * 0.02;
 
   int mTicksPerUpdate = 3;
 

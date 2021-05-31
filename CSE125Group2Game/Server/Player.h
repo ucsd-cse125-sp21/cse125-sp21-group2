@@ -4,8 +4,12 @@
 
 #define PLAYER_DAMAGE 20
 #define PLAYER_HEAL_RATE_MS 5000
-#define PLAYER_HEAL_AMT 10
+#define MAX_PLAYER_HEAL_AMT 10
+#define MIN_PLAYER_HEAL_AMT 2
+#define MID_PLAYER_HEAL_AMT 5
+#define PLAYER_HEAL_STEP 2
 #define PLAYER_PICKUP_LENGTH 10000
+#define PLAYER_PROJ_DAMAGE 10
 
 class Pickup;
 enum class PickupType;
@@ -48,14 +52,19 @@ class Player : public Moveable {
 
   PickupType mPickup;
   unsigned long mPickupEndTime = 0;
-  int mDamageMultiplier = 1;
+  float mDamageMultiplier = 1;
+  int mEnemiesKilled;
   float mSpeedMultiplier = 1;
+  bool mIsWeak = false;
 
   bool forceDelete = false;
   static const std::string player_prefix;
+  bool mShouldHeal;
+  int mNumRespawned;
+  int mPlayerHealAmt;
 
  private:
-  glm::vec3 mRotationSpeed = glm::vec3(-0.0225, -0.10, 0);
+  glm::vec3 mRotationSpeed = SPEED_MULTIPLIER * glm::vec3(-0.0225, -0.10, 0);
 
   glm::vec3 mVelocity;
 
@@ -64,7 +73,6 @@ class Player : public Moveable {
   unsigned long mRespawnTimeMS = 5000;
   unsigned long mTimeToSpawn;
   unsigned long mLastHeal;
-  int mEnemiesKilled;
 };
 
 const std::string player_prefix = "play";

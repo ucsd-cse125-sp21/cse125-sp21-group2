@@ -15,9 +15,13 @@
 
 GameLogicServer* GameLogicServer::mLogicServer;
 int Player::numPlayers = 0;
+void sendEndGameInfo(char* data, int size);
+void sendStartGame();
+void sendWaitingGame(int currPlayers, int minPlayers);
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
-                                 ServerLoader scene, uint16_t tick_ms)
+                                 ServerLoader scene, uint16_t tick_ms,
+                                 bool friendlyFire)
     : mWorld(world), mScene(scene), mTick_ms(tick_ms) {
   for (int i = 0; i < MAX_PLAYERS; i++) {
     bool* keyPresses = (bool*)malloc(NUM_KEYS);
@@ -26,10 +30,15 @@ GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
       keyPresses[j] = false;
     }
 
+    playerReady[i] = false;
+
     mKeyPresses.push_back(keyPresses);
 
     players[i] = NULL;
   }
+  mGameStartTick = GetTickCount();
+  mPostGameInfoSent = false;
+  mFriendlyFire = friendlyFire;
 }
 
 std::string server_read_config2(std::string field, std::string filename) {
@@ -65,6 +74,8 @@ GameLogicServer* GameLogicServer::getLogicServer() {
   if (!mLogicServer) {
     uint16_t tick = 33;
     std::string config_tick("tick");
+    std::string config_ff("friendlyFire");
+    bool friendlyFire = false;
 
     ServerLoader scene(SCENE_JSON);
 
@@ -82,7 +93,14 @@ GameLogicServer* GameLogicServer::getLogicServer() {
       }
     }
 
-    mLogicServer = new GameLogicServer(world, scene, tick);
+    std::string str_ff = server_read_config2(config_ff, CONFIG_TXT);
+
+    if (str_ff.compare(std::string("true")) == 0) {
+      std::cout << "ff trueee" << std::endl;
+      friendlyFire = true;
+    }
+
+    mLogicServer = new GameLogicServer(world, scene, tick, friendlyFire);
 
     Tower::spawn();
     Cloud::spawn();
@@ -93,18 +111,40 @@ GameLogicServer* GameLogicServer::getLogicServer() {
 void GameLogicServer::update() {
   std::unique_lock<decltype(mMtx)> lk(mMtx);
 
+  float currTime = ((float)GetTickCount()) / 1000;
+
+  mDeltaTime = currTime - mLastTime;
+
+  mLastTime = currTime;
+
   // Only update game state if game isn't over
-  if (!isGameOver() || Player::numPlayers < MIN_PLAYERS) {
+  if (!isGameOver()) {
     // printKeyPresses();
-    WaveManager::getWaveManager()->update();
+
+    if (playersReady()) {
+      WaveManager::getWaveManager()->update();
+      updateEnemies();
+    }
     mOctree.update();
     updatePickups();  // Update player locations
     updatePlayers();  // Update player locations
     updateTowers();
     updateClouds();
     updateProjectiles();
-    updateEnemies();
+    if (!startGame) {
+      if (playersReady()) {
+        sendStartGame();
+        startGame = true;
+      } else {
+        sendWaitingGame(numReadyPlayers, MIN_PLAYERS);
+      }
+    }
   } else {
+    if (!mPostGameInfoSent) {
+      sendEndGame();
+      mPostGameInfoSent = true;
+    }
+
     for (int i = 0; i < MAX_PLAYERS; i++) {
       if (players[i] == NULL || !mKeyPresses[i][RESTART]) {
         continue;
@@ -120,6 +160,24 @@ void GameLogicServer::update() {
   resetKeyPresses();
 }
 
+bool GameLogicServer::playersReady() {
+  bool ready = true;
+  bool noplayers = true;
+  numReadyPlayers = 0;
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (players[i] == nullptr) {
+      continue;
+    }
+
+    noplayers = false;
+    ready = ready && playerReady[i];
+    if (playerReady[i]) {
+      numReadyPlayers++;
+    }
+  }
+  return ready && !noplayers &&
+         /*Player::numPlayers >= MIN_PLAYERS*/ (numReadyPlayers >= MIN_PLAYERS);
+}
 bool GameLogicServer::isGameOver() {
   // Game is not over until all towers are destroyed
   for (int i = 0; i < mTowers.size(); i++) {
@@ -159,6 +217,9 @@ void GameLogicServer::restartGame() {
   }
 
   WaveManager::getWaveManager()->reset();
+
+  mGameStartTick = GetTickCount();
+  mPostGameInfoSent = false;
 }
 
 void GameLogicServer::updateEnemies() {
@@ -218,19 +279,30 @@ void GameLogicServer::updateProjectiles() {
       Player* parent = (Player*)proj->getParent();
 
       // Currently only collides with enemies
-      if (collider != nullptr && collider->isEnemy()) {
-        proj->setHealth(0);
-        ((Enemy*)collider)
-            ->setHealth(collider->getHealth() -
-                        (ENEMY_PROJ_DAMAGE * parent->mDamageMultiplier));
+      if (collider != nullptr) {
+        if (collider->isEnemy()) {
+          proj->setHealth(0);
+          ((Enemy*)collider)
+              ->setHealth(collider->getHealth() -
+                          (ENEMY_PROJ_DAMAGE * parent->mDamageMultiplier));
 
-        if (collider->isDead()) {
-          parent->incrementEnemiesKilled();
+          if (collider->isDead()) {
+            parent->incrementEnemiesKilled();
+          }
+        } else if (collider->isPlayer()) {
+          proj->setHealth(0);
+          ((Player*)collider)
+              ->setHealth(collider->getHealth() -
+                          (PLAYER_PROJ_DAMAGE * parent->mDamageMultiplier));
+
+          if (collider->isDead()) {
+            parent->incrementEnemiesKilled();
+          }
         }
         continue;
       }
 
-      // call enemy update
+      // call projectile update
       mWorld[i]->update();
     }
   }
@@ -246,6 +318,10 @@ void GameLogicServer::updatePlayers() {
 
     if (players[i]->isDead()) {
       continue;
+    }
+
+    if (mKeyPresses[i][READY]) {
+      playerReady[i] = true;
     }
 
     if (mKeyPresses[i][SHOOT]) {
@@ -291,13 +367,23 @@ void GameLogicServer::movePlayerToBoundary(Player* player) {
   player->addTranslation(glm::vec3(-0.1) * player->getVelocity());
 }
 
+void GameLogicServer::spawnPlayerExplosion(Player* player) {
+  float step = 22.5;
+  for (float angle = 0; angle < 360; angle += step) {
+    Projectile::spawnProjectileAngle(player, angle, 0.20);
+  }
+}
+
 GameObject* GameLogicServer::getCollidingObject(GameObject* obj) {
   // get 8 points of A in world space
 
+  return mOctree.getCollidingObject(obj);
+
   // For every gameobject in the world, check if this object collides with
   // anything
-  for (auto iterator = mOctree.begin(obj); iterator != mOctree.end();
-       iterator++) {
+  // for (auto iterator = mOctree.begin(obj); iterator != mOctree.end();
+  // iterator++) {
+  /*for (int i = 0; i < mWorld.size(); i++) {
     // If this object is the root, or has 0 health, or is itself, do not
     // collide
     if (obj->shouldNotCollide(*iterator)) {
@@ -305,10 +391,17 @@ GameObject* GameLogicServer::getCollidingObject(GameObject* obj) {
     }
 
     if (obj->getTransform()->getBBox().collides(
-            (*iterator)->getTransform()->getBBox())) {
-      return *iterator;
+            (mWorld[i])->getTransform()->getBBox())) {
+      return mWorld[i];
     }
-  }
+    /* if (obj->shouldNotCollide(*iterator)) {
+       continue;
+     }
+
+     if (obj->getTransform()->getBBox().collides(
+             (*iterator)->getTransform()->getBBox())) {
+       return *iterator;
+     }*/
 
   return nullptr;
 }
@@ -368,7 +461,6 @@ void GameLogicServer::sendInfo() {
     }
 
     char* data = marshalInfo(mWorld[i]);  // Marshal data
-    // data >> mSendingBuffer;               // Add message to queue
     mTestBuffer.push_back(data);
 
     // If the enemy has health 0, remove it from the world
@@ -437,6 +529,9 @@ char* GameLogicServer::marshalInfo(GameObject* obj) {
   memcpy(tmpInfo, &(type), TYPE_SIZE);
   tmpInfo += TYPE_SIZE;
 
+  memcpy(tmpInfo, &(obj->mModifier), INT_SIZE);
+  tmpInfo += INT_SIZE;
+
   return info;
 }
 
@@ -474,4 +569,81 @@ int GameLogicServer::getVerticalInput(int playerId) {
 }
 int GameLogicServer::getHorizontalInput(int playerId) {
   return mKeyPresses[playerId][RIGHT] - mKeyPresses[playerId][LEFT];
+}
+
+void GameLogicServer::sendEndGame() {
+  /*
+   * 1) 4 byte DWORD timeEllapse
+   * 2) 4 byte int highScore
+   * 3) 4 byte int totalEnemyKilled
+   * 4) 4 byte int MVP player id
+   * 5) 4 byte int numPlayers
+   * 6) numPlayers * 4 byte ints enemiesKilledPerPlayer
+   * 7) numPlayers * 4 byte ints timesDiedDuringTheGame
+   */
+
+  int numPlayers = 0;
+  int totalEnemyKilled = 0;
+  int mvpIndex = 0;
+  int maxEnemiesKilled = 0;
+
+  std::vector<int> enemiesKilledPerPlayer;
+  std::vector<int> numRespawnedPerPlayer;
+
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (players[i] == NULL) {
+      continue;
+    }
+
+    numPlayers++;
+    totalEnemyKilled += players[i]->mEnemiesKilled;
+
+    enemiesKilledPerPlayer.push_back(players[i]->mEnemiesKilled);
+    numRespawnedPerPlayer.push_back(players[i]->mNumRespawned);
+
+    if (players[i]->mEnemiesKilled > maxEnemiesKilled) {
+      maxEnemiesKilled = players[i]->mEnemiesKilled;
+      mvpIndex = i;
+    }
+  }
+
+  int message_size = DWORD_SIZE + 4 * INT_SIZE + 2 * numPlayers * INT_SIZE;
+
+  char* info = (char*)malloc(message_size);
+  char* tmpInfo = info;
+
+  DWORD timeSurvived = GetTickCount() - mGameStartTick;
+
+  memcpy(tmpInfo, &timeSurvived, DWORD_SIZE);
+
+  tmpInfo += DWORD_SIZE;
+
+  // TODO: determine a better way to calculate score?
+  int highScore = WaveManager::getWaveManager()->mWavesCompleted * 100;
+  memcpy(tmpInfo, &(highScore), INT_SIZE);
+  tmpInfo += INT_SIZE;
+
+  memcpy(tmpInfo, &(totalEnemyKilled), INT_SIZE);
+  tmpInfo += INT_SIZE;
+
+  int mvpPlayerID = players[mvpIndex]->getPlayerId();
+
+  memcpy(tmpInfo, &(mvpPlayerID), INT_SIZE);
+  tmpInfo += INT_SIZE;
+
+  std::cout << "numPlayers " << numPlayers << std::endl;
+  memcpy(tmpInfo, &(numPlayers), INT_SIZE);
+  tmpInfo += INT_SIZE;
+
+  for (int i = 0; i < enemiesKilledPerPlayer.size(); i++) {
+    memcpy(tmpInfo, &(enemiesKilledPerPlayer[i]), INT_SIZE);
+    tmpInfo += INT_SIZE;
+  }
+
+  for (int i = 0; i < numRespawnedPerPlayer.size(); i++) {
+    memcpy(tmpInfo, &(numRespawnedPerPlayer[i]), INT_SIZE);
+    tmpInfo += INT_SIZE;
+  }
+
+  sendEndGameInfo(info, message_size);
 }

@@ -64,6 +64,8 @@ Texture TextureLoader::loadTexture(const std::string& filePath) {
   }
 
   mTextures.push_back(GLTexture(data, width, height));
+
+  stbi_image_free(data);
   return Texture(mTextures.size() - 1, GL_TEXTURE_2D);
 }
 

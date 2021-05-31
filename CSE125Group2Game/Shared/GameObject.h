@@ -14,15 +14,17 @@ enum class ObjectType : uint16_t {
   Pickup
 };
 
-#define NUM_KEYS 6
+#define NUM_KEYS 7
 #define NAME_LEN 8
 #define FLOAT_SIZE 4
+#define DWORD_SIZE 4
 #define INT_SIZE sizeof(int)
 #define TYPE_SIZE sizeof(ObjectType)
-#define MESSAGE_SIZE NAME_LEN + (19 * FLOAT_SIZE) + INT_SIZE + TYPE_SIZE
+#define MESSAGE_SIZE NAME_LEN + (19 * FLOAT_SIZE) + (2 * INT_SIZE) + TYPE_SIZE
 #define MAX_PLAYERS 4
 
 #define RADIUS 25
+#define SPEED_MULTIPLIER 0.5f  // 30.0f
 
 #define FORWARD 0
 #define LEFT 1
@@ -30,6 +32,7 @@ enum class ObjectType : uint16_t {
 #define RIGHT 3
 #define SHOOT 4
 #define RESTART 5
+#define READY 6
 
 #define DEFAULT_HEALTH 100
 
@@ -77,6 +80,7 @@ class GameObject {
 
   bool mIsModified = true;
   bool mShouldRender = true;
+  int mModifier = 0;
 
   static std::string makeName(std::string prefix, int count);
 

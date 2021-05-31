@@ -1,0 +1,56 @@
+# Blender MTL File: 'powerups.blend'
+# Material Count: 5
+
+newmtl Bomb
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.034149 0.034149 0.034149
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\negative\explosion\negative-explosion.png
+
+newmtl Bomb-lighter
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 0.688735 0.140510
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\negative\explosion\negative-explosion.png
+
+newmtl Bomb-string
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.415465 0.123191 0.033045
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\negative\explosion\negative-explosion.png
+
+newmtl Bomb-top
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.100475 0.100475 0.100475
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Negative
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.729341 0.037699 0.045581
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\negative\explosion\negative-explosion.png

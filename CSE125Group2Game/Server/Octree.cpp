@@ -68,6 +68,34 @@ void OctreeNode::update(OctreeNode* root) {
   }
 }
 
+GameObject* OctreeNode::getCollidingObject(GameObject* object) {
+  // check objects
+  for (size_t i = 0; i < mObjects.size(); i++) {
+    // object must have moved, so we need to remove this object and reinsert
+    if (object->shouldNotCollide(mObjects[i])) {
+      continue;
+    }
+
+    if (object->getTransform()->getBBox().collides(
+            (mObjects[i])->getTransform()->getBBox())) {
+      return mObjects[i];
+    }
+  }
+
+  // check children
+  GameObject* result = nullptr;
+  for (int i = 0; i < 8; i++) {
+    if (mChildren[i]) {
+      result = mChildren[i]->getCollidingObject(object);
+      if (result) {
+        return result;
+      }
+    }
+  }
+
+  return nullptr;
+}
+
 OctreeNode* OctreeNode::getChild(GameObject* object, bool insert) {
   AABB objBox = object->getTransform()->getBBox();
   std::vector<AABB> octants = divideOctants(mBox);
@@ -146,6 +174,10 @@ void Octree::insert(GameObject* object) { mRoot.insert(object, 0); }
 // then reinsert into the tree
 // probably can optimize this to some degree... but meh
 void Octree::update() { mRoot.update(&mRoot); }
+
+GameObject* Octree::getCollidingObject(GameObject* object) {
+  return mRoot.getCollidingObject(object);
+}
 
 void Octree::remove(GameObject* object) {
   OctreeNode* node = nodeMap[object];

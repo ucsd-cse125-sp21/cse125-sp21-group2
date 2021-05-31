@@ -19,7 +19,7 @@ class Transform {
   // identity transform factory method
   static Transform Identity() { return Transform(); }
 
-  void addRotation(glm::vec3 degrees);
+  void addRotation(glm::vec3 degrees, bool localRot = false);
   void setRotation(glm::vec3 degrees);
   void setRotation(glm::quat quaternion);
 

@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <Windows.h>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -29,12 +31,12 @@ class Cloud;
 #define MAX_X 3
 #define MAX_Y 4
 #define MAX_Z 5
-#define MIN_PLAYERS 1
+#define MIN_PLAYERS 2
 
 class GameLogicServer {
  public:
   GameLogicServer(std::vector<GameObject*> world, ServerLoader scene,
-                  uint16_t tick_ms);
+                  uint16_t tick_ms, bool friendlyFire);
 
   void update();
   static GameLogicServer* getLogicServer();
@@ -50,9 +52,11 @@ class GameLogicServer {
   void addGameObject(GameObject* obj);
 
   GameObject* getCollidingObject(GameObject* obj);
+  void spawnPlayerExplosion(Player* player);
 
   void sendInfo();
   void sendWaveTimer(int seconds);
+  bool isGameOver();
 
   msd::channel<char*> mSendingBuffer;  // Queue for storing events to send
   std::vector<char*> mTestBuffer;
@@ -62,6 +66,13 @@ class GameLogicServer {
   std::vector<Cloud*> mClouds;
   ServerLoader mScene;
   PriorityMutex mMtx;
+  float mLastTime = 0;
+  float mDeltaTime;
+  bool startGame = false;
+  bool playerReady[MAX_PLAYERS];
+  bool playersReady();
+  int numReadyPlayers;
+  bool mFriendlyFire;
 
  private:
   void resetKeyPresses();
@@ -81,12 +92,15 @@ class GameLogicServer {
   int getHorizontalInput(int playerId);
   void movePlayerToBoundary(Player* player);
   void updatePlayerPosition(int playerId);
-  bool isGameOver();
   void restartGame();
+  void sendEndGame();
 
   std::vector<GameObject*> mWorld;
   Octree mOctree;
   uint16_t mTick_ms;
+
+  DWORD mGameStartTick;
+  bool mPostGameInfoSent;
 
   std::vector<bool*> mKeyPresses;  // Queue for storing events before each
                                    // tick for each player

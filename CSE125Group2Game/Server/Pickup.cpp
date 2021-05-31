@@ -14,14 +14,16 @@ Pickup::Pickup(Transform* transform, PickupType type)
 
 void Pickup::spawnPickup(Transform* transform, PickupType type) {
   Pickup* pickup = new Pickup(transform, type);
+  pickup->mModifier = (int)type;
 
   GameLogicServer::getLogicServer()->addGameObject(pickup);
 }
 
 void Pickup::spawnPickup(Transform* transform) {
   int pickupIndex = (rand() % NUM_PICKUPS) + 1;  // Plus 1 to avoid none
-  // PickupType type = static_cast<PickupType>(pickupIndex);
-  PickupType type = PickupType::SpeedBoost;
+  PickupType type = static_cast<PickupType>(pickupIndex);
+  // type = PickupType::Invincibility;  // TODO: Comment this out for random
+  // pickups!
   spawnPickup(transform, type);
 }
 
@@ -40,4 +42,7 @@ void Pickup::update() {
   if (mPickupDeleteTime < GetTickCount()) {
     setHealth(0);
   }
+
+  // Spin the pickup
+  mTransform->addRotation(SPEED_MULTIPLIER * glm::vec3(2, 0, 0), true);
 }

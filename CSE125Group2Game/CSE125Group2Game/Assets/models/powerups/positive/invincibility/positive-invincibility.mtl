@@ -1,0 +1,112 @@
+# Blender MTL File: 'powerups.blend'
+# Material Count: 10
+
+newmtl Blue
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.028126 0.133404 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
+
+newmtl Cyan
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.103343 0.420297 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
+
+newmtl Green
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.063294 0.380052 0.055163
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
+
+newmtl Orange
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.632457 0.177847 0.049057
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
+
+newmtl Positive
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.372206 0.235027 0.955087
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
+
+newmtl Purple
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.239688 0.061213 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
+
+newmtl Red
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.620911 0.032862 0.029753
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
+
+newmtl Sword-blade
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.309469 0.327778 0.381326
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
+
+newmtl Sword-hilt
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.299435 0.080003 0.012272
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png
+
+newmtl Yellow
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.694099 0.047941
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models\powerups\positive\invincibility\positive-invincibility.png

@@ -179,7 +179,7 @@ SceneGraph SceneGraph::FromFile(const std::string& fileName, MeshLoader& loader,
     GameObject* obj = new GameObject(
         transform, name, 1, isTower ? ObjectType::Tower : ObjectType::Default);
 
-    std::cout << "Added " << name << std::endl;
+    // std::cout << "Added " << name << std::endl;
 
     // add node into the graph
     scene.addChild(obj, std::move(models), parentNode);
