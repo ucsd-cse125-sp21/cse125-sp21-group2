@@ -9,6 +9,7 @@
 #define MID_PLAYER_HEAL_AMT 5
 #define PLAYER_HEAL_STEP 2
 #define PLAYER_PICKUP_LENGTH 10000
+#define PLAYER_PROJ_DAMAGE 10
 
 class Pickup;
 enum class PickupType;

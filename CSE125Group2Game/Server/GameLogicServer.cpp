@@ -20,7 +20,8 @@ void sendStartGame();
 void sendWaitingGame(int currPlayers, int minPlayers);
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
-                                 ServerLoader scene, uint16_t tick_ms)
+                                 ServerLoader scene, uint16_t tick_ms,
+                                 bool friendlyFire)
     : mWorld(world), mScene(scene), mTick_ms(tick_ms) {
   for (int i = 0; i < MAX_PLAYERS; i++) {
     bool* keyPresses = (bool*)malloc(NUM_KEYS);
@@ -37,6 +38,7 @@ GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
   }
   mGameStartTick = GetTickCount();
   mPostGameInfoSent = false;
+  mFriendlyFire = friendlyFire;
 }
 
 std::string server_read_config2(std::string field, std::string filename) {
@@ -72,6 +74,8 @@ GameLogicServer* GameLogicServer::getLogicServer() {
   if (!mLogicServer) {
     uint16_t tick = 33;
     std::string config_tick("tick");
+    std::string config_ff("friendlyFire");
+    bool friendlyFire = false;
 
     ServerLoader scene(SCENE_JSON);
 
@@ -89,7 +93,14 @@ GameLogicServer* GameLogicServer::getLogicServer() {
       }
     }
 
-    mLogicServer = new GameLogicServer(world, scene, tick);
+    std::string str_ff = server_read_config2(config_ff, CONFIG_TXT);
+
+    if (str_ff.compare(std::string("true")) == 0) {
+      std::cout << "ff trueee" << std::endl;
+      friendlyFire = true;
+    }
+
+    mLogicServer = new GameLogicServer(world, scene, tick, friendlyFire);
 
     Tower::spawn();
     Cloud::spawn();
@@ -268,19 +279,30 @@ void GameLogicServer::updateProjectiles() {
       Player* parent = (Player*)proj->getParent();
 
       // Currently only collides with enemies
-      if (collider != nullptr && collider->isEnemy()) {
-        proj->setHealth(0);
-        ((Enemy*)collider)
-            ->setHealth(collider->getHealth() -
-                        (ENEMY_PROJ_DAMAGE * parent->mDamageMultiplier));
+      if (collider != nullptr) {
+        if (collider->isEnemy()) {
+          proj->setHealth(0);
+          ((Enemy*)collider)
+              ->setHealth(collider->getHealth() -
+                          (ENEMY_PROJ_DAMAGE * parent->mDamageMultiplier));
 
-        if (collider->isDead()) {
-          parent->incrementEnemiesKilled();
+          if (collider->isDead()) {
+            parent->incrementEnemiesKilled();
+          }
+        } else if (collider->isPlayer()) {
+          proj->setHealth(0);
+          ((Player*)collider)
+              ->setHealth(collider->getHealth() -
+                          (PLAYER_PROJ_DAMAGE * parent->mDamageMultiplier));
+
+          if (collider->isDead()) {
+            parent->incrementEnemiesKilled();
+          }
         }
         continue;
       }
 
-      // call enemy update
+      // call projectile update
       mWorld[i]->update();
     }
   }
@@ -439,7 +461,6 @@ void GameLogicServer::sendInfo() {
     }
 
     char* data = marshalInfo(mWorld[i]);  // Marshal data
-    // data >> mSendingBuffer;               // Add message to queue
     mTestBuffer.push_back(data);
 
     // If the enemy has health 0, remove it from the world

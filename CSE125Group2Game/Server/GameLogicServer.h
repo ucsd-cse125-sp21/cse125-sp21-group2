@@ -31,12 +31,12 @@ class Cloud;
 #define MAX_X 3
 #define MAX_Y 4
 #define MAX_Z 5
-#define MIN_PLAYERS 1
+#define MIN_PLAYERS 2
 
 class GameLogicServer {
  public:
   GameLogicServer(std::vector<GameObject*> world, ServerLoader scene,
-                  uint16_t tick_ms);
+                  uint16_t tick_ms, bool friendlyFire);
 
   void update();
   static GameLogicServer* getLogicServer();
@@ -72,6 +72,7 @@ class GameLogicServer {
   bool playerReady[MAX_PLAYERS];
   bool playersReady();
   int numReadyPlayers;
+  bool mFriendlyFire;
 
  private:
   void resetKeyPresses();

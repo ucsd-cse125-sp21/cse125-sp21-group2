@@ -99,10 +99,13 @@ void Projectile::update() {
 bool Projectile::shouldNotCollide(GameObject* obj) {
   // TODO: Perhaps would be worth making more complex... enemies with
   // projectiles???? interesting question
-  return GameObject::shouldNotCollide(obj) ||  // Call super method
-         obj->getName() == mParent->getName() || obj->isProjectile() ||
-         obj->isPlayer() || obj->isTower() || obj->isDefault() ||
-         obj->isPickup();
+  bool retValue = GameObject::shouldNotCollide(obj) ||  // Call super method
+                  obj->getName() == mParent->getName() || obj->isProjectile() ||
+                  obj->isTower() || obj->isDefault() || obj->isPickup();
+  if (!GameLogicServer::getLogicServer()->mFriendlyFire) {
+    retValue = retValue || obj->isPlayer();
+  }
+  return retValue;
 }
 
 GameObject* Projectile::getParent() { return mParent; }
