@@ -39,14 +39,15 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
       // Reads messages in reverse order, allows us to only proccess a specfic
       // object once per tick
-      while (!this->Incoming().empty()) {
-        messageQueue.push(this->Incoming().pop_front().msg);
-      }
+      // while (!this->Incoming().empty()) {
+      //  messageQueue.push(this->Incoming().pop_front().msg);
+      //}
 
-      while (!messageQueue.empty()) {
-        // auto msg = this->Incoming().pop_front().msg;
-        auto msg = messageQueue.top();
-        messageQueue.pop();
+      // while (!messageQueue.empty()) {
+      while (!this->Incoming().empty()) {
+        auto msg = this->Incoming().pop_front().msg;
+        // auto msg = messageQueue.top();
+        // messageQueue.pop();
 
         switch (msg.header.id) {
           case CustomMsgTypes::ServerAccept: {
