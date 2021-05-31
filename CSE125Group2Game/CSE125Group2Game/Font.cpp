@@ -58,3 +58,16 @@ Font::Font(const std::string& fontPath, TextureLoader& tloader) {
 }
 
 Character Font::GetCharacter(char c) const { return mCharMap.at(c); }
+
+float Font::GetStringWidth(const std::string& text, float scale) {
+  float result = 0.0;
+
+  for (auto c = text.begin(); c != text.end(); c++) {
+    Character character = GetCharacter(*c);
+
+    result += (character.nextOffset >> 6) *
+              scale;  // bitshift by 6 to get value in pixels (2^6 = 64)
+  }
+
+  return result;
+}

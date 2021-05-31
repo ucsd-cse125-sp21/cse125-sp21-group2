@@ -47,6 +47,11 @@ void TextureLoader::GLTexture::use(unsigned int textureType) const {
 }
 
 Texture TextureLoader::loadTexture(const std::string& filePath) {
+  auto textureIter = mTextureMap.find(filePath);
+  if (textureIter != mTextureMap.end()) {
+    return textureIter->second;
+  }
+
   int width, height, nrChannels;
   stbi_set_flip_vertically_on_load(true);
   unsigned char* data =
@@ -66,7 +71,9 @@ Texture TextureLoader::loadTexture(const std::string& filePath) {
   mTextures.push_back(GLTexture(data, width, height));
 
   stbi_image_free(data);
-  return Texture(mTextures.size() - 1, GL_TEXTURE_2D);
+  Texture tex = Texture(mTextures.size() - 1, GL_TEXTURE_2D);
+  mTextureMap.emplace(filePath, tex);
+  return tex;
 }
 
 Texture TextureLoader::loadCubeMap(const std::string& directory) {
