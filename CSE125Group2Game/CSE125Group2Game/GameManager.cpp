@@ -314,7 +314,8 @@ void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
                                mTLoader);
 
     // If this is the first time a player connects, add it!
-    if (obj->getName() == GameObject::makeName("play", mClientId)) {
+    if ((obj->getName() == GameObject::makeName("play", mClientId))) {
+      std::cout << "client id" << mClientId << std::endl;
       addPlayer(foundObject, model);
     }
   } else if (obj->isProjectile()) {
@@ -339,6 +340,8 @@ void GameManager::addPlayer(GameObject*& foundObject, Model* model) {
 
   SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
 
+  std::cout << "Attaching camera to player id: " << mPlayer->getName()
+            << std::endl;
   // attach the camera to the player
   Camera& camera = mScene.addCamera(playerNode);
   camera.setPosition(glm::vec3(0, 30.0f, 0));

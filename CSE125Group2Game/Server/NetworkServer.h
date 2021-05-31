@@ -77,6 +77,7 @@ bool NetworkServer::OnClientConnect(
   message<CustomMsgTypes> msg;
   msg.header.id = CustomMsgTypes::ServerAccept;
   msg << numPlayers;  // Tell client their player ID
+  std::cout << "Sending id: " << numPlayers << std::endl;
   client->Send(msg);
 
   GameLogicServer* logicServer = GameLogicServer::getLogicServer();

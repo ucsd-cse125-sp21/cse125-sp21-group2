@@ -90,6 +90,8 @@ class GameManager {
   bool mStartGame = false;
   bool mReady = false;
 
+  bool mClientConnected = false;
+
  private:
   // TODO: fix formatting on this...
   [[deprecated("Replaced by SceneGraph.getByName()")]] SceneGraphNode* findNode(
@@ -108,5 +110,5 @@ class GameManager {
 
   Sound* mSound;
 
-  bool mEasterMode;
+  // bool mEasterMode;
 };

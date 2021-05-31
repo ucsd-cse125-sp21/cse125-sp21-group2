@@ -36,18 +36,30 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
     if (this->IsConnected()) {
       std::set<std::string> processedObjects;
       std::stack<olc::net::message<CustomMsgTypes>> messageQueue;
+      std::stack<olc::net::message<CustomMsgTypes>> acceptMessage;
 
       // Reads messages in reverse order, allows us to only proccess a specfic
       // object once per tick
-      // while (!this->Incoming().empty()) {
-      //  messageQueue.push(this->Incoming().pop_front().msg);
-      //}
-
-      // while (!messageQueue.empty()) {
       while (!this->Incoming().empty()) {
         auto msg = this->Incoming().pop_front().msg;
-        // auto msg = messageQueue.top();
-        // messageQueue.pop();
+
+        if (msg.header.id == CustomMsgTypes::ServerAccept) {
+          acceptMessage.push(msg);
+        } else {
+          messageQueue.push(msg);
+        }
+      }
+
+      if (!acceptMessage.empty()) {
+        messageQueue.push(acceptMessage.top());
+        acceptMessage.pop();
+      }
+
+      while (!messageQueue.empty()) {
+        // while (!this->Incoming().empty()) {
+        //  auto msg = this->Incoming().pop_front().msg;
+        auto msg = messageQueue.top();
+        messageQueue.pop();
 
         switch (msg.header.id) {
           case CustomMsgTypes::ServerAccept: {
@@ -57,6 +69,10 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             // Get client id from message
             int clientId;
             msg >> clientId;
+
+            std::cout << "id recieved: " << clientId << std::endl;
+
+            GameManager::getManager()->mClientConnected = true;
 
             GameManager::getManager()->mClientId = clientId;
 
