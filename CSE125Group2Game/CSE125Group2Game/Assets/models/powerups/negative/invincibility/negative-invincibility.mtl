@@ -4,13 +4,13 @@
 newmtl Negative
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.729341 0.102053 0.123189
+Kd 0.729341 0.037699 0.045581
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models\powerups\negative\attack\negative-invincibility.png
+map_Kd models\powerups\negative\invincibility\negative-invincibility.png
 
 newmtl Sword-blade
 Ns 225.000000

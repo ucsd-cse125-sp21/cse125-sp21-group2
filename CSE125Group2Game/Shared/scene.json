@@ -36,6 +36,23 @@
       "isTower": true
     },
     {
+      "name": "pos-invince",
+      "parent_name": "root",
+      "xPos": -9.5087,
+      "yPos": 9.44142,
+      "zPos": -25.493,
+      "xRot": -90,
+      "yRot": 0.151,
+      "zRot": 0.0,
+      "xScale": 0.5,
+      "yScale": 0.4,
+      "zScale": 0.5,
+      "bb_length": 4,
+      "bb_height": 5.3,
+      "bb_width": 3,
+      "obj_file": "models/powerups/positive/attack/positive-attack.obj"
+    },
+    {
       "name": "bearl-tree1",
       "parent_name": "root",
       "xPos": -8.533,
