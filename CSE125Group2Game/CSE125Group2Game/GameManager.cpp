@@ -127,6 +127,12 @@ void GameManager::Update() {
 
 void GameManager::renderUI() {
   // Show game over screen
+  if (!mClientConnected) {
+    mpRenderManager->drawText("Connecting to Server...", 275.0f, 300.0f, 0.6f,
+                              glm::vec3(0.7f), *mpFont);
+    return;
+  }
+
   if (mGameOver) {
     renderGameOverUI();
   }
@@ -315,7 +321,6 @@ void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
 
     // If this is the first time a player connects, add it!
     if ((obj->getName() == GameObject::makeName("play", mClientId))) {
-      std::cout << "client id" << mClientId << std::endl;
       addPlayer(foundObject, model);
     }
   } else if (obj->isProjectile()) {
@@ -340,8 +345,6 @@ void GameManager::addPlayer(GameObject*& foundObject, Model* model) {
 
   SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
 
-  std::cout << "Attaching camera to player id: " << mPlayer->getName()
-            << std::endl;
   // attach the camera to the player
   Camera& camera = mScene.addCamera(playerNode);
   camera.setPosition(glm::vec3(0, 30.0f, 0));

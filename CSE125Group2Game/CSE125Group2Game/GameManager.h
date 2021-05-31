@@ -110,5 +110,5 @@ class GameManager {
 
   Sound* mSound;
 
-  // bool mEasterMode;
+  bool mEasterMode;
 };

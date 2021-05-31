@@ -70,8 +70,6 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             int clientId;
             msg >> clientId;
 
-            std::cout << "id recieved: " << clientId << std::endl;
-
             GameManager::getManager()->mClientConnected = true;
 
             GameManager::getManager()->mClientId = clientId;
