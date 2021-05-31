@@ -13,7 +13,9 @@ std::string GameManager::playerModels[] = {PLAYER_MODEL_RED, PLAYER_MODEL_GREEN,
                                            PLAYER_MODEL_BLUE,
                                            PLAYER_MODEL_YELLOW};
 std::string GameManager::pickupModels[] = {
-    DAMAGE_BOOST_MODEL, SPEED_BOOST_MODEL, INVINCIBILITY_MODEL};
+    DAMAGE_BOOST_MODEL, SPEED_BOOST_MODEL,      INVINCIBILITY_MODEL,
+    EXPLOSION_MODEL,    DAMAGE_REDUCTION_MODEL, SPEED_REDUCTION_MODEL,
+    NO_SHOOTING_MODEL,  WEAKNESS_MODEL};
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   GameManager::getManager()->ResizeCallback(width, height);
@@ -326,11 +328,7 @@ void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
   } else if (obj->isProjectile()) {
     model = mMLoader.LoadModel(PROJECTILE_MODEL, *mLoader, mTLoader);
   } else if (obj->isPickup()) {
-    // TODO: remove once all powerup models added
-    if (obj->mModifier > 4) {
-      obj->mModifier = 0;
-    }
-
+    std::cout << "Model IDX" << obj->mModifier - 1 << std::endl;
     model = mMLoader.LoadModel(pickupModels[obj->mModifier - 1], *mLoader,
                                mTLoader);
   } else if (!obj->isTower()) {

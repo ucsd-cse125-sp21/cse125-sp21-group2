@@ -28,9 +28,19 @@
   "Assets/models/powerups/positive/attack/positive-attack.obj"
 // TODO: UPDATE SPEED BOOST MODEL PATH
 #define SPEED_BOOST_MODEL \
-  "Assets/models/powerups/positive/invincibility/positive-invincibility.obj"
+  "Assets/models/powerups/positive/speed/positive-speed.obj"
 #define INVINCIBILITY_MODEL \
   "Assets/models/powerups/positive/invincibility/positive-invincibility.obj"
+#define EXPLOSION_MODEL \
+  "Assets/models/powerups/positive/explosion/positive-explosion.obj"
+#define DAMAGE_REDUCTION_MODEL \
+  "Assets/models/powerups/negative/attack/negative-attack.obj"
+#define SPEED_REDUCTION_MODEL \
+  "Assets/models/powerups/negative/speed/negative-speed.obj"
+#define NO_SHOOTING_MODEL \
+  "Assets/models/powerups/negative/explosion/negative-explosion.obj"
+#define WEAKNESS_MODEL \
+  "Assets/models/powerups/negative/invincibility/negative-invincibility.obj"
 
 #define FORWARD_KEY GLFW_KEY_W
 #define LEFT_KEY GLFW_KEY_A

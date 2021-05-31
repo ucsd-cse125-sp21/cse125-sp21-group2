@@ -22,7 +22,7 @@ void Pickup::spawnPickup(Transform* transform, PickupType type) {
 void Pickup::spawnPickup(Transform* transform) {
   int pickupIndex = (rand() % NUM_PICKUPS) + 1;  // Plus 1 to avoid none
   PickupType type = static_cast<PickupType>(pickupIndex);
-  type = PickupType::Invincibility;  // TODO: Comment this out for random
+  // type = PickupType::Invincibility;  // TODO: Comment this out for random
   // pickups!
   spawnPickup(transform, type);
 }
@@ -44,5 +44,5 @@ void Pickup::update() {
   }
 
   // Spin the pickup
-  mTransform->addRotation(SPEED_MULTIPLIER * glm::vec3(2, 2, 2));
+  mTransform->addRotation(SPEED_MULTIPLIER * glm::vec3(2, 0, 0), true);
 }

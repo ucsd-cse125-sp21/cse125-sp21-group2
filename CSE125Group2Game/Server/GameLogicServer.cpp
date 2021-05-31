@@ -106,7 +106,7 @@ void GameLogicServer::update() {
   mLastTime = currTime;
 
   // Only update game state if game isn't over
-  if (!isGameOver() || Player::numPlayers < MIN_PLAYERS) {
+  if (!isGameOver()) {
     // printKeyPresses();
 
     // TODO: send info over to the client, but it should only be sent once.

@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models\powerups\positive\invincibility\positive-explosion.png
+map_Kd models\powerups\positive\explosion\positive-explosion.png
 
 newmtl Bomb-lighter
 Ns 225.000000
@@ -21,7 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models\powerups\positive\invincibility\positive-explosion.png
+map_Kd models\powerups\positive\explosion\positive-explosion.png
 
 newmtl Bomb-string
 Ns 225.000000
@@ -32,7 +32,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models\powerups\positive\invincibility\positive-explosion.png
+map_Kd models\powerups\positive\explosion\positive-explosion.png
 
 newmtl Bomb-top
 Ns 225.000000
@@ -43,7 +43,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models\powerups\positive\invincibility\positive-explosion.png
+map_Kd models\powerups\positive\explosion\positive-explosion.png
 
 newmtl Positive
 Ns 225.000000
@@ -54,4 +54,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models\powerups\positive\invincibility\positive-explosion.png
+map_Kd models\powerups\positive\explosion\positive-explosion.png

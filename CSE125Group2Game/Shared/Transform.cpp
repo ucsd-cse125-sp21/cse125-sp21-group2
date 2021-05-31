@@ -40,8 +40,11 @@ Transform::Transform(glm::vec3 translation, glm::quat rotation, glm::vec3 scale,
   updateModel();
 }
 
-void Transform::addRotation(glm::vec3 degrees) {
-  mRotation = glm::quat(glm::radians(degrees)) * mRotation;
+void Transform::addRotation(glm::vec3 degrees, bool localRot) {
+  if (!localRot)
+    mRotation = glm::quat(glm::radians(degrees)) * mRotation;
+  else
+    mRotation = mRotation * glm::quat(glm::radians(degrees));
   updateModel();
 }
 
