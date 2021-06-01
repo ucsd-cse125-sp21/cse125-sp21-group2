@@ -607,7 +607,6 @@ void GameLogicServer::sendEndGame() {
     }
   }
 
-
   int message_size = DWORD_SIZE + 4 * INT_SIZE + 2 * numPlayers * INT_SIZE;
 
   char* info = (char*)malloc(message_size);

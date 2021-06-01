@@ -106,7 +106,7 @@ Enemy* Enemy::spawnEnemy() {
   Enemy* enemy = new Enemy(
       new Transform(glm::vec3(0, RADIUS, 0),
                     glm::vec3(rand() % MAX_ANGLE, 0, rand() % MAX_ANGLE),
-                    glm::vec3(.25), glm::vec3(5)),
+                    glm::vec3(.25), glm::vec3(3)),
       Enemy::makeName(), currHealth);
   enemy->move(glm::vec3(0));  // hack to fix world position
 
