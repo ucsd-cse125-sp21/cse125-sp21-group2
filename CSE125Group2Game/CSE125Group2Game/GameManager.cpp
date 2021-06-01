@@ -240,9 +240,10 @@ void GameManager::renderGameOverUI() {
                             glm::vec3(1.0f, 0, 0), *mpFont);
 
   width = mpFont->GetStringWidth(
-      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed / 1000), 0.5f);
+      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed / 1000) + "s",
+      0.5f);
   mpRenderManager->drawText(
-      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed / 1000),
+      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed / 1000) + "s",
       400.0 - width / 2.0f, 350.0f, 0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
   width = mpFont->GetStringWidth(
       "High Score: " + std::to_string(mEndInfo->highScore), 0.5f);
@@ -253,7 +254,7 @@ void GameManager::renderGameOverUI() {
                             glm::vec3(0.7f), *mpFont);
   mpRenderManager->drawText("Kills", 400.0f, 280.0f, 0.5f, glm::vec3(0.7f),
                             *mpFont);
-  mpRenderManager->drawText("Downs", 488.0f, 280.0f, 0.5f, glm::vec3(0.7f),
+  mpRenderManager->drawText("Deaths", 488.0f, 280.0f, 0.5f, glm::vec3(0.7f),
                             *mpFont);
   std::vector<int> enemiesKilledPerPlayer = mEndInfo->mEnemiesKilledPerPlayer;
   std::vector<int> numRespawnedPerPlayer = mEndInfo->mNumRespawnedPerPlayer;
