@@ -107,11 +107,14 @@ void RenderManager::beginRender() {
 
 void RenderManager::draw(const Mesh& mesh, const Material& mat,
                          const glm::mat4& model, const glm::mat4& view,
-                         const glm::vec3& viewPos) {
+                         const glm::vec3& viewPos, const bool rainbow) {
   // set material colors...
   // in this case, we should use the texture shader
   // TODO: refactor this mess
-  if (mat.normalMap.isValid()) {
+  if (rainbow) {
+    mpRainbowProgram->use();
+    glUniform1f(7, currentTime);
+  } else if (mat.normalMap.isValid()) {
     mpBumpProgram->use();
     glUniform1i(glGetUniformLocation(mpBumpProgram->getID(), "diffuseMap"), 0);
     glActiveTexture(GL_TEXTURE0);
@@ -166,7 +169,8 @@ void RenderManager::draw(const Mesh& mesh, const Material& mat,
 void RenderManager::draw(const Model& model, const glm::mat4& transform,
                          const glm::mat4& view, const glm::vec3& viewPos) {
   for (int i = 0; i < model.meshes().size(); i++) {
-    draw(model.meshes()[i], model.materials()[i], transform, view, viewPos);
+    draw(model.meshes()[i], model.materials()[i], transform, view, viewPos,
+         model.mIsRainbow);
   }
 }
 
@@ -516,6 +520,6 @@ void RenderManager::drawBoundingBox(const SceneGraphNode& node,
   draw(cubeboi->meshes()[0],
        Material(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f),
                 0),
-       mememodel, view, viewPos);
+       mememodel, view, viewPos, false);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

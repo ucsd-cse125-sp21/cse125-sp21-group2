@@ -29,7 +29,8 @@ class RenderManager {
 
   void beginRender();
   void draw(const Mesh& mesh, const Material& mat, const glm::mat4& model,
-            const glm::mat4& view, const glm::vec3& viewPos);
+            const glm::mat4& view, const glm::vec3& viewPos,
+            const bool rainbow);
   void draw(const Model& model, const glm::mat4& view);
   void draw(const Model& model, const glm::mat4& transform,
             const glm::mat4& view, const glm::vec3& viewPos);
