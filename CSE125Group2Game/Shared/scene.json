@@ -149,9 +149,9 @@
       "xScale": 1.998,
       "yScale": 1.998,
       "zScale": 1.998,
-      "bb_length": 0.75,
-      "bb_height": 0.5,
-      "bb_width": 0.5,
+      "bb_length": 1,
+      "bb_height": 1,
+      "bb_width": 1,
       "obj_file": "models/towers/fallenstar/fallenstar.obj",
       "isTower": true
     },

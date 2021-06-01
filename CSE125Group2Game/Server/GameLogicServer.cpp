@@ -200,8 +200,6 @@ void GameLogicServer::restartGame() {
       continue;
     }
 
-    std::cout << "enemies killed: " << players[i]->getEnemiesKilled();
-
     players[i]->reset();
   }
 
@@ -386,7 +384,7 @@ GameObject* GameLogicServer::getCollidingObject(GameObject* obj) {
   /*for (int i = 0; i < mWorld.size(); i++) {
     // If this object is the root, or has 0 health, or is itself, do not
     // collide
-    if (obj->shouldNotCollide(mWorld[i])) {
+    if (obj->shouldNotCollide(*iterator)) {
       continue;
     }
 

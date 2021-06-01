@@ -13,7 +13,7 @@ std::string GameManager::playerModels[] = {PLAYER_MODEL_RED, PLAYER_MODEL_GREEN,
                                            PLAYER_MODEL_BLUE,
                                            PLAYER_MODEL_YELLOW};
 
-std::string GameManager::playerColors[] = {"Red", "Green", "Blue", "yelow"};
+std::string GameManager::playerColors[] = {"Red", "Green", "Blue", "Yellow"};
 
 std::string GameManager::pickupModels[] = {
     DAMAGE_BOOST_MODEL, SPEED_BOOST_MODEL,      INVINCIBILITY_MODEL,
@@ -97,6 +97,11 @@ void GameManager::Update() {
       return 1;
     }
   });
+
+  // preload power up models so we don't lag...
+  for (size_t i = 0; i < sizeof(pickupModels) / sizeof(std::string); i++) {
+    Model* model = mMLoader.LoadModel(pickupModels[i], *mLoader, mTLoader);
+  }
 
   while (!glfwWindowShouldClose(mWindow)) {
     // 1) Update local states (use key logger to update gameobject)
@@ -203,11 +208,13 @@ void GameManager::renderUI() {
                               650.0f, 550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
   } else {
     if (!mReady) {
-      mpRenderManager->drawText("Press enter to start", 275.0f, 25.0f, 0.6f,
-                                glm::vec3(0.7f), *mpFont);
+      float width = mpFont->GetStringWidth("Press enter to start", 0.6f);
+      mpRenderManager->drawText("Press enter to start", 400.0 - width / 2.0f,
+                                25.0f, 0.6f, glm::vec3(0.7f), *mpFont);
     } else {
-      mpRenderManager->drawText("Waiting for players...", 275.0f, 550.0f, 0.6f,
-                                glm::vec3(0.7f), *mpFont);
+      float width = mpFont->GetStringWidth("Waiting for players...", 0.6f);
+      mpRenderManager->drawText("Waiting for players...", 400.0 - width / 2.0f,
+                                550.0f, 0.6f, glm::vec3(0.7f), *mpFont);
       mpRenderManager->drawText(
           std::to_string(mCurrPlayers) + "/" + std::to_string(mMinPlayers),
           350.0f, 500.0f, 0.6f, glm::vec3(0.7f), *mpFont);
@@ -221,11 +228,17 @@ void GameManager::renderGameOverUI() {
             glm::vec4(0.0, 0, 0, 0.6));
   mpRenderManager->drawRect(rect);
 
-  mpRenderManager->drawText("GAME OVER", 300.0f, 400.0f, 1.0f,
+  float width = mpFont->GetStringWidth("GAME OVER", 1.0f);
+  mpRenderManager->drawText("GAME OVER", 400.0 - width / 2.0f, 400.0f, 1.0f,
                             glm::vec3(1.0f, 0, 0), *mpFont);
+
+  width = mpFont->GetStringWidth(
+      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed / 1000), 0.5f);
   mpRenderManager->drawText(
-      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed / 1000) + "s",
-      320.0f, 350.0f, 0.5f, glm::vec3(1.0f), *mpFont);
+      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed / 1000),
+      400.0 - width / 2.0f, 350.0f, 0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
+  width = mpFont->GetStringWidth(
+      "High Score: " + std::to_string(mEndInfo->highScore), 0.5f);
   mpRenderManager->drawText(
       "You Survived " + std::to_string(mEndInfo->highScore) + " Wave(s)",
       285.0f, 315.0f, 0.5f, glm::vec3(1.0f), *mpFont);
@@ -235,15 +248,19 @@ void GameManager::renderGameOverUI() {
                             *mpFont);
   mpRenderManager->drawText("Downs", 488.0f, 280.0f, 0.5f, glm::vec3(0.7f),
                             *mpFont);
-  /*std::vector<int> enemiesKilledPerPlayer = mEndInfo->mEnemiesKilledPerPlayer;
-  std::vector<int> numRespawnedPerPlayer = mEndInfo->mNumRespawnedPerPlayer;*/
+  std::vector<int> enemiesKilledPerPlayer = mEndInfo->mEnemiesKilledPerPlayer;
+  std::vector<int> numRespawnedPerPlayer = mEndInfo->mNumRespawnedPerPlayer;
 
-  std::vector<int> enemiesKilledPerPlayer = {1, 2, 3};
-  std::vector<int> numRespawnedPerPlayer = {1, 2, 3};
+  /*std::vector<int> enemiesKilledPerPlayer = {1, 2, 3, 4};
+  std::vector<int> numRespawnedPerPlayer = {1, 2, 3, 4};*/
+
+  std::vector<glm::vec3> colors = {glm::vec3(1, 0, 0), glm::vec3(0, 1, 0),
+                                   glm::vec3(0, 0, 1), glm::vec3(1, 1, 0)};
+
   for (int i = 0; i < enemiesKilledPerPlayer.size(); i++) {
-    mpRenderManager->drawText(
-        "Player" + std::to_string(i) + " (" + playerColors[i] + ")", 230.0f,
-        280.0f - ((i + 1) * 40), 0.5f, glm::vec3(1.0f), *mpFont);
+    mpRenderManager->drawText(playerColors[i] + " Player", 230.0f,
+                              280.0f - ((i + 1) * 40), 0.5f, colors[i],
+                              *mpFont);
     mpRenderManager->drawText(std::to_string(enemiesKilledPerPlayer[i]), 400.0f,
                               280.0f - ((i + 1) * 40), 0.5f, glm::vec3(1.0f),
                               *mpFont);

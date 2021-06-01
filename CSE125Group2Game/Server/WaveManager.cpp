@@ -96,6 +96,7 @@ void WaveManager::removeEnemy(Enemy* enemy) {
 void WaveManager::reset() {
   mWavesCompleted = 0;
   mWaveEnemies.clear();
+  mMaxWaveSize = 5;
 }
 bool WaveManager::isWaveComplete() { return mWaveEnemies.size() == 0; }
 

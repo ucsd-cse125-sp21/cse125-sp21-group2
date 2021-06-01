@@ -33,8 +33,6 @@ class OctreeNode {
 // lets just do this recursively for now:
 // Meh kinda annoying, cause going to have to remove objects from here when
 // deleted... something automatic would be much nicer
-// TODO: define an iterator that will go down tree to give collisions. Should
-// be pretty simple
 class Octree {
  public:
   class iterator {
