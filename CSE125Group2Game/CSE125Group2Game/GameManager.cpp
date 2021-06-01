@@ -14,6 +14,10 @@ std::string GameManager::playerModels[] = {PLAYER_MODEL_RED, PLAYER_MODEL_GREEN,
                                            PLAYER_MODEL_YELLOW};
 
 std::string GameManager::playerColors[] = {"Red", "Green", "Blue", "Yellow"};
+std::string GameManager::pickupUIStrings[] = {
+    "",          "Damage Boost",     "Speed Boost",     "Invincibility",
+    "Explosion", "Damage Reduction", "Speed Reduction", "Out Of Ammo",
+    "Weakness"};
 
 std::string GameManager::pickupModels[] = {
     DAMAGE_BOOST_MODEL, SPEED_BOOST_MODEL,      INVINCIBILITY_MODEL,
@@ -192,6 +196,9 @@ void GameManager::renderUI() {
         "Health: " + std::to_string(mPlayer->getHealth()) + " / " +
             std::to_string(DEFAULT_HEALTH),
         25.f, 550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
+
+    mpRenderManager->drawText(pickupUIStrings[mCurrentPickup], 350.f, 25.0f,
+                              0.5f, glm::vec3(0.7f), *mpFont);
   }
 
   if (mStartGame) {
@@ -302,6 +309,11 @@ void GameManager::UpdateObject(GameObject* obj) {
   // Update object
   foundObject = foundNode->getObject();
 
+  // If this is the local player, update the modified field
+  if ((foundObject->getName() == GameObject::makeName("play", mClientId))) {
+    mCurrentPickup = obj->mModifier;
+  }
+
   // Health is 0, delete object
   if (obj->isDead()) {
     foundObject->setHealth(0);
@@ -374,7 +386,6 @@ void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
   } else if (obj->isProjectile()) {
     model = mMLoader.LoadModel(PROJECTILE_MODEL, *mLoader, mTLoader);
   } else if (obj->isPickup()) {
-    std::cout << "Model IDX" << obj->mModifier - 1 << std::endl;
     model = mMLoader.LoadModel(pickupModels[obj->mModifier - 1], *mLoader,
                                mTLoader);
   } else if (!obj->isTower()) {

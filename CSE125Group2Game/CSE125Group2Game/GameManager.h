@@ -89,6 +89,7 @@ class GameManager {
 
   int mClientId;
   bool mGameOver = false;
+  int mCurrentPickup = 0;
 
   int mWaveTimer = 0;
   int mWavesCompleted = 0;
@@ -97,6 +98,7 @@ class GameManager {
   static std::string playerModels[];
   static std::string playerColors[];
   static std::string pickupModels[];
+  static std::string pickupUIStrings[];
   GameEndInfo* mEndInfo;
   bool mStartGame = false;
   bool mReady = false;

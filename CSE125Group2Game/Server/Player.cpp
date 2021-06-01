@@ -171,6 +171,7 @@ void Player::addPickup(Pickup* pickup) {
       GameLogicServer::getLogicServer()->spawnPlayerExplosion(this);
       mPickupEndTime = GetTickCount();
       mPickup = PickupType::None;
+      mModifier = 0;
       break;
 
     case PickupType::DamageReduction:
