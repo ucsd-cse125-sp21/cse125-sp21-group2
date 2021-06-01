@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <functional>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -59,7 +59,7 @@ class ParticleEmitter {
   bool mIsContinuous = false;
   bool mAnealSize = true;
   float mParticleSize = 4.0f;
-  bool isRainbow = true;
+  bool isRainbow = false;
   float mParticleSpeed = 5.0f;
 
   bool isDone() const;

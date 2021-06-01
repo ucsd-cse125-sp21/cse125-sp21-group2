@@ -51,6 +51,11 @@
 #define READY_KEY GLFW_KEY_ENTER
 #define EASTER_KEY GLFW_KEY_LEFT_BRACKET
 
+#define DAMAGE_BOOST 1
+#define SPEED_BOOST 2
+#define INVINCIBILITY 3
+#define EXPLOSION 4
+
 class GameManager {
  public:
   GameManager(GLFWwindow* window);

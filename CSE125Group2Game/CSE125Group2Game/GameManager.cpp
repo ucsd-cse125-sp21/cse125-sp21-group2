@@ -334,6 +334,11 @@ void GameManager::UpdateObject(GameObject* obj) {
       foundObject->mShouldRender = false;
       Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
       foundNode->emitter = new ParticleEmitter(flameTexture);
+
+      if (mCurrentPickup == INVINCIBILITY || mCurrentPickup == DAMAGE_BOOST) {
+        foundNode->emitter->isRainbow = true;
+      }
+
       mNumEnemies--;
       return;
     }
@@ -385,6 +390,9 @@ void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
     }
   } else if (obj->isProjectile()) {
     model = mMLoader.LoadModel(PROJECTILE_MODEL, *mLoader, mTLoader);
+
+    // TODO: if player is invincible, make rainbow
+
   } else if (obj->isPickup()) {
     model = mMLoader.LoadModel(pickupModels[obj->mModifier - 1], *mLoader,
                                mTLoader);
