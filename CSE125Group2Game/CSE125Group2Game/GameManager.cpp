@@ -95,10 +95,45 @@ void GameManager::Update() {
   // TODO(evan): make event based?
   SceneGraphNode* node = mScene.getByName("towrbear");
   node->getObject()->setModelIndexCallback([](const GameObject& obj) {
-    if (obj.getHealth() > 50) {
+    if (obj.getHealth() > 75) {
       return 0;
-    } else {
+    } else if (obj.getHealth() > 50) {
       return 1;
+    } else {
+      return 2;
+    }
+  });
+
+  node = mScene.getByName("towrsung");
+  node->getObject()->setModelIndexCallback([](const GameObject& obj) {
+    if (obj.getHealth() > 75) {
+      return 0;
+    } else if (obj.getHealth() > 50) {
+      return 1;
+    } else {
+      return 2;
+    }
+  });
+
+  node = mScene.getByName("towrstar");
+  node->getObject()->setModelIndexCallback([](const GameObject& obj) {
+    if (obj.getHealth() > 75) {
+      return 0;
+    } else if (obj.getHealth() > 50) {
+      return 1;
+    } else {
+      return 2;
+    }
+  });
+
+  node = mScene.getByName("towrston");
+  node->getObject()->setModelIndexCallback([](const GameObject& obj) {
+    if (obj.getHealth() > 75) {
+      return 0;
+    } else if (obj.getHealth() > 50) {
+      return 1;
+    } else {
+      return 2;
     }
   });
 
@@ -179,8 +214,8 @@ void GameManager::renderUI() {
   };
 
   drawHealthBar("towrbear", "Bearl", 0);
-  drawHealthBar("towrstar", "Falling Star", 1);
-  drawHealthBar("towrston", "Stone Henge", 2);
+  drawHealthBar("towrstar", "Fallen Star", 1);
+  drawHealthBar("towrston", "Stonehenge", 2);
   drawHealthBar("towrsung", "Sun God", 3);
 
   // easter egg
