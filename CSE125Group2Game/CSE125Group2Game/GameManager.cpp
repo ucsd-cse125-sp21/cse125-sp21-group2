@@ -391,7 +391,8 @@ void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
   } else if (obj->isProjectile()) {
     model = mMLoader.LoadModel(PROJECTILE_MODEL, *mLoader, mTLoader);
 
-    // TODO: if player is invincible, make rainbow
+    // if player is damage boost, make rainbow
+    model->mIsRainbow = mCurrentPickup == DAMAGE_BOOST;
 
   } else if (obj->isPickup()) {
     model = mMLoader.LoadModel(pickupModels[obj->mModifier - 1], *mLoader,
