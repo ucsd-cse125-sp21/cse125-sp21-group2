@@ -95,6 +95,7 @@ class GameManager {
   int mNumEnemies = 0;
 
   static std::string playerModels[];
+  static std::string playerColors[];
   static std::string pickupModels[];
   GameEndInfo* mEndInfo;
   bool mStartGame = false;

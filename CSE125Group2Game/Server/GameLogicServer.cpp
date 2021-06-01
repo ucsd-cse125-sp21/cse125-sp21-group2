@@ -607,6 +607,7 @@ void GameLogicServer::sendEndGame() {
     }
   }
 
+
   int message_size = DWORD_SIZE + 4 * INT_SIZE + 2 * numPlayers * INT_SIZE;
 
   char* info = (char*)malloc(message_size);
@@ -619,7 +620,7 @@ void GameLogicServer::sendEndGame() {
   tmpInfo += DWORD_SIZE;
 
   // TODO: determine a better way to calculate score?
-  int highScore = WaveManager::getWaveManager()->mWavesCompleted * 100;
+  int highScore = WaveManager::getWaveManager()->mWavesCompleted;
   memcpy(tmpInfo, &(highScore), INT_SIZE);
   tmpInfo += INT_SIZE;
 

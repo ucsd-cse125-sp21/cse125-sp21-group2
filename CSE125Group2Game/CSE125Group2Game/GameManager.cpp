@@ -12,6 +12,11 @@ GameManager* GameManager::mManager;
 std::string GameManager::playerModels[] = {PLAYER_MODEL_RED, PLAYER_MODEL_GREEN,
                                            PLAYER_MODEL_BLUE,
                                            PLAYER_MODEL_YELLOW};
+
+std::string GameManager::playerColors[] = { "Red", "Green",
+                                           "Blue",
+                                           "yelow" };
+
 std::string GameManager::pickupModels[] = {
     DAMAGE_BOOST_MODEL, SPEED_BOOST_MODEL,      INVINCIBILITY_MODEL,
     EXPLOSION_MODEL,    DAMAGE_REDUCTION_MODEL, SPEED_REDUCTION_MODEL,
@@ -221,14 +226,41 @@ void GameManager::renderGameOverUI() {
   mpRenderManager->drawText("GAME OVER", 300.0f, 400.0f, 1.0f,
                             glm::vec3(1.0f, 0, 0), *mpFont);
   mpRenderManager->drawText(
-      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed), 320.0f,
-      350.0f, 0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
+      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed/1000) + "s", 320.0f,
+      350.0f, 0.5f, glm::vec3(1.0f), *mpFont);
   mpRenderManager->drawText(
-      "High Score: " + std::to_string(mEndInfo->highScore), 335.0f, 315.0f,
-      0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
+      "You Survived " + std::to_string(mEndInfo->highScore) + " Wave(s)", 285.0f, 315.0f,
+      0.5f, glm::vec3(1.0f), *mpFont);
   mpRenderManager->drawText(
-      "MVP Player: " + std::to_string(mEndInfo->mvpPlayerID), 350.0f, 280.0f,
-      0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
+      "Player Name" , 230.0f, 280.0f,
+      0.5f, glm::vec3(0.7f), *mpFont);
+  mpRenderManager->drawText(
+      "Kills", 400.0f, 280.0f,
+      0.5f, glm::vec3(0.7f), *mpFont);
+  mpRenderManager->drawText(
+      "Downs", 488.0f, 280.0f,
+      0.5f, glm::vec3(0.7f), *mpFont);
+  std::vector<int> enemiesKilledPerPlayer = mEndInfo->mEnemiesKilledPerPlayer;
+  std::vector<int> numRespawnedPerPlayer = mEndInfo->mNumRespawnedPerPlayer;
+
+  /*std::vector<int> enemiesKilledPerPlayer = { 1,2,3 };
+  std::vector<int> numRespawnedPerPlayer = {1,2,3};*/
+  for (int i = 0; i < enemiesKilledPerPlayer.size(); i++) {
+      mpRenderManager->drawText(
+          "Player" + std::to_string(i) + " (" + playerColors[i] + ")", 230.0f, 280.0f - ((i+1)*40),
+          0.5f, glm::vec3(1.0f), *mpFont);
+      mpRenderManager->drawText(
+          std::to_string(enemiesKilledPerPlayer[i]), 400.0f, 280.0f - ((i + 1) * 40),
+          0.5f, glm::vec3(1.0f), *mpFont);
+      mpRenderManager->drawText(
+          std::to_string(numRespawnedPerPlayer[i]), 488.0f, 280.0f - ((i + 1) * 40),
+          0.5f, glm::vec3(1.0f), *mpFont);
+      if (mEndInfo->mvpPlayerID == i) {
+          mpRenderManager->drawText(
+              "MVP", 570.0f, 280.0f - ((i + 1) * 40),
+              0.5f, glm::vec3(1.0f), *mpFont);
+      }
+  }
 }
 
 void GameManager::updateKeyPresses(bool* keysPressed) {
