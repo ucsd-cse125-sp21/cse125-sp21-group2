@@ -123,8 +123,8 @@ void Enemy::setHealth(int amt) {
   // If enemy dies and should spawn a pickup, create one
   if (isDead() && mSpawnPickup) {
     Transform* pickupTransform =
-        new Transform(mTransform->getTranslation(), glm::vec3(0),
-                      mTransform->getScale(), glm::vec3(1));
+        new Transform(glm::vec3(mTransform->getModel() * glm::vec4(0, 0, 0, 1)),
+                      glm::vec3(0), glm::vec3(0.5), glm::vec3(0.25));
     Pickup::spawnPickup(pickupTransform);
   }
 }

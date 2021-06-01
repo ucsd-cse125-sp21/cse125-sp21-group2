@@ -215,9 +215,9 @@ void GameManager::renderUI() {
                               650.0f, 550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
   } else {
     if (!mReady) {
-      float width = mpFont->GetStringWidth("Press enter to start", 0.6f);
+      float width = mpFont->GetStringWidth("Press enter to start", 0.8f);
       mpRenderManager->drawText("Press enter to start", 400.0 - width / 2.0f,
-                                25.0f, 0.6f, glm::vec3(0.7f), *mpFont);
+                                360.0f, 0.8f, glm::vec3(0.7f), *mpFont);
     } else {
       float width = mpFont->GetStringWidth("Waiting for players...", 0.6f);
       mpRenderManager->drawText("Waiting for players...", 400.0 - width / 2.0f,
