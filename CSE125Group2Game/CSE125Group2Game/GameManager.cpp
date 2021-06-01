@@ -312,6 +312,8 @@ void GameManager::UpdateObject(GameObject* obj) {
   // If this is the local player, update the modified field
   if ((foundObject->getName() == GameObject::makeName("play", mClientId))) {
     mCurrentPickup = obj->mModifier;
+
+    foundNode->getModel()->mIsRainbow = mCurrentPickup == INVINCIBILITY;
   }
 
   // Health is 0, delete object

@@ -16,7 +16,7 @@ class SceneGraphNode {
   // static SceneGraphNode* getRoot();
 
   GameObject* getObject() const;
-  const Model* getModel() const;
+  Model* getModel() const;
   std::vector<SceneGraphNode*> getChildren() const;
   SceneGraphNode* getParent();
 
