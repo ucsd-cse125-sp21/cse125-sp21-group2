@@ -110,7 +110,9 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
           case CustomMsgTypes::EndGame: {
             GameManager::getManager()->mGameOver = true;
-            GameEndInfo* endInfo = GameManager::getManager()->mEndInfo;
+            delete GameManager::getManager()->mEndInfo;
+            GameEndInfo* endInfo = new GameEndInfo();
+            GameManager::getManager()->mEndInfo = endInfo;
 
             char* data = (char*)malloc(msg.body.size());
             char* dataToBeFreed = data;
