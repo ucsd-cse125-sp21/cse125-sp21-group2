@@ -465,6 +465,17 @@ void GameManager::addPlayer(GameObject*& foundObject, Model* model) {
   emitter1->emitter->mIsContinuous = true;
   emitter1->emitter->mParticleSize = 1.0;
   emitter1->emitter->mParticleSpeed = 3.0;
+
+  GameObject* bsObj2 =
+      new GameObject(new Transform(glm::vec3(-2.0, 0.0, 3.0), glm::vec3(0),
+                                   glm::vec3(0.2, 0.2, 0.2)),
+                     "bsObj1", 100);
+  SceneGraphNode* emitter2 = mScene.addChild(bsObj2, nullptr, playerNode);
+  emitter2->emitter =
+      new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 30, 200);
+  emitter2->emitter->mIsContinuous = true;
+  emitter2->emitter->mParticleSize = 1.0;
+  emitter2->emitter->mParticleSpeed = 3.0;
 }
 
 GameObject* GameManager::unmarshalInfo(char* data) {

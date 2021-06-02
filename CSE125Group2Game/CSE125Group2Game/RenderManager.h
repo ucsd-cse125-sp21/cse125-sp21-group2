@@ -91,7 +91,7 @@ class RenderManager {
   glm::mat4 mProjection = glm::mat4(1.0f);
   glm::mat4 mUIProjection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
 
-  bool mRenderBoundingBoxes = true;
+  bool mRenderBoundingBoxes = false;
   Model* cubeboi;
 
   float currentTime = 0.0f;
