@@ -41,6 +41,13 @@ void sendStartGame() {
   NetworkServer::GetNetworkServer()->MessageAllClients(msg);
 }
 
+void sendFriendlyFire() {
+  olc::net::message<CustomMsgTypes> msg;
+  msg.header.id = CustomMsgTypes::FriendlyFire;
+
+  NetworkServer::GetNetworkServer()->MessageAllClients(msg);
+}
+
 void sendWaitingGame(int currPlayers, int minPlayers) {
   olc::net::message<CustomMsgTypes> msg;
   msg.header.id = CustomMsgTypes::WaitingForPlayers;

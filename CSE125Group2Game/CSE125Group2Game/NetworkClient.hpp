@@ -97,6 +97,12 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
 
           } break;
 
+          case CustomMsgTypes::FriendlyFire: {
+            // TODO: Lower UI to start game
+            GameManager::getManager()->mFriendlyFireStart = GetTickCount();
+
+          } break;
+
           case CustomMsgTypes::WaitingForPlayers: {
             // TODO: Lower UI to start game
             int minPlayers, currPlayers;

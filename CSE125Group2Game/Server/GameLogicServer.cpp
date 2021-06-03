@@ -17,6 +17,7 @@ GameLogicServer* GameLogicServer::mLogicServer;
 int Player::numPlayers = 0;
 void sendEndGameInfo(char* data, int size);
 void sendStartGame();
+void sendFriendlyFire();
 void sendWaitingGame(int currPlayers, int minPlayers);
 
 GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
@@ -40,6 +41,9 @@ GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
   mPostGameInfoSent = false;
   mFriendlyFire = friendlyFire;
 }
+GameLogicServer::GameLogicServer(std::vector<GameObject*> world,
+                                 ServerLoader scene, uint16_t tick_ms)
+    : GameLogicServer(world, scene, tick_ms, false) {}
 
 std::string server_read_config2(std::string field, std::string filename) {
   std::string line;
@@ -75,7 +79,7 @@ GameLogicServer* GameLogicServer::getLogicServer() {
     uint16_t tick = 33;
     std::string config_tick("tick");
     std::string config_ff("friendlyFire");
-    bool friendlyFire = false;
+    // bool friendlyFire = false;
 
     ServerLoader scene(SCENE_JSON);
 
@@ -93,14 +97,15 @@ GameLogicServer* GameLogicServer::getLogicServer() {
       }
     }
 
-    std::string str_ff = server_read_config2(config_ff, CONFIG_TXT);
+    // std::string str_ff = server_read_config2(config_ff, CONFIG_TXT);
 
-    if (str_ff.compare(std::string("true")) == 0) {
-      std::cout << "ff trueee" << std::endl;
-      friendlyFire = true;
-    }
+    // if (str_ff.compare(std::string("true")) == 0) {
+    //  std::cout << "ff trueee" << std::endl;
+    //  friendlyFire = true;
+    //}
 
-    mLogicServer = new GameLogicServer(world, scene, tick, friendlyFire);
+    // mLogicServer = new GameLogicServer(world, scene, tick, friendlyFire);
+    mLogicServer = new GameLogicServer(world, scene, tick);
 
     Tower::spawn();
     Cloud::spawn();
@@ -120,6 +125,13 @@ void GameLogicServer::update() {
   // Only update game state if game isn't over
   if (!isGameOver()) {
     // printKeyPresses();
+
+    if (setFriendlyFire()) {
+      if (!mFriendlyFire) {
+        sendFriendlyFire();
+      }
+      mFriendlyFire = true;
+    }
 
     if (playersReady()) {
       WaveManager::getWaveManager()->update();
@@ -160,6 +172,17 @@ void GameLogicServer::update() {
   resetKeyPresses();
 }
 
+bool GameLogicServer::setFriendlyFire() {
+  bool ret = false;
+  for (int i = 0; i < MAX_PLAYERS; i++) {
+    if (players[i] == nullptr) {
+      continue;
+    }
+    ret = ret || mKeyPresses[i][FF];
+  }
+
+  return ret;
+}
 bool GameLogicServer::playersReady() {
   bool ready = true;
   bool noplayers = true;

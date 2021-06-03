@@ -37,6 +37,8 @@ class GameLogicServer {
  public:
   GameLogicServer(std::vector<GameObject*> world, ServerLoader scene,
                   uint16_t tick_ms, bool friendlyFire);
+  GameLogicServer(std::vector<GameObject*> world, ServerLoader scene,
+                  uint16_t tick_ms);
 
   void update();
   static GameLogicServer* getLogicServer();
@@ -73,6 +75,7 @@ class GameLogicServer {
   bool playersReady();
   int numReadyPlayers;
   bool mFriendlyFire;
+  bool setFriendlyFire();
 
  private:
   void resetKeyPresses();
