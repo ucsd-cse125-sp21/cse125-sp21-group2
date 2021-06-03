@@ -83,6 +83,8 @@ class GameManager {
 
   void addPlayer(GameObject*& foundObject, Model* model);
 
+  void addEmittersToPlayer(SceneGraphNode* playerNode);
+
   void setClientID(int id);
   unsigned long mFriendlyFireStart;
 

@@ -241,6 +241,7 @@ void GameLogicServer::restartGame() {
 
   mGameStartTick = GetTickCount();
   mPostGameInfoSent = false;
+  mFriendlyFire = false;
 }
 
 void GameLogicServer::updateEnemies() {

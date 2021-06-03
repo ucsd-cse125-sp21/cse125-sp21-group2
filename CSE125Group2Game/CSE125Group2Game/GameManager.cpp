@@ -365,6 +365,9 @@ void GameManager::UpdateObject(GameObject* obj) {
     // Don't render the player if they die
     if (foundObject->isPlayer()) {
       foundObject->mShouldRender = false;
+      std::string playerId = std::to_string(foundObject->getPlayerId());
+      mScene.getByName("bsObj1" + playerId)->getObject()->mShouldRender = false;
+      mScene.getByName("bsObj2" + playerId)->getObject()->mShouldRender = false;
       return;
     } else if (obj->isTower()) {
       foundObject->mShouldRender = false;
@@ -394,6 +397,12 @@ void GameManager::UpdateObject(GameObject* obj) {
     return;
   } else {
     foundObject->mShouldRender = true;
+
+    if (foundObject->isPlayer()) {
+      std::string playerId = std::to_string(foundObject->getPlayerId());
+      mScene.getByName("bsObj1" + playerId)->getObject()->mShouldRender = true;
+      mScene.getByName("bsObj2" + playerId)->getObject()->mShouldRender = true;
+    }
   }
 
   updateSound(foundObject);
@@ -447,6 +456,11 @@ void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
   }
 
   foundNode = mScene.addChild(foundObject, model);
+
+  if (foundObject->isPlayer()) {
+    // attach emitters to player
+    addEmittersToPlayer(foundNode);
+  }
 }
 
 void GameManager::addPlayer(GameObject*& foundObject, Model* model) {
@@ -459,12 +473,14 @@ void GameManager::addPlayer(GameObject*& foundObject, Model* model) {
   camera.setPosition(glm::vec3(0, 30.0f, 0));
   camera.setFacing(glm::vec3(0, 0, 0));
   camera.setUp(glm::vec3(0.0f, 0, -1.0f));
+}
 
-  // attach emitters to player
+void GameManager::addEmittersToPlayer(SceneGraphNode* playerNode) {
+  std::string playerId = std::to_string(playerNode->getObject()->getPlayerId());
   GameObject* bsObj1 =
-      new GameObject(new Transform(glm::vec3(2.0, 0.0, 3.0), glm::vec3(0),
+      new GameObject(new Transform(glm::vec3(2.0, 0.0, 2.0), glm::vec3(0),
                                    glm::vec3(0.2, 0.2, 0.2)),
-                     "bsObj1", 100);
+                     "bsObj1" + playerId, 100);
   SceneGraphNode* emitter1 = mScene.addChild(bsObj1, nullptr, playerNode);
   Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
   emitter1->emitter =
@@ -474,9 +490,9 @@ void GameManager::addPlayer(GameObject*& foundObject, Model* model) {
   emitter1->emitter->mParticleSpeed = 3.0;
 
   GameObject* bsObj2 =
-      new GameObject(new Transform(glm::vec3(-2.0, 0.0, 3.0), glm::vec3(0),
+      new GameObject(new Transform(glm::vec3(-2.0, 0.0, 2.0), glm::vec3(0),
                                    glm::vec3(0.2, 0.2, 0.2)),
-                     "bsObj1", 100);
+                     "bsObj2" + playerId, 100);
   SceneGraphNode* emitter2 = mScene.addChild(bsObj2, nullptr, playerNode);
   emitter2->emitter =
       new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 30, 200);

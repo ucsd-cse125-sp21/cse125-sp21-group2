@@ -250,7 +250,7 @@ void RenderManager::drawParticles(const SceneGraphNode& node,
                                   const glm::vec3& viewPos) {
   glm::mat4 currTransform = prev * node.getObject()->getTransform()->getModel();
   auto model = node.getModel();
-  if (node.emitter) {
+  if (node.emitter && node.getObject()->mShouldRender) {
     draw(*node.emitter, currTransform, view, viewPos);
   }
 
