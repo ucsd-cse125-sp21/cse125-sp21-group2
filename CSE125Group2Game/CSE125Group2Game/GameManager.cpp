@@ -168,6 +168,10 @@ void GameManager::Update() {
     // render text ui
     renderUI();
 
+    if (mGameOver) {
+      spawnExplosions(delta);
+    }
+
     glfwSwapBuffers(mWindow);
   }
 
@@ -323,6 +327,30 @@ void GameManager::renderGameOverUI() {
                                 glm::vec3(1.0f), *mpFont);
     }
   }
+}
+
+void GameManager::spawnExplosions(float delta) {
+  static float spawnDelta = 0;
+  static int count = 0;
+  if (spawnDelta >= 0.2) {
+    float x = (rand() % 100) - 50;
+    float z = (rand() % 50) - 25;
+    Transform* newTransform =
+        new Transform(glm::vec3(x, 0, z), glm::vec3(0), glm::vec3(1));
+    SceneGraphNode* node =
+        mScene.getByName(GameObject::makeName("play", mClientId));
+    GameObject* deathEmitter =
+        new GameObject(newTransform, "deathEmitter" + count, 10);
+    SceneGraphNode* emitterNode = mScene.addChild(deathEmitter, nullptr, node);
+    Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
+    emitterNode->emitter = new ParticleEmitter(flameTexture);
+    emitterNode->emitter->isRainbow = true;
+    spawnDelta = 0;
+    count += 1;
+    explosionsToRemove.push_back(emitterNode);
+  }
+
+  spawnDelta += delta;
 }
 
 void GameManager::updateKeyPresses(bool* keysPressed) {

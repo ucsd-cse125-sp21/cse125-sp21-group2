@@ -77,6 +77,14 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
           } break;
 
           case CustomMsgTypes::WaveTimer: {
+            // clear those particles yeet
+            if (GameManager::getManager()->mGameOver) {
+              for (SceneGraphNode* node :
+                   GameManager::getManager()->explosionsToRemove) {
+                GameManager::getManager()->mScene.removeChild(node);
+              }
+              GameManager::getManager()->explosionsToRemove.clear();
+            }
             GameManager::getManager()->mGameOver =
                 false;  // TODO: FIX THIS HACK
 
