@@ -8,6 +8,8 @@
 #define STEP 12
 #define MAX_ANGLE 360
 
+int Enemy::currHealth = DEFAULT_HEALTH;
+
 Enemy::Enemy(Transform* transform, std::string name, int health)
     : Moveable(transform, name, health, ObjectType::Enemy) {
   mIsModified = true;
@@ -100,16 +102,17 @@ std::string Enemy::makeName() {
 }
 
 Enemy* Enemy::spawnEnemy() {
+  // currHealth += waveCounter;
   Enemy* enemy = new Enemy(
       new Transform(glm::vec3(0, RADIUS, 0),
                     glm::vec3(rand() % MAX_ANGLE, 0, rand() % MAX_ANGLE),
-                    glm::vec3(.25), glm::vec3(5)),
-      Enemy::makeName(), DEFAULT_HEALTH);
+                    glm::vec3(.25), glm::vec3(2.9)),
+      Enemy::makeName(), currHealth);
   enemy->move(glm::vec3(0));  // hack to fix world position
 
+  // 50/50 chance of spawning pickup on death
   unsigned int randomChance = rand() % 2;
-  // enemy->mSpawnPickup = randomChance == PICKUP_CHANCE;
-  enemy->mSpawnPickup = true;
+  enemy->mSpawnPickup = randomChance == PICKUP_CHANCE;
 
   return enemy;
 }
@@ -120,8 +123,8 @@ void Enemy::setHealth(int amt) {
   // If enemy dies and should spawn a pickup, create one
   if (isDead() && mSpawnPickup) {
     Transform* pickupTransform =
-        new Transform(mTransform->getTranslation(), mTransform->getRotation(),
-                      mTransform->getScale(), mTransform->getBBoxLens());
+        new Transform(glm::vec3(mTransform->getModel() * glm::vec4(0, 0, 0, 1)),
+                      glm::vec3(0), glm::vec3(0.5), glm::vec3(0.25));
     Pickup::spawnPickup(pickupTransform);
   }
 }

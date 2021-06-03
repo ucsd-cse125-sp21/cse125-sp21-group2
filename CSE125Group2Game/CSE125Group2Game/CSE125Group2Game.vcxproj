@@ -45,12 +45,13 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -85,7 +86,9 @@
     <OutDir>$(SolutionDir)build\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)build\</OutDir>
+    <IncludePath>$(ProjectDir)irrKlang-64bit-1.6.0\include;$(SolutionDir)Network\asio\include;$(SolutionDir)Network;$(SolutionDir)Shared;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -163,16 +166,18 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>glad/include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\evanm\Documents\GitHub\cse125-sp21-group2\CSE125Group2Game\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -183,6 +188,7 @@
     <ClCompile Include="..\Shared\Utils.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ConeParticleEmitter.cpp" />
+    <ClCompile Include="GameEndInfo.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="glad\src\glad.c" />
     <ClCompile Include="Image.cpp" />
@@ -238,13 +244,14 @@
     <ClInclude Include="..\Shared\Utils.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConeParticleEmitter.h" />
+    <ClInclude Include="GameEndInfo.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="ModelLoader.h" />
-    <ClInclude Include="net_client.hpp" />
+    <ClInclude Include="NetworkClient.hpp" />
     <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="RenderManager.h" />

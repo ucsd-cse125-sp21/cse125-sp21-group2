@@ -13,6 +13,17 @@ std::string GameManager::playerModels[] = {PLAYER_MODEL_RED, PLAYER_MODEL_GREEN,
                                            PLAYER_MODEL_BLUE,
                                            PLAYER_MODEL_YELLOW};
 
+std::string GameManager::playerColors[] = {"Red", "Green", "Blue", "Yellow"};
+std::string GameManager::pickupUIStrings[] = {
+    "",          "Damage Boost",     "Speed Boost",     "Invincibility",
+    "Explosion", "Damage Reduction", "Speed Reduction", "Out Of Ammo",
+    "Weakness"};
+
+std::string GameManager::pickupModels[] = {
+    DAMAGE_BOOST_MODEL, SPEED_BOOST_MODEL,      INVINCIBILITY_MODEL,
+    EXPLOSION_MODEL,    DAMAGE_REDUCTION_MODEL, SPEED_REDUCTION_MODEL,
+    NO_SHOOTING_MODEL,  WEAKNESS_MODEL};
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   GameManager::getManager()->ResizeCallback(width, height);
 }
@@ -32,6 +43,7 @@ GameManager::GameManager(GLFWwindow* window) : mWindow(window) {
   mSound->playBackgroundMusic(mSound->backgroundMusicPath);
 
   mpFont = new Font(ASSET("fonts/galaxy.otf"), mTLoader);
+  mEndInfo = new GameEndInfo();
 }
 
 GameManager* GameManager::getManager() {
@@ -83,12 +95,52 @@ void GameManager::Update() {
   // TODO(evan): make event based?
   SceneGraphNode* node = mScene.getByName("towrbear");
   node->getObject()->setModelIndexCallback([](const GameObject& obj) {
-    if (obj.getHealth() > 50) {
+    if (obj.getHealth() > 75) {
       return 0;
-    } else {
+    } else if (obj.getHealth() > 50) {
       return 1;
+    } else {
+      return 2;
     }
   });
+
+  node = mScene.getByName("towrsung");
+  node->getObject()->setModelIndexCallback([](const GameObject& obj) {
+    if (obj.getHealth() > 75) {
+      return 0;
+    } else if (obj.getHealth() > 50) {
+      return 1;
+    } else {
+      return 2;
+    }
+  });
+
+  node = mScene.getByName("towrstar");
+  node->getObject()->setModelIndexCallback([](const GameObject& obj) {
+    if (obj.getHealth() > 75) {
+      return 0;
+    } else if (obj.getHealth() > 50) {
+      return 1;
+    } else {
+      return 2;
+    }
+  });
+
+  node = mScene.getByName("towrston");
+  node->getObject()->setModelIndexCallback([](const GameObject& obj) {
+    if (obj.getHealth() > 75) {
+      return 0;
+    } else if (obj.getHealth() > 50) {
+      return 1;
+    } else {
+      return 2;
+    }
+  });
+
+  // preload power up models so we don't lag...
+  for (size_t i = 0; i < sizeof(pickupModels) / sizeof(std::string); i++) {
+    Model* model = mMLoader.LoadModel(pickupModels[i], *mLoader, mTLoader);
+  }
 
   while (!glfwWindowShouldClose(mWindow)) {
     // 1) Update local states (use key logger to update gameobject)
@@ -124,14 +176,20 @@ void GameManager::Update() {
 
 void GameManager::renderUI() {
   // Show game over screen
-  if (mGameOver) {
-    // render rects first,
-    Rect rect(*mLoader, glm::vec2(0, 0), glm::vec2(800, 600),
-              glm::vec4(1.0, 0, 0, 0.5));
-    mpRenderManager->drawRect(rect);
+  if (!mClientConnected) {
+    mpRenderManager->drawText("Connecting to Server...", 275.0f, 300.0f, 0.6f,
+                              glm::vec3(0.7f), *mpFont);
+    return;
+  }
 
-    mpRenderManager->drawText("GAME OVER", 290.0f, 300.0f, 1.0f,
-                              glm::vec3(1.0f, 0, 0), *mpFont);
+  if (mGameOver) {
+    renderGameOverUI();
+  }
+
+  unsigned long currTime = GetTickCount();
+  if (currTime - mFriendlyFireStart < 3000) {
+    mpRenderManager->drawText("Friendly Fire Mode", 300.0f, 500.0f, 0.4f,
+                              glm::vec3(0.7), *mpFont);
   }
 
   // render images second
@@ -162,8 +220,8 @@ void GameManager::renderUI() {
   };
 
   drawHealthBar("towrbear", "Bearl", 0);
-  drawHealthBar("towrstar", "Falling Star", 1);
-  drawHealthBar("towrston", "Stone Henge", 2);
+  drawHealthBar("towrstar", "Fallen Star", 1);
+  drawHealthBar("towrston", "Stonehenge", 2);
   drawHealthBar("towrsung", "Sun God", 3);
 
   // easter egg
@@ -179,15 +237,92 @@ void GameManager::renderUI() {
         "Health: " + std::to_string(mPlayer->getHealth()) + " / " +
             std::to_string(DEFAULT_HEALTH),
         25.f, 550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
+
+    float width = mpFont->GetStringWidth(pickupUIStrings[mCurrentPickup], 0.8f);
+    mpRenderManager->drawText(pickupUIStrings[mCurrentPickup],
+                              450.0f - width / 2.0f, 25.0f, 0.5f,
+                              glm::vec3(0.7f), *mpFont);
   }
 
-  if (mWaveTimer) {
-    mpRenderManager->drawText("Next Wave: " + std::to_string(mWaveTimer),
-                              650.0f, 25.0f, 0.5f, glm::vec3(0.7f), *mpFont);
-  }
+  if (mStartGame) {
+    if (mWaveTimer) {
+      mpRenderManager->drawText("Next Wave: " + std::to_string(mWaveTimer),
+                                650.0f, 25.0f, 0.5f, glm::vec3(0.7f), *mpFont);
+    } else {
+      std::string enemiesLeft = "Enemies Left: " + std::to_string(mNumEnemies);
+      mpRenderManager->drawText(enemiesLeft, 350.0f, 555.0f, 0.4f,
+                                glm::vec3(0.7f), *mpFont);
+    }
 
-  mpRenderManager->drawText("Wave: " + std::to_string(mWavesCompleted), 650.0f,
-                            550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
+    mpRenderManager->drawText("Wave: " + std::to_string(mWavesCompleted),
+                              650.0f, 550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
+  } else {
+    if (!mReady) {
+      float width = mpFont->GetStringWidth("Press enter to start", 0.8f);
+      mpRenderManager->drawText("Press enter to start", 400.0 - width / 2.0f,
+                                360.0f, 0.8f, glm::vec3(0.7f), *mpFont);
+    } else {
+      float width = mpFont->GetStringWidth("Waiting for players...", 0.6f);
+      mpRenderManager->drawText("Waiting for players...", 400.0 - width / 2.0f,
+                                550.0f, 0.6f, glm::vec3(0.7f), *mpFont);
+      mpRenderManager->drawText(
+          std::to_string(mCurrPlayers) + "/" + std::to_string(mMinPlayers),
+          350.0f, 500.0f, 0.6f, glm::vec3(0.7f), *mpFont);
+    }
+  }
+}
+
+void GameManager::renderGameOverUI() {
+  // render rects first,
+  Rect rect(*mLoader, glm::vec2(0, 0), glm::vec2(800, 600),
+            glm::vec4(0.0, 0, 0, 0.6));
+  mpRenderManager->drawRect(rect);
+
+  float width = mpFont->GetStringWidth("GAME OVER", 1.0f);
+  mpRenderManager->drawText("GAME OVER", 400.0 - width / 2.0f, 400.0f, 1.0f,
+                            glm::vec3(1.0f, 0, 0), *mpFont);
+
+  width = mpFont->GetStringWidth(
+      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed / 1000) + "s",
+      0.5f);
+  mpRenderManager->drawText(
+      "Time Ellapsed: " + std::to_string(mEndInfo->timeEllapsed / 1000) + "s",
+      400.0 - width / 2.0f, 350.0f, 0.5f, glm::vec3(1.0f, 0, 0), *mpFont);
+  width = mpFont->GetStringWidth(
+      "High Score: " + std::to_string(mEndInfo->highScore), 0.5f);
+  mpRenderManager->drawText(
+      "You Survived " + std::to_string(mEndInfo->highScore) + " Wave(s)",
+      285.0f, 315.0f, 0.5f, glm::vec3(1.0f), *mpFont);
+  mpRenderManager->drawText("Player Name", 230.0f, 280.0f, 0.5f,
+                            glm::vec3(0.7f), *mpFont);
+  mpRenderManager->drawText("Kills", 400.0f, 280.0f, 0.5f, glm::vec3(0.7f),
+                            *mpFont);
+  mpRenderManager->drawText("Deaths", 488.0f, 280.0f, 0.5f, glm::vec3(0.7f),
+                            *mpFont);
+  std::vector<int> enemiesKilledPerPlayer = mEndInfo->mEnemiesKilledPerPlayer;
+  std::vector<int> numRespawnedPerPlayer = mEndInfo->mNumRespawnedPerPlayer;
+
+  /*std::vector<int> enemiesKilledPerPlayer = {1, 2, 3, 4};
+  std::vector<int> numRespawnedPerPlayer = {1, 2, 3, 4};*/
+
+  std::vector<glm::vec3> colors = {glm::vec3(1, 0, 0), glm::vec3(0, 1, 0),
+                                   glm::vec3(0, 0, 1), glm::vec3(1, 1, 0)};
+
+  for (int i = 0; i < enemiesKilledPerPlayer.size(); i++) {
+    mpRenderManager->drawText(playerColors[i] + " Player", 230.0f,
+                              280.0f - ((i + 1) * 40), 0.5f, colors[i],
+                              *mpFont);
+    mpRenderManager->drawText(std::to_string(enemiesKilledPerPlayer[i]), 400.0f,
+                              280.0f - ((i + 1) * 40), 0.5f, glm::vec3(1.0f),
+                              *mpFont);
+    mpRenderManager->drawText(std::to_string(numRespawnedPerPlayer[i]), 488.0f,
+                              280.0f - ((i + 1) * 40), 0.5f, glm::vec3(1.0f),
+                              *mpFont);
+    if (mEndInfo->mvpPlayerID == i) {
+      mpRenderManager->drawText("MVP", 570.0f, 280.0f - ((i + 1) * 40), 0.5f,
+                                glm::vec3(1.0f), *mpFont);
+    }
+  }
 }
 
 void GameManager::updateKeyPresses(bool* keysPressed) {
@@ -197,6 +332,12 @@ void GameManager::updateKeyPresses(bool* keysPressed) {
   keysPressed[RIGHT] = glfwGetKey(mWindow, RIGHT_KEY);
   keysPressed[SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
   keysPressed[RESTART] = glfwGetKey(mWindow, RESTART_KEY);
+  keysPressed[READY] = glfwGetKey(mWindow, READY_KEY);
+  keysPressed[FF] = glfwGetKey(mWindow, FF_KEY);
+
+  if (keysPressed[READY]) {
+    mReady = true;
+  }
   mEasterMode = glfwGetKey(mWindow, EASTER_KEY) == GLFW_PRESS ||
                 glfwGetKey(mWindow, EASTER_KEY) == GLFW_REPEAT;
 }
@@ -213,12 +354,28 @@ void GameManager::UpdateObject(GameObject* obj) {
   // Update object
   foundObject = foundNode->getObject();
 
+  // If this is the local player, update the modified field
+  if ((foundObject->getName() == GameObject::makeName("play", mClientId))) {
+    mCurrentPickup = obj->mModifier;
+
+    foundNode->getModel()->mIsRainbow = mCurrentPickup == INVINCIBILITY;
+
+    std::string playerId = std::to_string(foundObject->getPlayerId());
+    mScene.getByName("bsObj1" + playerId)->emitter->isRainbow =
+        mCurrentPickup == INVINCIBILITY;
+    mScene.getByName("bsObj2" + playerId)->emitter->isRainbow =
+        mCurrentPickup == INVINCIBILITY;
+  }
+
   // Health is 0, delete object
   if (obj->isDead()) {
     foundObject->setHealth(0);
     // Don't render the player if they die
     if (foundObject->isPlayer()) {
       foundObject->mShouldRender = false;
+      std::string playerId = std::to_string(foundObject->getPlayerId());
+      mScene.getByName("bsObj1" + playerId)->emitter->mShouldRender = false;
+      mScene.getByName("bsObj2" + playerId)->emitter->mShouldRender = false;
       return;
     } else if (obj->isTower()) {
       foundObject->mShouldRender = false;
@@ -233,6 +390,11 @@ void GameManager::UpdateObject(GameObject* obj) {
       foundObject->mShouldRender = false;
       Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
       foundNode->emitter = new ParticleEmitter(flameTexture);
+
+      foundNode->emitter->isRainbow =
+          mCurrentPickup == INVINCIBILITY || mCurrentPickup == DAMAGE_BOOST;
+
+      mNumEnemies--;
       return;
     }
     // std::cerr << "Deleting object: " << ((std::string)obj->getName())
@@ -242,6 +404,12 @@ void GameManager::UpdateObject(GameObject* obj) {
     return;
   } else {
     foundObject->mShouldRender = true;
+
+    if (foundObject->isPlayer()) {
+      std::string playerId = std::to_string(foundObject->getPlayerId());
+      mScene.getByName("bsObj1" + playerId)->emitter->mShouldRender = true;
+      mScene.getByName("bsObj2" + playerId)->emitter->mShouldRender = true;
+    }
   }
 
   updateSound(foundObject);
@@ -278,38 +446,66 @@ void GameManager::spawnObject(GameObject* obj, GameObject*& foundObject,
                                mTLoader);
 
     // If this is the first time a player connects, add it!
-    if (obj->getName() == GameObject::makeName("play", mClientId)) {
-      mPlayer = foundObject;
-
-      SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
-
-      // attach the camera to the player
-      Camera& camera = mScene.addCamera(playerNode);
-      camera.setPosition(glm::vec3(0, 30.0f, 0));
-      camera.setFacing(glm::vec3(0, 0, 0));
-      camera.setUp(glm::vec3(0.0f, 0, -1.0f));
-
-      // attach emitters to player
-      GameObject* bsObj1 =
-          new GameObject(new Transform(glm::vec3(2.0, 0.0, 3.0), glm::vec3(0),
-                                       glm::vec3(0.2, 0.2, 0.2)),
-                         "bsObj1", 100);
-      SceneGraphNode* emitter1 = mScene.addChild(bsObj1, nullptr, playerNode);
-      Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
-      emitter1->emitter =
-          new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 30, 200);
-      emitter1->emitter->mIsContinuous = true;
-      emitter1->emitter->mParticleSize = 1.0;
-      emitter1->emitter->mParticleSpeed = 3.0;
+    if ((obj->getName() == GameObject::makeName("play", mClientId))) {
+      addPlayer(foundObject, model);
     }
   } else if (obj->isProjectile()) {
     model = mMLoader.LoadModel(PROJECTILE_MODEL, *mLoader, mTLoader);
-    // model = Model::Cube(*mLoader);
+
+    // if player is damage boost, make rainbow
+    model->mIsRainbow = mCurrentPickup == DAMAGE_BOOST;
+
+  } else if (obj->isPickup()) {
+    model = mMLoader.LoadModel(pickupModels[obj->mModifier - 1], *mLoader,
+                               mTLoader);
   } else if (!obj->isTower()) {
     model = Model::Cube(*mLoader);
   }
 
   foundNode = mScene.addChild(foundObject, model);
+
+  if (foundObject->isPlayer()) {
+    // attach emitters to player
+    addEmittersToPlayer(foundNode);
+  }
+}
+
+void GameManager::addPlayer(GameObject*& foundObject, Model* model) {
+  mPlayer = foundObject;
+
+  SceneGraphNode* playerNode = mScene.addChild(foundObject, model);
+
+  // attach the camera to the player
+  Camera& camera = mScene.addCamera(playerNode);
+  camera.setPosition(glm::vec3(0, 30.0f, 0));
+  camera.setFacing(glm::vec3(0, 0, 0));
+  camera.setUp(glm::vec3(0.0f, 0, -1.0f));
+}
+
+void GameManager::addEmittersToPlayer(SceneGraphNode* playerNode) {
+  std::string playerId = std::to_string(playerNode->getObject()->getPlayerId());
+  GameObject* bsObj1 =
+      new GameObject(new Transform(glm::vec3(2.1, 0.0, 1.1), glm::vec3(0),
+                                   glm::vec3(0.2, 0.2, 0.2)),
+                     "bsObj1" + playerId, 100);
+  SceneGraphNode* emitter1 = mScene.addChild(bsObj1, nullptr, playerNode);
+  Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
+  emitter1->emitter =
+      new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 50, 200);
+  emitter1->emitter->mIsContinuous = true;
+  emitter1->emitter->mParticleSize = 2.0;
+  emitter1->emitter->mParticleSpeed = 5.0;
+
+  GameObject* bsObj2 =
+      new GameObject(new Transform(glm::vec3(-2.2, 0.0, 1.1), glm::vec3(0),
+                                   glm::vec3(0.2, 0.2, 0.2)),
+                     "bsObj2" + playerId, 100);
+  SceneGraphNode* emitter2 = mScene.addChild(bsObj2, nullptr, playerNode);
+  emitter2->emitter =
+      new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 50, 200);
+  emitter2->emitter->mIsContinuous = true;
+  emitter2->emitter->mParticleSize = 2.0;
+  emitter2->emitter->mParticleSpeed = 5.0;
 }
 
 GameObject* GameManager::unmarshalInfo(char* data) {
@@ -345,12 +541,17 @@ GameObject* GameManager::unmarshalInfo(char* data) {
   memcpy(&type, tmpInfo, TYPE_SIZE);
   tmpInfo += TYPE_SIZE;
 
+  int modifier;
+  memcpy(&modifier, tmpInfo, INT_SIZE);
+  tmpInfo += INT_SIZE;
+
   Transform* transform = new Transform(glm::vec3(0), glm::vec3(0), glm::vec3(0),
                                        glm::vec3(xbb, ybb, zbb));
 
   transform->setModel(model);
   // TODO: should we add forward vector on client?
   GameObject* obj = new GameObject(transform, name, health, type);
+  obj->mModifier = modifier;
 
   mSound->playAccordingToGameObject(obj);
 
@@ -360,5 +561,9 @@ GameObject* GameManager::unmarshalInfo(char* data) {
 void GameManager::setClientID(int id) { mClientId = id; }
 
 void GameManager::ResizeCallback(int width, int height) {
+  if (!width || !height) {
+    return;
+  }
+
   mpRenderManager->setViewportSize(width, height);
 }

@@ -1,0 +1,68 @@
+# Blender MTL File: 'fallenstar.blend'
+# Material Count: 6
+
+newmtl Door-top.003
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.043735 0.043735 0.043735
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-state2/fallenstar-state2.png
+
+newmtl House-base.003
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.404160 0.623100 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-state2/fallenstar-state2.png
+
+newmtl Roof-base.003
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.046963 0.046963 0.046963
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-state2/fallenstar-state2.png
+
+newmtl White.003
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.911400 0.911400 0.911400
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-state2/fallenstar-state2.png
+
+newmtl Window-inner.003
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.102476 0.102476 0.102476
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-state2/fallenstar-state2.png
+
+newmtl Window-outer.003
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.710561 0.710561 0.710561
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-state2/fallenstar-state2.png

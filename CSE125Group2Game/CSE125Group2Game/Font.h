@@ -27,6 +27,7 @@ class Font {
   unsigned int mVao, mVbo;
 
   Character GetCharacter(char c) const;
+  float GetStringWidth(const std::string& text, float scale);
 
  private:
   std::unordered_map<char, Character> mCharMap;

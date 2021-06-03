@@ -3,8 +3,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "glad/glad.h"
-
 Camera::Camera(glm::vec3 position, glm::vec3 facing, glm::vec3 up)
     : mPosition(position), mFacing(facing), mUp(up) {}
 

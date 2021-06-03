@@ -24,6 +24,7 @@ class Model {
 
   // TODO: refacotor this yay
   std::vector<Material> mMaterials;
+  bool mIsRainbow = false;
 
  private:
   friend ModelLoader;

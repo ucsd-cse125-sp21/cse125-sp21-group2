@@ -34,7 +34,7 @@ void SceneGraphNode::removeChild(SceneGraphNode* child) {
 
 GameObject* SceneGraphNode::getObject() const { return mObject; }
 
-const Model* SceneGraphNode::getModel() const {
+Model* SceneGraphNode::getModel() const {
   if (!mObject) {
     return nullptr;
   }
