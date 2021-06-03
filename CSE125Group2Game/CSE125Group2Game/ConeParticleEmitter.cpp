@@ -1,4 +1,4 @@
-#include "ConeParticleEmitter.h"
+﻿#include "ConeParticleEmitter.h"
 
 void ConeParticleEmitter::InitializeParticle(Particle& particle) {
   float theta = (RAND_FLOAT_NORM() - 0.5) * mSpread;
@@ -15,7 +15,7 @@ void ConeParticleEmitter::InitializeParticle(Particle& particle) {
 }
 
 void ConeParticleEmitter::UpdateParticle(Particle& particle, float delta) {
-  particle.life -= 0.25f * delta;
+  particle.life -= 0.5f * delta;
 
   float theta = glm::radians(particle.angle[0]);
   float phi = glm::radians(particle.angle[1]);

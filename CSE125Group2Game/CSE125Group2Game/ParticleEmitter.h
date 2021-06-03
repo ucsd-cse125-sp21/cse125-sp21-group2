@@ -61,6 +61,7 @@ class ParticleEmitter {
   float mParticleSize = 4.0f;
   bool isRainbow = false;
   float mParticleSpeed = 5.0f;
+  bool mShouldRender = true;
 
   bool isDone() const;
 };

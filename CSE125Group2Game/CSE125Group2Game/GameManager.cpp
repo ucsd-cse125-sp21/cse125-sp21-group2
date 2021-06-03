@@ -238,8 +238,10 @@ void GameManager::renderUI() {
             std::to_string(DEFAULT_HEALTH),
         25.f, 550.0f, 0.5f, glm::vec3(0.7f), *mpFont);
 
-    mpRenderManager->drawText(pickupUIStrings[mCurrentPickup], 350.f, 25.0f,
-                              0.5f, glm::vec3(0.7f), *mpFont);
+    float width = mpFont->GetStringWidth(pickupUIStrings[mCurrentPickup], 0.8f);
+    mpRenderManager->drawText(pickupUIStrings[mCurrentPickup],
+                              450.0f - width / 2.0f, 25.0f, 0.5f,
+                              glm::vec3(0.7f), *mpFont);
   }
 
   if (mStartGame) {
@@ -357,6 +359,12 @@ void GameManager::UpdateObject(GameObject* obj) {
     mCurrentPickup = obj->mModifier;
 
     foundNode->getModel()->mIsRainbow = mCurrentPickup == INVINCIBILITY;
+
+    std::string playerId = std::to_string(foundObject->getPlayerId());
+    mScene.getByName("bsObj1" + playerId)->emitter->isRainbow =
+        mCurrentPickup == INVINCIBILITY;
+    mScene.getByName("bsObj2" + playerId)->emitter->isRainbow =
+        mCurrentPickup == INVINCIBILITY;
   }
 
   // Health is 0, delete object
@@ -366,8 +374,8 @@ void GameManager::UpdateObject(GameObject* obj) {
     if (foundObject->isPlayer()) {
       foundObject->mShouldRender = false;
       std::string playerId = std::to_string(foundObject->getPlayerId());
-      mScene.getByName("bsObj1" + playerId)->getObject()->mShouldRender = false;
-      mScene.getByName("bsObj2" + playerId)->getObject()->mShouldRender = false;
+      mScene.getByName("bsObj1" + playerId)->emitter->mShouldRender = false;
+      mScene.getByName("bsObj2" + playerId)->emitter->mShouldRender = false;
       return;
     } else if (obj->isTower()) {
       foundObject->mShouldRender = false;
@@ -383,9 +391,8 @@ void GameManager::UpdateObject(GameObject* obj) {
       Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
       foundNode->emitter = new ParticleEmitter(flameTexture);
 
-      if (mCurrentPickup == INVINCIBILITY || mCurrentPickup == DAMAGE_BOOST) {
-        foundNode->emitter->isRainbow = true;
-      }
+      foundNode->emitter->isRainbow =
+          mCurrentPickup == INVINCIBILITY || mCurrentPickup == DAMAGE_BOOST;
 
       mNumEnemies--;
       return;
@@ -400,8 +407,8 @@ void GameManager::UpdateObject(GameObject* obj) {
 
     if (foundObject->isPlayer()) {
       std::string playerId = std::to_string(foundObject->getPlayerId());
-      mScene.getByName("bsObj1" + playerId)->getObject()->mShouldRender = true;
-      mScene.getByName("bsObj2" + playerId)->getObject()->mShouldRender = true;
+      mScene.getByName("bsObj1" + playerId)->emitter->mShouldRender = true;
+      mScene.getByName("bsObj2" + playerId)->emitter->mShouldRender = true;
     }
   }
 
@@ -478,27 +485,27 @@ void GameManager::addPlayer(GameObject*& foundObject, Model* model) {
 void GameManager::addEmittersToPlayer(SceneGraphNode* playerNode) {
   std::string playerId = std::to_string(playerNode->getObject()->getPlayerId());
   GameObject* bsObj1 =
-      new GameObject(new Transform(glm::vec3(2.0, 0.0, 2.0), glm::vec3(0),
+      new GameObject(new Transform(glm::vec3(2.0, 0.0, 1.1), glm::vec3(0),
                                    glm::vec3(0.2, 0.2, 0.2)),
                      "bsObj1" + playerId, 100);
   SceneGraphNode* emitter1 = mScene.addChild(bsObj1, nullptr, playerNode);
   Texture flameTexture = mTLoader.loadTexture(ASSET("flame.png"));
   emitter1->emitter =
-      new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 30, 200);
+      new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 50, 200);
   emitter1->emitter->mIsContinuous = true;
-  emitter1->emitter->mParticleSize = 1.0;
-  emitter1->emitter->mParticleSpeed = 3.0;
+  emitter1->emitter->mParticleSize = 2.0;
+  emitter1->emitter->mParticleSpeed = 5.0;
 
   GameObject* bsObj2 =
-      new GameObject(new Transform(glm::vec3(-2.0, 0.0, 2.0), glm::vec3(0),
+      new GameObject(new Transform(glm::vec3(-2.0, 0.0, 1.1), glm::vec3(0),
                                    glm::vec3(0.2, 0.2, 0.2)),
                      "bsObj2" + playerId, 100);
   SceneGraphNode* emitter2 = mScene.addChild(bsObj2, nullptr, playerNode);
   emitter2->emitter =
-      new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 30, 200);
+      new ConeParticleEmitter(flameTexture, glm::vec3(0, 0, 1), 50, 200);
   emitter2->emitter->mIsContinuous = true;
-  emitter2->emitter->mParticleSize = 1.0;
-  emitter2->emitter->mParticleSpeed = 3.0;
+  emitter2->emitter->mParticleSize = 2.0;
+  emitter2->emitter->mParticleSpeed = 5.0;
 }
 
 GameObject* GameManager::unmarshalInfo(char* data) {
@@ -554,5 +561,9 @@ GameObject* GameManager::unmarshalInfo(char* data) {
 void GameManager::setClientID(int id) { mClientId = id; }
 
 void GameManager::ResizeCallback(int width, int height) {
+  if (!width || !height) {
+    return;
+  }
+
   mpRenderManager->setViewportSize(width, height);
 }
