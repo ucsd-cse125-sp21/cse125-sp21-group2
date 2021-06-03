@@ -186,6 +186,12 @@ void GameManager::renderUI() {
     renderGameOverUI();
   }
 
+  unsigned long currTime = GetTickCount();
+  if (currTime - mFriendlyFireStart < 3000) {
+    mpRenderManager->drawText("Friendly Fire Mode", 300.0f, 500.0f, 0.4f,
+                              glm::vec3(0.7), *mpFont);
+  }
+
   // render images second
   Texture tex = mTLoader.loadTexture(ASSET("leet.png"));
   Image image(*mLoader, glm::vec2(500, 500), glm::vec2(100, 50), tex);
@@ -325,6 +331,7 @@ void GameManager::updateKeyPresses(bool* keysPressed) {
   keysPressed[SHOOT] = glfwGetKey(mWindow, PROJECTILE_KEY);
   keysPressed[RESTART] = glfwGetKey(mWindow, RESTART_KEY);
   keysPressed[READY] = glfwGetKey(mWindow, READY_KEY);
+  keysPressed[FF] = glfwGetKey(mWindow, FF_KEY);
 
   if (keysPressed[READY]) {
     mReady = true;

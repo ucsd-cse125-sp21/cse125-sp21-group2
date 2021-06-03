@@ -45,6 +45,7 @@
 #define FORWARD_KEY GLFW_KEY_W
 #define LEFT_KEY GLFW_KEY_A
 #define BACKWARD_KEY GLFW_KEY_S
+#define FF_KEY GLFW_KEY_F
 #define RIGHT_KEY GLFW_KEY_D
 #define PROJECTILE_KEY GLFW_KEY_SPACE
 #define RESTART_KEY GLFW_KEY_R
@@ -83,6 +84,7 @@ class GameManager {
   void addPlayer(GameObject*& foundObject, Model* model);
 
   void setClientID(int id);
+  unsigned long mFriendlyFireStart;
 
   bool mKeyPresses[NUM_KEYS];
 
