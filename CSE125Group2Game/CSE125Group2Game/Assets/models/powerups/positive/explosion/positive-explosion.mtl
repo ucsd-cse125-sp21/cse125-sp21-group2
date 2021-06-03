@@ -1,4 +1,4 @@
-# Blender MTL File: 'powerups.blend'
+# Blender MTL File: 'powerups 5.blend'
 # Material Count: 5
 
 newmtl Bomb
@@ -48,7 +48,7 @@ map_Kd models\powerups\positive\explosion\positive-explosion.png
 newmtl Positive
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.089597 0.019163 0.532955
+Kd 0.372206 0.235027 0.955087
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
