@@ -113,7 +113,6 @@ Enemy* Enemy::spawnEnemy() {
   // 50/50 chance of spawning pickup on death
   unsigned int randomChance = rand() % 2;
   enemy->mSpawnPickup = randomChance == PICKUP_CHANCE;
-  enemy->mSpawnPickup = true;
 
   return enemy;
 }

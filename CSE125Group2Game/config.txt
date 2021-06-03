@@ -1,4 +1,4 @@
 port:63000
-tick:16
-host:"127.0.0.1"
+tick:33
+host:"137.110.115.89"
 friendlyFire:true
