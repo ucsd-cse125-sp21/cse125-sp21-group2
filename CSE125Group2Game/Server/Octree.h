@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 #include <stack>
 #include <vector>
@@ -128,7 +128,7 @@ class Octree {
 
   // TODO: collision stuff
 
-  static const int MAX_RECURSION_DEPTH = 5;
+  static const int MAX_RECURSION_DEPTH = 10;
 
  private:
   friend OctreeNode;

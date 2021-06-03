@@ -29,7 +29,7 @@ class WaveManager {
   static WaveManager* mWaveManager;
 
   int mEnemiesSpawnedInWave = 0;
-  int mMaxWaveSize = 5;
+  int mMaxWaveSize = 40;
   int mNextEnemyIndex = 0;
 
   unsigned long mTimeOfLastSpawn;
