@@ -485,7 +485,7 @@ void GameManager::addPlayer(GameObject*& foundObject, Model* model) {
 void GameManager::addEmittersToPlayer(SceneGraphNode* playerNode) {
   std::string playerId = std::to_string(playerNode->getObject()->getPlayerId());
   GameObject* bsObj1 =
-      new GameObject(new Transform(glm::vec3(2.0, 0.0, 1.1), glm::vec3(0),
+      new GameObject(new Transform(glm::vec3(2.1, 0.0, 1.1), glm::vec3(0),
                                    glm::vec3(0.2, 0.2, 0.2)),
                      "bsObj1" + playerId, 100);
   SceneGraphNode* emitter1 = mScene.addChild(bsObj1, nullptr, playerNode);
@@ -497,7 +497,7 @@ void GameManager::addEmittersToPlayer(SceneGraphNode* playerNode) {
   emitter1->emitter->mParticleSpeed = 5.0;
 
   GameObject* bsObj2 =
-      new GameObject(new Transform(glm::vec3(-2.0, 0.0, 1.1), glm::vec3(0),
+      new GameObject(new Transform(glm::vec3(-2.2, 0.0, 1.1), glm::vec3(0),
                                    glm::vec3(0.2, 0.2, 0.2)),
                      "bsObj2" + playerId, 100);
   SceneGraphNode* emitter2 = mScene.addChild(bsObj2, nullptr, playerNode);
