@@ -9,7 +9,8 @@
 
 WaveManager* WaveManager::mWaveManager;
 int Enemy::enemysSpawned = 0;
-void sendWaveTimer(int seconds, int wavesCompleted, int numEnemies);
+void sendWaveTimer(int seconds, int wavesCompleted, int numEnemies,
+                   int maxEnemyHealth);
 
 WaveManager::WaveManager() {
   // Spawn one enemy every
@@ -43,7 +44,8 @@ void WaveManager::update() {
 
     int secondsLeftToWave = msLeftToWave / 1000;
 
-    sendWaveTimer(secondsLeftToWave, mWavesCompleted, mMaxWaveSize);
+    sendWaveTimer(secondsLeftToWave, mWavesCompleted, mMaxWaveSize,
+                  Enemy::currHealth);
   }
 }
 
@@ -97,6 +99,8 @@ void WaveManager::reset() {
   mWavesCompleted = 0;
   mWaveEnemies.clear();
   mMaxWaveSize = 5;
+
+  Enemy::currHealth = DEFAULT_HEALTH;
 }
 bool WaveManager::isWaveComplete() { return mWaveEnemies.size() == 0; }
 

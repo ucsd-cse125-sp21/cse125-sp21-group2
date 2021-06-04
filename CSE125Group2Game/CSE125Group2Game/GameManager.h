@@ -82,6 +82,8 @@ class GameManager {
 
   void addEmittersToPlayer(SceneGraphNode* playerNode);
 
+  void spawnExplosions(float delta);
+
   void setClientID(int id);
   unsigned long mFriendlyFireStart;
 
@@ -112,6 +114,10 @@ class GameManager {
   bool mClientConnected = false;
   int mCurrPlayers = 0;
   int mMinPlayers = 0;
+  int mMaxEnemyHealth = DEFAULT_HEALTH;
+
+  std::vector<SceneGraphNode*> explosionsToRemove;
+  SceneGraph mScene;
 
  private:
   // TODO: fix formatting on this...
@@ -123,7 +129,6 @@ class GameManager {
   ModelLoader mMLoader;
 
   Camera* mCamera;
-  SceneGraph mScene;
   GLFWwindow* mWindow;
   Font* mpFont;
 

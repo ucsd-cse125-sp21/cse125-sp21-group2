@@ -77,10 +77,19 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
           } break;
 
           case CustomMsgTypes::WaveTimer: {
+            // clear those particles yeet
+            if (GameManager::getManager()->mGameOver) {
+              for (SceneGraphNode* node :
+                   GameManager::getManager()->explosionsToRemove) {
+                GameManager::getManager()->mScene.removeChild(node);
+              }
+              GameManager::getManager()->explosionsToRemove.clear();
+            }
             GameManager::getManager()->mGameOver =
                 false;  // TODO: FIX THIS HACK
 
-            int currentWaveTimer, wavesCompleted, numEnemies;
+            int currentWaveTimer, wavesCompleted, numEnemies, maxEnemyHealth;
+            msg >> maxEnemyHealth;
             msg >> numEnemies;
             msg >> wavesCompleted;
             msg >> currentWaveTimer;
@@ -88,6 +97,7 @@ class CustomClient : public olc::net::client_interface<CustomMsgTypes> {
             GameManager::getManager()->mWaveTimer = currentWaveTimer;
             GameManager::getManager()->mWavesCompleted = wavesCompleted;
             GameManager::getManager()->mNumEnemies = numEnemies;
+            GameManager::getManager()->mMaxEnemyHealth = maxEnemyHealth;
 
           } break;
 
