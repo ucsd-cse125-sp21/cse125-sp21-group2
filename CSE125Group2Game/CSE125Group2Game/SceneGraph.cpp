@@ -192,6 +192,7 @@ SceneGraphNode* SceneGraph::getRoot() const { return mpRoot.get(); }
 
 SceneGraphNode* SceneGraph::getByName(const std::string& name) const {
   auto value = mNameMapping.find(name);
+
   return value != mNameMapping.end() ? value->second : nullptr;
 }
 

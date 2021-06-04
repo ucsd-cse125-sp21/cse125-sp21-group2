@@ -1,4 +1,5 @@
 ﻿#include "Sound.h"
+
 #include <iostream>
 
 Sound::Sound() {
@@ -11,18 +12,18 @@ void Sound::play(const char* filePath, irrklang::vec3df positionOfSoundOrigin) {
   // Play Sound Once
   auto music = engine->play3D(filePath, positionOfSoundOrigin, false);
   if (music) {
-      music->setMaxDistance(5.0f);
-      mSoundObjectVector.push_back(music);
+    music->setMaxDistance(5.0f);
+    mSoundObjectVector.push_back(music);
   }
 }
 
 void Sound::playBackgroundMusic(const char* filePath) {
-    // Play Sound infinitely
-    backgroundSound = engine->play2D(filePath, true);
+  // Play Sound infinitely
+  backgroundSound = engine->play2D(filePath, true);
 }
 
 void Sound::pauseBackgroundMusic() {
-    backgroundSound->setIsPaused(!backgroundSound->getIsPaused());
+  backgroundSound->setIsPaused(!backgroundSound->getIsPaused());
 }
 
 void Sound::pauseAllSounds(bool toPause) {
@@ -50,7 +51,6 @@ void Sound::setListenerPosition(Transform* playerTransform) {
 }
 
 void Sound::playAccordingToGameObject(GameObject* obj) {
-  
   if (!obj) return;
   for (std::string objectName : mSoundVector) {
     if (obj->getName() == objectName) {
@@ -59,19 +59,19 @@ void Sound::playAccordingToGameObject(GameObject* obj) {
   }
 
   for (int i = 0; i < mSoundObjectVector.size(); i++) {
-      auto sound = mSoundObjectVector[i];
-      if (sound->isFinished()) {
-          std::cout << "finished" << std::endl;
-          sound->stop();
-          sound->drop();
-          mSoundObjectVector.erase(mSoundObjectVector.begin() + i);
-      }
+    auto sound = mSoundObjectVector[i];
+    if (sound->isFinished()) {
+      std::cout << "finished" << std::endl;
+      sound->stop();
+      sound->drop();
+      mSoundObjectVector.erase(mSoundObjectVector.begin() + i);
+    }
   }
 
   mSoundVector.push_back(obj->getName());
   irrklang::vec3d position(obj->getTransform()->getTranslation().x,
-      obj->getTransform()->getTranslation().y,
-      obj->getTransform()->getTranslation().z);
+                           obj->getTransform()->getTranslation().y,
+                           obj->getTransform()->getTranslation().z);
 
   if (obj->isPlayer()) {
   } else if (obj->isEnemy()) {
@@ -82,10 +82,10 @@ void Sound::playAccordingToGameObject(GameObject* obj) {
 }
 
 void Sound::deleteFromSoundVector(GameObject* obj) {
-    for (int i = 0; i < mSoundVector.size(); i++) {
-        if (obj->getName() == mSoundVector[i]) {
-            mSoundVector.erase(mSoundVector.begin() + i);
-            return;
-        }
+  for (int i = 0; i < mSoundVector.size(); i++) {
+    if (obj->getName() == mSoundVector[i]) {
+      mSoundVector.erase(mSoundVector.begin() + i);
+      return;
     }
+  }
 }
