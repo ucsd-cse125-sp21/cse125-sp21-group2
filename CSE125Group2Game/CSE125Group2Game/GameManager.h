@@ -114,6 +114,7 @@ class GameManager {
   bool mClientConnected = false;
   int mCurrPlayers = 0;
   int mMinPlayers = 0;
+  int mMaxEnemyHealth = DEFAULT_HEALTH;
 
   std::vector<SceneGraphNode*> explosionsToRemove;
   SceneGraph mScene;

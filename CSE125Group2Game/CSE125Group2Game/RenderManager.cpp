@@ -285,7 +285,8 @@ void RenderManager::drawHealthBar(const glm::mat4& prev, const glm::mat4& view,
       prev * glm::translate(glm::mat4(1), glm::vec3(0, 5, 0));
 
   // will prolly need to change
-  float healthFrac = (float)health / (float)DEFAULT_HEALTH;
+  float healthFrac =
+      (float)health / (float)GameManager::getManager()->mMaxEnemyHealth;
 
   glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(mProjection));
   glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(view));
