@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "Camera.h"
+#include "GameManager.h"
 #include "Model.h"
 #include "Utils.h"
 

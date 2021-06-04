@@ -82,6 +82,8 @@ class GameManager {
 
   void addEmittersToPlayer(SceneGraphNode* playerNode);
 
+  void spawnExplosions(float delta);
+
   void setClientID(int id);
   unsigned long mFriendlyFireStart;
 
@@ -113,6 +115,9 @@ class GameManager {
   int mCurrPlayers = 0;
   int mMinPlayers = 0;
 
+  std::vector<SceneGraphNode*> explosionsToRemove;
+  SceneGraph mScene;
+
  private:
   // TODO: fix formatting on this...
   [[deprecated("Replaced by SceneGraph.getByName()")]] SceneGraphNode* findNode(
@@ -123,7 +128,6 @@ class GameManager {
   ModelLoader mMLoader;
 
   Camera* mCamera;
-  SceneGraph mScene;
   GLFWwindow* mWindow;
   Font* mpFont;
 

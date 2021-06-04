@@ -64,7 +64,7 @@ class Player : public Moveable {
   int mPlayerHealAmt;
 
  private:
-  glm::vec3 mRotationSpeed = SPEED_MULTIPLIER * glm::vec3(-0.0225, -0.10, 0);
+  glm::vec3 mRotationSpeed = SPEED_MULTIPLIER * glm::vec3(-0.03, -0.20, 0);
 
   glm::vec3 mVelocity;
 
